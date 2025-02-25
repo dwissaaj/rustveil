@@ -14,7 +14,7 @@
 <main class="container">
   <h1>Welcome to Tauri + Svelte</h1>
 
-  <div class="row">
+  <div class="row bg-blue-500">
     <a href="https://vitejs.dev" target="_blank">
       <img src="/vite.svg" class="logo vite" alt="Vite Logo" />
     </a>
@@ -28,8 +28,8 @@
   <p>Click on the Tauri, Vite, and SvelteKit logos to learn more.</p>
 
   <form class="row" onsubmit={greet}>
-    <input id="greet-input" placeholder="Enter a name..." bind:value={name} />
-    <button type="submit">Greet</button>
+    <input class="bg-red-500 text-5xl text-blue-700" id="greet-input" placeholder="Enter a name..." bind:value={name} />
+    <button class="btn btn-primary " type="submit">Greet</button>
   </form>
   <p>{greetMsg}</p>
 </main>
