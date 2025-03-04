@@ -11,10 +11,19 @@
   }
 </script>
 
-<main class="container">
-  <div class="bg-red-500">
-    <p class="text-blue-500 text-6xl">asdsd</p>
-    <button class="btn btn-secondary">chec</button>
+<main class="w-screen h-screen flex items-center justify-center">
+  <div class="flex flex-col gap-2">
+    <div>
+      <img class="size-20" src="/icon.png" alt="RustVeil Logo" />
+    </div>
+    <div class="flex flex-col gap-2">
+     <p class="text-5xl">Rust Veil</p>
+      <p>Unlock the Secrets of Connections.</p>
+      
+    </div>
+    <div>
+      <a class="btn btn-primary" href="/main">Start Now</a>
+    </div>
   </div>
 </main>
 
