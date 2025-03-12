@@ -1,5 +1,6 @@
 <script lang="ts" >
     import Footer from '../../components/Footer.svelte';
+    import Header from '../../components/Header.svelte';
 
   
 
@@ -9,13 +10,8 @@
 </script>
 
 <div class="relative h-screen">
-    <nav class="p-2 border-b-2 flex flex-row gap-2">
-        <button>Home</button>
-        <button>Data</button>
-        <button>Setting</button>
-        <button>Process</button>
-      </nav>
-      
+
+      <Header />
       <main class="">
         {@render children()}
       </main>
