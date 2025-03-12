@@ -1,6 +1,27 @@
 @import "tailwindcss";
+
 @plugin "daisyui" {
   themes:
     pastel --default,
     dracula --prefersdark;
+}
+
+@font-face {
+  font-family: MPLUS1;
+  font-style: normal;
+  font-weight: 100 300 400 500 700 800;
+  font-display: swap;
+  src: url("/font/MPlus.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: Commissioner;
+  font-style: normal;
+  font-weight: 100 300 400 500 700 800;
+  font-display: swap;
+  src: url("/font/Commissioner.ttf") format("truetype");
+}
+@theme {
+  --font-mplus: "MPLUS1", "sans-serif"; 
+  --font-comm: "Commissioner", "sans-serif"; 
 }

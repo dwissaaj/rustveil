@@ -19,4 +19,8 @@
   {:else if $active === "nlp"}
     <Nlp />
   {/if}
+  <p class="text-5xl">test</p>
+  <p class="text-5xl font-mplus">test</p>
+  <p class="text-5xl font-comm">test</p>
+  <p class="text-5xl">test</p>
 </main>
