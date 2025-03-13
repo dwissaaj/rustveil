@@ -1,22 +1,23 @@
 <script lang="ts" >
-    import Footer from '../../components/Footer.svelte';
-    import Header from '../../components/Header.svelte';
-
-  
+  import Footer from '../../components/Footer.svelte';
+  import Header from '../../components/Header.svelte';
 
 
-  let { children } = $props();
+
+
+let { children } = $props();
 
 </script>
 
-<div class="relative h-screen">
+<div class="flex flex-col h-screen">
+  
+  <Header />
 
-      <Header />
-      <main class="">
-        {@render children()}
-      </main>
-      
-      
-     
-      <Footer />
+
+  <main class="flex-1 overflow-auto">
+    {@render children()}
+  </main>
+
+
+  <Footer />
 </div>
