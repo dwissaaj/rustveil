@@ -1,6 +1,6 @@
 <script>
   import {t} from "$lib/locales/i18n"
-  import { active } from "../routes/main/active.svelte";
+  import { active } from "../../routes/twitter/active.svelte";
 
   
 </script>

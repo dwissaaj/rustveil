@@ -13,6 +13,7 @@
             <li>{$t("nav.home")}</li>
             <li>{$t("nav.setting")}</li>
             <li>{$t("nav.process")}</li>
+            <a href="/menu">{$t("nav.back")}</a>
           </ul>
         </div>
    </nav>

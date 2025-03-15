@@ -11,7 +11,7 @@
   }
 </script>
 
-<main class="w-screen h-screen flex items-center justify-center">
+<main class="w-screen h-screen flex items-center justify-center font-comm">
   <div class="flex flex-col gap-2">
     <div>
       <img class="size-20" src="/icon.png" alt="RustVeil Logo" />
@@ -22,7 +22,7 @@
       
     </div>
     <div>
-      <a class="btn btn-primary" href="/main">Start Now</a>
+      <a class="btn btn-primary" href="/menu">Start Now</a>
     </div>
   </div>
 </main>

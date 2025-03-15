@@ -1,6 +1,6 @@
 <script lang="ts" >
-  import Footer from '../../components/Footer.svelte';
-  import Header from '../../components/Header.svelte';
+  import Footer from '../../components/twitter/Footer.svelte';
+  import Header from '../../components/twitter/Header.svelte';
 
 
 
@@ -14,7 +14,7 @@ let { children } = $props();
   <Header />
 
 
-  <main class="flex-1 overflow-auto">
+  <main class="flex  overflow-scroll">
     {@render children()}
   </main>
 

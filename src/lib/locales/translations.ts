@@ -7,7 +7,8 @@ export default {
       "footer.nlp": "NLP",
       "nav.home" : "Home",
       "nav.setting" : "Setting",
-      "nav.process" : "Process"
+      "nav.process" : "Process",
+      "nav.back" : "Back"
     },
     jp: {
       "footer.edges": "エッジ",
@@ -17,7 +18,8 @@ export default {
       "footer.nlp": "自然言語処理",
       "nav.home" : "ホーム",
       "nav.setting" : "セッティング",
-      "nav.process" : "計算"
+      "nav.process" : "計算",
+      "nav.back" : "バック"
     },
   };
   
