@@ -1,3 +1,3 @@
 # Test tauri
 
-next js, rust, hero ui 
+next js, rust, hero ui
