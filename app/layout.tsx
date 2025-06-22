@@ -51,13 +51,11 @@ export default function RootLayout({
             </main>
             <footer className="w-full flex items-center justify-center py-3">
               <Link
-                
                 className="flex items-center gap-1 text-current"
                 href={"about"}
                 title="heroui.com homepage"
               >
                 <span className="text-default-600">Rustveil {year}</span>
-
               </Link>
             </footer>
           </div>

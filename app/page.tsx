@@ -3,7 +3,6 @@ import { button as buttonStyles } from "@heroui/theme";
 import { title, subtitle } from "@/components/primitives";
 import { Code } from "@heroui/code";
 
-
 export default function Home() {
   return (
     <section className="w-full h-full flex flex-col items-center justify-center gap-4 py-8 md:py-10">
@@ -18,7 +17,6 @@ export default function Home() {
 
       <div className="flex gap-3">
         <Link
-          
           className={buttonStyles({
             color: "primary",
             radius: "full",
@@ -29,7 +27,6 @@ export default function Home() {
           Documentation
         </Link>
         <Link
-          
           className={buttonStyles({
             color: "primary",
             radius: "full",
@@ -41,9 +38,9 @@ export default function Home() {
         </Link>
       </div>
 
-        <div className="mt-8">
-          <Code color="primary">Read blog & docs first</Code>
-        </div>
+      <div className="mt-8">
+        <Code color="primary">Read blog & docs first</Code>
+      </div>
     </section>
   );
 }

@@ -22,7 +22,7 @@ export const siteConfig = {
     },
   ],
   navMenuItems: [
-{
+    {
       label: "Home",
       href: "/",
     },
@@ -34,13 +34,13 @@ export const siteConfig = {
       label: "Blog",
       href: "/blog",
     },
-        {
+    {
       label: "Workstation",
       href: "/work",
     },
   ],
   links: {
     github: "https://github.com/dwissaaj/rustveil",
-    docs: "docs"
+    docs: "docs",
   },
 };
