@@ -15,7 +15,9 @@ interface ScrollSmootherProviderProps {
   children: React.ReactNode;
 }
 
-export default function ScrollSmootherProvider({ children }: ScrollSmootherProviderProps) {
+export default function ScrollSmootherProvider({
+  children,
+}: ScrollSmootherProviderProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
@@ -27,11 +29,17 @@ export default function ScrollSmootherProvider({ children }: ScrollSmootherProvi
 
       // Query the specific wrapper and content elements within the containerRef's scope
       // Type assertions here are crucial for TypeScript to know these are HTMLDivElement
-      const wrapper = containerRef.current.querySelector("#smooth-wrapper") as HTMLDivElement | null;
-      const content = containerRef.current.querySelector("#smooth-content") as HTMLDivElement | null;
+      const wrapper = containerRef.current.querySelector(
+        "#smooth-wrapper",
+      ) as HTMLDivElement | null;
+      const content = containerRef.current.querySelector(
+        "#smooth-content",
+      ) as HTMLDivElement | null;
 
       if (!wrapper || !content) {
-        console.error("ScrollSmoother: Could not find #smooth-wrapper or #smooth-content elements within the provider. Make sure they are rendered.");
+        console.error(
+          "ScrollSmoother: Could not find #smooth-wrapper or #smooth-content elements within the provider. Make sure they are rendered.",
+        );
         return;
       }
 
@@ -53,15 +61,14 @@ export default function ScrollSmootherProvider({ children }: ScrollSmootherProvi
       });
 
       console.log("ScrollSmoother initialized.");
-
     },
-    { scope: containerRef, dependencies: [] }
+    { scope: containerRef, dependencies: [] },
   );
 
   return (
-    <div ref={containerRef} className="container mx-auto max-w-7xl pt-20 px-6 flex-grow">
-      <div id="smooth-wrapper ">
-        <div id="smooth-content ">
+    <div ref={containerRef}>
+      <div id="smooth-wrapper">
+        <div id="smooth-content">
           <div className="container mx-auto max-w-7xl pt-20 px-6 flex-grow">
             {children}
           </div>
