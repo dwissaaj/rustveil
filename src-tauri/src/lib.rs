@@ -1,4 +1,7 @@
+mod workstation;
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
+use workstation::ner;
+use workstation::data;
 pub fn run() {
   tauri::Builder::default()
     .setup(|app| {
@@ -11,6 +14,10 @@ pub fn run() {
       }
       Ok(())
     })
+    .invoke_handler(tauri::generate_handler![
+      ner::jscall,
+      data::load_data
+      ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 }
