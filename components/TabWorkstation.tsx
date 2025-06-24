@@ -32,7 +32,7 @@ export default function TabWorkstation() {
         <Tab key="Sentiment Analysis" title="Sentiment Analysis">
           <SentimentAnalysis />
         </Tab>
-        
+
         <Tab key="Topic Modelling" title="Topic Modelling">
           <TopicModelling />
         </Tab>
