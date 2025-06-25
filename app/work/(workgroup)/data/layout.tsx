@@ -1,9 +1,15 @@
-import DataFilter from "./DataFilter";
+"use client";
 
-export default function DataLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return <main>{children}</main>;
+import DataFilter from "@/components/workstation/DataFilter";
+import { ReactNode } from "react";
+
+export default function DataLayout({ children }: { children: ReactNode }) {
+  return (
+    <div>
+  <p>✅ Layout loaded</p>
+  <DataFilter />
+  <main>{children}</main>
+</div>
+
+  );
 }

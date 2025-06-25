@@ -49,7 +49,7 @@ export default function RootLayout({
             <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
               {children}
             </main>
-            <footer className="w-full flex items-center justify-center py-3">
+            {/* <footer className="w-full flex items-center justify-center py-3">
               <Link
                 className="flex items-center gap-1 text-current"
                 href={"about"}
@@ -57,7 +57,7 @@ export default function RootLayout({
               >
                 <span className="text-default-600">Rustveil {year}</span>
               </Link>
-            </footer>
+            </footer> */}
           </div>
         </Providers>
       </body>
