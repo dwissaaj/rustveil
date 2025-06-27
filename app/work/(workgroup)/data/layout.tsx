@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
-import DataFilter from "@/app/work/(workgroup)/data/DataPicker";
+import DataFilter from "@/app/work/(workgroup)/data/picker/DataPicker";
 
 export default function DataLayout({ children }: { children: ReactNode }) {
   return (

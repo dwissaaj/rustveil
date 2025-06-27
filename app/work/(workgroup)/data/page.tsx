@@ -1,11 +1,12 @@
 "use client";
 
 import { useAtom } from "jotai";
-import DataTable from "./DataTable";
+import DataTable from "./table/DataTable";
 import NoData from "@/components/workstation/data/NoData";
 import { tableData } from "@/app/lib/workstation/data/state";
-import DataPicker from "./DataPicker";
-import DataFilter from "./DataFilter";
+import DataPicker from "./picker/DataPicker";
+import DataFilter from "./picker/DataFilterList";
+import FilterList from "@/components/workstation/data/FilterListWrapper";
 
 export default function Page() {
   const [data] = useAtom(tableData);
@@ -13,7 +14,7 @@ export default function Page() {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <DataPicker />
+        <FilterList />
       </div>
       <div>
         <div>{data ? <DataTable data={data} /> : <NoData />}</div>
