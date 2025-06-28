@@ -1,6 +1,6 @@
 "use client";
 
-import { tableData } from "@/app/lib/workstation/data/state";
+import { tableData,  } from "@/app/lib/workstation/data/state";
 import { useColumnShow } from "@/app/lib/workstation/social/GetColumn";
 import { VerticesIcon } from "@/components/icon/IconFilter";
 import ColumnSelect from "@/components/workstation/sna/ColumnSelect";
@@ -15,7 +15,7 @@ import {
 } from "@heroui/react";
 import { atom, useAtomValue } from "jotai";
 import DataTable from "../../../data/table/DataTable";
-import { getColumnValuesAtom } from "@/app/lib/workstation/social/GetVertices";
+import { columnPickSheetVertices } from "@/app/lib/workstation/social/GetVertices";
 
 type VerticesModalProps = {
   isOpen: boolean;
@@ -25,23 +25,10 @@ export default function VerticesModal({
   isOpen,
   onOpenChange,
 }: VerticesModalProps) {
-  const { onOpen, onClose } = useDisclosure();
 
-  const column = useColumnShow();
-  const datafilter = getColumnValuesAtom;
-  const { headers, vertex1, setVertex1, vertex2, setVertex2 } = useColumnShow();
-  const sentimentLabels = useAtomValue(getColumnValuesAtom);
-  const openModal = async () => {
-    onOpen();
-    try {
-      console.log(column);
-    } catch (error) {
-      console.log("Error at column pick");
-    }
-  };
-  const closeModal = async () => {
-    console.log("data filtered", sentimentLabels);
-    onClose();
+
+  const closeModal = () => {
+    onOpenChange();
   };
   return (
     <>
@@ -60,7 +47,7 @@ export default function VerticesModal({
                   Close
                 </Button>
                 <Button color="primary" onPress={closeModal}>
-                  Action
+                  Load Table
                 </Button>
               </ModalFooter>
             </>

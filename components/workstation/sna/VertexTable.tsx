@@ -10,28 +10,19 @@ import {
 } from "@heroui/react";
 
 interface VertexTableProps {
-  data: any[];
-  title: string;
+  columnName: string[];       // Column name (e.g. "sentiment_label")
+  values: any[];        // Array of values for the column
+  className?: string;   // Optional className
 }
 
-export default function VertexTable({ data, title }: VertexTableProps) {
+export default function VertexTable({ columnName, values, className }: VertexTableProps) {
   return (
-    <div className="flex flex-col gap-2">
-      <h3 className="text-lg font-bold">{title}</h3>
-      <Table aria-label={`${title} data`} className="border rounded-lg">
-        <TableHeader>
-          <TableColumn>Row</TableColumn>
-          <TableColumn>Value</TableColumn>
-        </TableHeader>
-        <TableBody>
-          {data.map((value, index) => (
-            <TableRow key={`${title}-${index}`}>
-              <TableCell>{index + 1}</TableCell>
-              <TableCell className="font-mono">{String(value)}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+    <div className={`flex flex-col gap-2 ${className}`}>
+<Table>
+  <TableHeader columns={columnName}>
+        {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
+      </TableHeader>
+</Table>
     </div>
   );
 }

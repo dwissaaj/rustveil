@@ -15,5 +15,7 @@ export const filePath = atom<string>("");
 
 export const columnAvailable = atom<string[]>([]);
 
-export const vertex1AtomColumn = atom<string>("");
-export const vertex2AtomColumn = atom<string>("");
+export const vertex1ColumnSelected = atom<string>("");
+export const vertex2ColumnSelected = atom<string>("");
+export const vertex1AtomColumnData = atom<string | null>(null);      // Your column selector
+export const vertex2ColumnData = atom<string | null>(null);      // Your column selector

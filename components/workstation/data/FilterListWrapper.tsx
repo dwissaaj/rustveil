@@ -1,7 +1,7 @@
 // DataFilter.tsx
 "use client";
 import DataExport from "@/app/work/(workgroup)/data/DataExport";
-import DataFilterList from "@/app/work/(workgroup)/data/picker/DataFilterList";
+import DataFilterList from "@/app/work/(workgroup)/data/DataFilterList";
 
 export default function FilterListWrapper() {
   return (
