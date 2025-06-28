@@ -1,16 +1,14 @@
-'use client'
+"use client";
 
 import SocialPickMenu from "./SocialPickMenu";
 
 export default function SocialFilterListWrapper() {
   return (
-   <div className="flex flex-row gap-4 border-b py-2 items-center">
+    <div className="flex flex-row gap-4 border-b py-2 items-center">
       <div>
         <SocialPickMenu />
       </div>
-      <div>
-        
-      </div>
-   </div>
+      <div></div>
+    </div>
   );
 }

@@ -1,8 +1,7 @@
 // hooks/useColumnShow.ts
-'use client'
-import { useAtomValue, useAtom } from 'jotai';
-import { tableData, vertex1AtomColumn, vertex2AtomColumn } from '../data/state';
-
+"use client";
+import { useAtomValue, useAtom } from "jotai";
+import { tableData, vertex1AtomColumn, vertex2AtomColumn } from "../data/state";
 
 export const useColumnShow = () => {
   const data = useAtomValue(tableData);
@@ -13,7 +12,7 @@ export const useColumnShow = () => {
     headers: data?.headers || [],
     vertex1,
     setVertex1,
-    vertex2, 
-    setVertex2
+    vertex2,
+    setVertex2,
   };
 };

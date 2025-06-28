@@ -1,6 +1,13 @@
 // components/VertexTable.tsx
-'use client'
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@heroui/react';
+"use client";
+import {
+  Table,
+  TableHeader,
+  TableColumn,
+  TableBody,
+  TableRow,
+  TableCell,
+} from "@heroui/react";
 
 interface VertexTableProps {
   data: any[];

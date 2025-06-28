@@ -1,11 +1,9 @@
+"use client";
 
-'use client';
-
-import { usePathname } from 'next/navigation';
-import { Navbar } from './navbar';
-
+import { usePathname } from "next/navigation";
+import { Navbar } from "./navbar";
 
 export default function NavbarWrapper() {
   const pathname = usePathname();
-  return pathname === '/' ? <Navbar /> : null;
+  return pathname === "/" ? <Navbar /> : null;
 }

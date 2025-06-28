@@ -1,7 +1,5 @@
-import React from 'react'
+import React from "react";
 
 export default function DataExport() {
-  return (
-    <div>DataExport</div>
-  )
+  return <div>DataExport</div>;
 }

@@ -62,7 +62,7 @@ export const useFileOpener = () => {
       // Update application state
       setPath(file);
       setSheets(sheets);
-      setSelectedSheet(sheets[0] || ""); // Auto-select first sheet
+      setSelectedSheet(sheets[0] || "");
     } catch (error) {
       console.error("Error loading file:", error);
     }

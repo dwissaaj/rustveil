@@ -1,15 +1,10 @@
 // components/DualColumnSelect.tsx
-'use client'
-import { useColumnShow } from '@/app/lib/workstation/social/GetColumn';
-import { Select, SelectItem } from '@heroui/react';
-
+"use client";
+import { useColumnShow } from "@/app/lib/workstation/social/GetColumn";
+import { Select, SelectItem } from "@heroui/react";
 
 export default function DualColumnSelect() {
-  const { 
-    headers,
-    vertex1, setVertex1,
-    vertex2, setVertex2
-  } = useColumnShow();
+  const { headers, vertex1, setVertex1, vertex2, setVertex2 } = useColumnShow();
 
   return (
     <div className="space-y-4">
@@ -20,12 +15,7 @@ export default function DualColumnSelect() {
         onSelectionChange={(keys) => setVertex1(Array.from(keys)[0] as string)}
       >
         {headers.map((header) => (
-          <SelectItem 
-            key={header} 
-        
-          >
-            {header}
-          </SelectItem>
+          <SelectItem key={header}>{header}</SelectItem>
         ))}
       </Select>
 
@@ -36,11 +26,7 @@ export default function DualColumnSelect() {
         onSelectionChange={(keys) => setVertex2(Array.from(keys)[0] as string)}
       >
         {headers.map((header) => (
-          <SelectItem
-            key={header}
-          >
-            {header}
-          </SelectItem>
+          <SelectItem key={header}>{header}</SelectItem>
         ))}
       </Select>
     </div>

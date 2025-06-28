@@ -11,6 +11,6 @@ export default function SocialNetwork() {
       <div>
         <Vertices />
       </div>
-  </div>
-  )
+    </div>
+  );
 }

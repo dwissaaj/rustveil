@@ -1,6 +1,5 @@
-import { atom } from 'jotai';
-import { tableData } from '../data/state';
-
+import { atom } from "jotai";
+import { tableData } from "../data/state";
 
 // export const getColumnValue = async (sheetSelect: string) => {
 //     try {
@@ -9,7 +8,7 @@ import { tableData } from '../data/state';
 //         })
 //     } catch (error) {
 //         console.log("Error at get column value")
-//     } 
+//     }
 // }
 
 export const getColumnValuesAtom = atom((get) => {
@@ -18,9 +17,9 @@ export const getColumnValuesAtom = atom((get) => {
 
   // Replace "sentiment_label" with your target column
   const columnName = "sentiment_label";
-  
+
   // Extract all values from the column
-  const columnValues = data.rows.map(row => row[columnName]);
-  
+  const columnValues = data.rows.map((row) => row[columnName]);
+
   return columnValues;
 });
