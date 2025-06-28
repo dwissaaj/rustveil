@@ -1,8 +1,37 @@
+/**
+ * Modal dialog for vertex selection in social network analysis
+ *
+ * @component
+ * @example
+ * <VerticesModal isOpen={isOpen} onOpenChange={toggleOpen} />
+ *
+ * @description
+ * Provides a controlled modal interface containing:
+ * - Column selection UI (ColumnSelect component)
+ * - Confirm/cancel actions
+ * - Blurred backdrop effect
+ *
+ * @props {
+ *   isOpen: boolean - Controls modal visibility
+ *   onOpenChange: () => void - Toggle handler
+ * }
+ *
+ * @ui
+ * - Hero UI Modal components
+ * - Blurred backdrop
+ * - Fixed header/footer layout
+ * - Danger (close) and primary (confirm) action buttons
+ *
+ * @behavior
+ * - Closes on both button actions
+ * - State managed by parent component
+ * - Embeds ColumnSelect for vertex picking
+ *
+ * @dependencies
+ * - @hero-ui/react Modal system
+ * - ColumnSelect child component
+ */
 "use client";
-
-import { tableData,  } from "@/app/lib/workstation/data/state";
-import { useColumnShow } from "@/app/lib/workstation/social/GetColumn";
-import { VerticesIcon } from "@/components/icon/IconFilter";
 import ColumnSelect from "@/components/workstation/sna/ColumnSelect";
 import {
   Modal,
@@ -11,11 +40,7 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-  useDisclosure,
 } from "@heroui/react";
-import { atom, useAtomValue } from "jotai";
-import DataTable from "../../../data/table/DataTable";
-import { columnPickSheetVertices } from "@/app/lib/workstation/social/GetVertices";
 
 type VerticesModalProps = {
   isOpen: boolean;
@@ -25,8 +50,6 @@ export default function VerticesModal({
   isOpen,
   onOpenChange,
 }: VerticesModalProps) {
-
-
   const closeModal = () => {
     onOpenChange();
   };

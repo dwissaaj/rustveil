@@ -1,4 +1,31 @@
-// components/DualColumnSelect.tsx
+/**
+ * Dual column selector for vertex analysis
+ *
+ * @component
+ * @example
+ * <DualColumnSelect />
+ *
+ * @description
+ * Provides two synchronized dropdown selectors for choosing vertex columns.
+ * Maintains selection state via useColumnShow hook.
+ *
+ * @hooks
+ * - useColumnShow: Manages available headers and selection state
+ *
+ * @ui
+ * - Hero UI Select components
+ * - Vertical spacing (space-y-4)
+ * - Clear selection labels
+ *
+ * @behavior
+ * - Converts SelectionChange events to string values
+ * - Handles empty selection state
+ * - Synchronizes with parent component state
+ *
+ * @props
+ * - Uses headers from useColumnShow for options
+ * - Maintains vertex1 and vertex2 selections
+ */
 "use client";
 import { useColumnShow } from "@/app/lib/workstation/social/GetColumn";
 import { Select, SelectItem } from "@heroui/react";
@@ -8,7 +35,6 @@ export default function DualColumnSelect() {
 
   return (
     <div className="space-y-4">
-      {/* Vertex 1 Selector */}
       <Select
         label="Select Vertex 1"
         selectedKeys={vertex1 ? [vertex1] : []}
