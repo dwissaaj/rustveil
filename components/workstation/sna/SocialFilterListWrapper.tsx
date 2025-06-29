@@ -1,5 +1,6 @@
 "use client";
 
+import SocialCalculateMenu from "./SocialCalculateMenu";
 import SocialPickMenu from "./SocialPickMenu";
 
 export default function SocialFilterListWrapper() {
@@ -8,7 +9,9 @@ export default function SocialFilterListWrapper() {
       <div>
         <SocialPickMenu />
       </div>
-      <div></div>
+      <div>
+        <SocialCalculateMenu />
+      </div>
     </div>
   );
 }
