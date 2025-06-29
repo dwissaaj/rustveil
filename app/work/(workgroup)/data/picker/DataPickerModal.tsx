@@ -7,11 +7,13 @@ import {
   ModalFooter,
   Button,
   useDisclosure,
+  addToast,
+  Alert,
 } from "@heroui/react";
-import { useFileOpener } from "@/app/lib/workstation/data/GetFile";
+import { useFileOpener } from "@/app/lib/workstation/data/useFileOpener";
 import SheetSelector from "@/components/workstation/data/SheetSelect";
-import { useTableOpen } from "@/app/lib/workstation/data/OpenTable";
-import { UploadIcon } from "@/components/icon/IconFilter";
+import { useTableOpen } from "@/app/lib/workstation/data/useTableOpen";
+import { ErrorIcon, UploadIcon } from "@/components/icon/IconFilter";
 import { useState } from "react";
 /**
  * A modal-based component for selecting and processing Excel (.xlsx) files with sheet selection
@@ -60,15 +62,17 @@ export default function DataPicker({
   const fileOpener = useFileOpener();
   const tableOpener = useTableOpen();
   const [isLoading, setIsLoading] = useState(false);
+  const [errorInfo, setErrorInfo] = useState<{
+    isError: boolean;
+    message?: string;
+  }>({ isError: false });
 
   const openFile = async () => {
     try {
       setIsLoading(true);
       await fileOpener();
       setFileLoaded(true);
-      // DON'T close modal here - keep open for sheet selection
     } catch (error) {
-      console.error("Error opening file:", error);
       setFileLoaded(false);
     } finally {
       setIsLoading(false);
@@ -77,11 +81,16 @@ export default function DataPicker({
 
   const openTable = async () => {
     try {
+      const result = await tableOpener();
       setIsLoading(true);
-      await tableOpener();
-      onOpenChange(false); // ONLY close modal after table opens
+      if (result?.status === 404) {
+        setErrorInfo({ isError: true, message: `${result.error}` });
+      }
+      if (result?.status === 200) {
+        onOpenChange(false);
+      }
     } catch (error) {
-      console.error("Error opening table:", error);
+      setErrorInfo({ isError: true, message: "Error at picking sheet" });
     } finally {
       setIsLoading(false);
     }
@@ -130,6 +139,13 @@ export default function DataPicker({
               >
                 {isLoading ? "Opening..." : "Open Table"}
               </Button>
+
+              <Alert
+                startContent={<ErrorIcon />}
+                title={errorInfo.message}
+                isVisible={errorInfo.isError}
+                color="danger"
+              />
             </ModalFooter>
           </>
         )}

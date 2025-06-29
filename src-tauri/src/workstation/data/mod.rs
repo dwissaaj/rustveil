@@ -38,8 +38,17 @@ fn excel_serial_to_date(serial: f64) -> String {
 #[command]
 pub fn load_data(url: String, sheet_name: String) -> Value {
     let mut workbook: Xlsx<_> = open_workbook(url).expect("Cannot open file");
-    let range = workbook.worksheet_range(&sheet_name).expect("Cannot read sheet");
-
+    let range = match workbook.worksheet_range(&sheet_name) {
+        Ok(range) => range,
+        Err(_) => {
+            return json!({
+                "headers": [], 
+                "rows": [],
+                "status": 404, 
+                "error": format!("Sheet '{}' not found", sheet_name)
+            });
+        }
+    };
     let rows: Vec<Vec<Data>> = range.rows().map(|r| r.to_vec()).collect();
 
     if rows.is_empty() {
@@ -77,6 +86,7 @@ pub fn load_data(url: String, sheet_name: String) -> Value {
         })
         .collect();
     json!({
+        "status": 200, 
         "headers": headers,
         "rows": data_rows
     })

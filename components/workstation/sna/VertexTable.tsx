@@ -1,3 +1,14 @@
+"use client";
+import { useColumnShow } from "@/app/lib/workstation/social/GetColumn";
+import {
+  Table,
+  TableHeader,
+  TableColumn,
+  TableBody,
+  TableRow,
+  TableCell,
+} from "@heroui/react";
+
 /**
  * Displays vertex data in a structured table format
  *
@@ -23,16 +34,6 @@
  * - Displays "Column 1/2" when no header selected
  * - Syncs with vertex selections in real-time
  */
-"use client";
-import { useColumnShow } from "@/app/lib/workstation/social/GetColumn";
-import {
-  Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
-} from "@heroui/react";
 
 export default function VertexTable() {
   const { vertex1, vertex2, vertex1Data, vertex2Data } = useColumnShow();
@@ -40,7 +41,7 @@ export default function VertexTable() {
   const rowCount = Math.max(vertex1Data.length, vertex2Data.length);
 
   return (
-    <Table aria-label="Vertex Data" className="border rounded-lg">
+    <Table isVirtualized aria-label="Vertex Data" className="border rounded-lg">
       <TableHeader>
         <TableColumn>ROW</TableColumn>
         <TableColumn>{vertex1 || "Column 1"}</TableColumn>

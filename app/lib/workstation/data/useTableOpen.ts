@@ -54,9 +54,28 @@ export const useTableOpen = () => {
         url: url,
         sheetName: sheet,
       });
+      if (data.status === 200) {
+        setData(data);
+        return {
+          status: 200,
+          data: {
+            headers: data.headers,
+            rows: data.rows,
+          },
+        };
+      }
 
-      // Update global state with loaded data
-      setData(data);
+      if (data.status === 404) {
+        return {
+          status: 404,
+          error: data.error || "Sheet not found",
+        };
+      }
+
+      return {
+        status: data.status || 500,
+        error: data.error || "Unknown error",
+      };
     } catch (error) {
       console.error("Error loading table data:", error);
     }
