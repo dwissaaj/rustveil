@@ -9,13 +9,7 @@ export const Logo: React.FC<IconSvgProps> = ({
   height,
   ...props
 }) => (
-   <Image
-      src="/rvlogo.png"
-      height={size}
-      width={size}
-      alt="logo rustveil"
-
-  />
+  <Image src="/rvlogo.png" height={size} width={size} alt="logo rustveil" />
 );
 
 export const DiscordIcon: React.FC<IconSvgProps> = ({
