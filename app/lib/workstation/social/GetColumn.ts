@@ -42,6 +42,8 @@ import {
   vertex2ColumnSelected,
 } from "../data/state";
 
+
+
 export const useColumnShow = () => {
   const data = useAtomValue(tableData);
   const [vertex1, setVertex1] = useAtom(vertex1ColumnSelected);

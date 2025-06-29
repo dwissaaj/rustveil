@@ -7,9 +7,3 @@ export interface TableDataType {
   error?: string;
 }
 
-export interface RustTsConnection {
-  headers: string[];
-  rows: Record<string, TableCell>[];
-  status?: number;
-  error?: string;
-}

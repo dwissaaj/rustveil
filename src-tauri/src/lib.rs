@@ -1,5 +1,6 @@
 mod workstation;
 use workstation::data;
+use workstation::social_network;
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -19,6 +20,8 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
                 data::load_data,
                 data::get_sheet,
+                social_network::sayhello
+
                 ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
