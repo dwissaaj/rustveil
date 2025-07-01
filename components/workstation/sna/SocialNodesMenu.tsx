@@ -46,7 +46,7 @@ import {
 } from "@heroui/react";
 import { VerticesIcon } from "@/components/icon/IconFilter";
 
-export default function SocialPickMenu() {
+export default function SocialNodesMenu() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   return (
     <>

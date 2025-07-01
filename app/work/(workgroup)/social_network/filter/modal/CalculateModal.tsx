@@ -32,7 +32,8 @@
  * - ColumnSelect child component
  */
 "use client";
-import ColumnSelect from "@/components/workstation/sna/ColumnSelect";
+import { graphTypeAvailable, vertex1ColumnSelected, vertex2ColumnSelected } from "@/app/lib/workstation/data/state";
+import { useGetBetweness } from "@/app/lib/workstation/social/GetBetweness";
 import {
   Modal,
   ModalContent,
@@ -40,30 +41,64 @@ import {
   ModalBody,
   ModalFooter,
   Button,
+  RadioGroup,
+  Radio,
+  Code,
+  Tooltip,
 } from "@heroui/react";
+import { useAtom, useAtomValue } from "jotai";
 
-type VerticesModalProps = {
+type CalculateModal = {
   isOpen: boolean;
   onOpenChange: () => void;
 };
 export default function SocialCalculateModal({
   isOpen,
   onOpenChange,
-}: VerticesModalProps) {
+}: CalculateModal) {
   const closeModal = () => {
     onOpenChange();
   };
+  const vertex1Column = useAtomValue(vertex1ColumnSelected);
+  const vertex2Column = useAtomValue(vertex2ColumnSelected);
+  const getData = useGetBetweness()
+  const [graphType, setgraphType] = useAtom(graphTypeAvailable);
   return (
     <>
       <Modal backdrop="blur" isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">
-                Pick For Vertices
+              <ModalHeader className="flex flex-col gap-1 text-4xl text-primary-500">
+               Calculate Centrality
               </ModalHeader>
-              <ModalBody>
-              
+              <ModalBody >
+                <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-2 items-start">
+                      <div>
+                        <Tooltip content="Read more for the different">
+                          <Button>Graph Type Connection</Button>
+                      </Tooltip>
+                      </div>
+                      <div>
+                        <RadioGroup size="md" orientation="horizontal">
+                        <Radio value="direct">Direct</Radio>
+                        <Radio value="undirect">Undirect</Radio>
+                      </RadioGroup>
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-4">
+                      <div>
+                        <Tooltip content="If you didn't see this try to upload a data">
+                          <Button>Selected Column</Button>
+                      </Tooltip>
+                      </div>
+                      <div className="flex flex-row gap-4">
+                        <Code color="primary">{vertex1Column}</Code>
+                        <Code color="secondary">{vertex2Column}</Code>
+                      </div>
+                    </div>
+                </div>
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>

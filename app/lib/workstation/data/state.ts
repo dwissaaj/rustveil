@@ -17,5 +17,8 @@ export const columnAvailable = atom<string[]>([]);
 
 export const vertex1ColumnSelected = atom<string>("");
 export const vertex2ColumnSelected = atom<string>("");
-export const vertex1AtomColumnData = atom<string | null>(null); // Your column selector
+export const vertex1ColumnData = atom<string | null>(null);
 export const vertex2ColumnData = atom<string | null>(null);
+
+export const vertexGraphTypeSelected = atom<string>("");
+export const graphTypeAvailable = atom<string>("");
