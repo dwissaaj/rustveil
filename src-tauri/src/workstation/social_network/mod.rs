@@ -1,55 +1,132 @@
 use std::collections::{HashMap, HashSet};
 use rustworkx_core::petgraph; 
 use rustworkx_core::centrality::betweenness_centrality;
+use serde::Serialize;
 use tauri::command;
-pub struct UserNode {
-    pub id: u32,          // Numeric ID for algorithms
-    pub username: String, // Human-readable name
+
+#[derive(Serialize)]
+pub struct ProcessingStatus {
+    pub progress: i32,
+    pub message: String,
+}
+
+#[derive(Serialize)]
+#[serde(tag = "status", content = "data")]
+pub enum ProcessingResult {
+    Loading(ProcessingStatus),
+    Complete(VerticesCentralityTable),
+    Error(String),
+}
+#[derive(Serialize)]
+pub struct VerticesCentralityTable {
+    pub columns: Vec<String>,
+    pub status: Option<u16>,
+    pub error: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub node_map: Option<HashMap<u32, String>>,
+}
+
+#[derive(Serialize)]
+struct UserNode {
+    id: u32,
+    username: String,
 }
 
 #[command]
-pub fn user_to_vector(vertices1: Vec<String>, vertices2: Vec<String>) -> HashMap<String, UserNode> {
-   
-    let unique_vertices: Vec<String> = vertices1
-    .into_iter()          // Take ownership of vertices1
-    .chain(vertices2)     // Append vertices2
-    .collect::<HashSet<_>>()  // Remove duplicates
-    .into_iter()          // Convert back to iterator
-    .collect();           // Collect into Vec<String>
+pub async fn user_to_vector(
+    vertices_one: Vec<String>,
+    vertices_two: Vec<String>,
+) -> ProcessingResult {
+    // Initial validation
+    if vertices_one.is_empty() && vertices_two.is_empty() {
+        return ProcessingResult::Error("No vertices provided".to_string());
+    }
+    
 
-    let mut id_map: HashMap<String, UserNode> = HashMap::new();
-    for (index, vertex) in unique_vertices.iter().enumerate() {
-        id_map.insert(vertex.clone(), 
-        UserNode { id: index as u32, username: vertex.clone() });
+
+    let unique_vertices: Vec<String> = vertices_one
+        .into_iter()
+        .chain(vertices_two)
+        .collect::<HashSet<_>>()
+        .into_iter()
+        .collect();
+
+    if unique_vertices.is_empty() {
+        return ProcessingResult::Error("No valid vertices after processing".to_string());
+    } else{
+        return ProcessingResult::Loading(ProcessingStatus { progress: (50), message: ("Hold On a second").to_string() })
     }
 
-    return id_map;
-    
+   
+    // Create mappings (50% progress)
+    let mut id_to_username = HashMap::new();
+    let mut username_to_id = HashMap::new();
+
+    for (index, vertex) in unique_vertices.iter().enumerate() {
+        let id = index as u32;
+        id_to_username.insert(id, vertex.clone());
+        username_to_id.insert(vertex.clone(), UserNode { id, username: vertex.clone() });
+        
+        // Update progress periodically
+        if index % 10 == 0 {
+            let progress = 0.5 + (index as f32 / unique_vertices.len() as f32) * 0.5;
+            let _ = emit_loading_status(progress, &format!("Processing vertex {}", id));
+        }
+    }
+
+    // Send completion status
+    ProcessingResult::Complete(VerticesCentralityTable {
+        columns: unique_vertices,
+        status: Some(200),
+        error: None,
+        node_map: Some(id_to_username),
+    })
 }
 
-pub fn map_edges_to_ids(
-    edges: Vec<(String, String)>,
-    user_map: &HashMap<String, UserNode>,
-) -> Vec<(u32, u32)> {
-    edges
-        .iter()
-        .map(|(a, b)| {
-            (
-                user_map.get(a).expect(&format!("Username {} not found", a)).id,
-                user_map.get(b).expect(&format!("Username {} not found", b)).id,
-            )
-        })
-        .collect()
+// Helper function to emit loading status (you'll need to implement the actual event emission)
+fn emit_loading_status(progress: f32, message: &str) -> Result<(), String> {
+    // In a real Tauri app, you would use window.emit here
+    println!("Progress: {}% - {}", (progress * 100.0) as u32, message);
+    Ok(())
 }
 
 
-pub fn calculate_centrality(numeric_edges: Vec<(u32, u32)>) -> Result<Vec<Option<f64>>, String> {
-    // 1. Create graph
-    let graph = petgraph::graph::UnGraph::<(), ()>::from_edges(&numeric_edges);
+
+
+
+
+
+
+
+
+
+
+
+
+
+// pub fn map_edges_to_ids(
+//     edges: Vec<(String, String)>,
+//     user_map: &HashMap<String, UserNode>,
+// ) -> Vec<(u32, u32)> {
+//     edges
+//         .iter()
+//         .map(|(a, b)| {
+//             (
+//                 user_map.get(a).expect(&format!("Username {} not found", a)).id,
+//                 user_map.get(b).expect(&format!("Username {} not found", b)).id,
+//             )
+//         })
+//         .collect()
+// }
+
+
+// pub fn calculate_centrality(numeric_edges: Vec<(u32, u32)>) -> Result<Vec<Option<f64>>, String> {
+//     // 1. Create graph
+//     let graph = petgraph::graph::UnGraph::<(), ()>::from_edges(&numeric_edges);
     
-    // 2. Calculate centrality
-    let output = betweenness_centrality(&graph, false, false, 200);
+//     // 2. Calculate centrality
+//     let output = betweenness_centrality(&graph, false, false, 200);
     
 
-    Ok(output)
-}
+//     Ok(output)
+// }
