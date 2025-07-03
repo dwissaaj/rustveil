@@ -31,10 +31,9 @@ export default function SocialCalculateModal({
   const handlemap = useMapId()
   const closeModal = async () => {
     try {
-      const response: ProcessingStatus = await useMapId();
-      if(response.)
-      
-    
+      const response = await useMapId();
+      console.log(response)
+  
     } catch (error) {
       console.log(error)
     }

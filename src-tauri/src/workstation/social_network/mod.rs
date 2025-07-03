@@ -6,7 +6,7 @@ use tauri::command;
 
 #[derive(Serialize)]
 pub struct ProcessingStatus {
-    pub progress: i32,
+    pub progress: f32,
     pub message: String,
 }
 
@@ -53,8 +53,6 @@ pub async fn user_to_vector(
 
     if unique_vertices.is_empty() {
         return ProcessingResult::Error("No valid vertices after processing".to_string());
-    } else{
-        return ProcessingResult::Loading(ProcessingStatus { progress: (50), message: ("Hold On a second").to_string() })
     }
 
    
@@ -129,4 +127,85 @@ fn emit_loading_status(progress: f32, message: &str) -> Result<(), String> {
     
 
 //     Ok(output)
+// }
+
+
+// use tauri::{AppHandle, Manager}; // Add Manager to get emit functionality
+// use serde::Serialize;
+
+// // ... (keep your existing struct definitions) ...
+
+// #[command]
+// pub async fn user_to_vector(
+//     app: AppHandle, // Add AppHandle parameter
+//     vertices_one: Vec<String>,
+//     vertices_two: Vec<String>,
+// ) -> ProcessingResult {
+//     // Initial validation
+//     if vertices_one.is_empty() && vertices_two.is_empty() {
+//         let _ = app.emit_all("progress", ProgressEvent { 
+//             progress: 1.0, 
+//             message: "Error: No vertices provided".to_string() 
+//         });
+//         return ProcessingResult::Error("No vertices provided".to_string());
+//     }
+
+//     // Send loading status (10% progress)
+//     let _ = app.emit_all("progress", ProgressEvent {
+//         progress: 0.1,
+//         message: "Starting processing...".to_string(),
+//     });
+
+//     // Process vertices (20% progress)
+//     let unique_vertices: Vec<String> = vertices_one
+//         .into_iter()
+//         .chain(vertices_two)
+//         .collect::<HashSet<_>>()
+//         .into_iter()
+//         .collect();
+
+//     if unique_vertices.is_empty() {
+//         let _ = app.emit_all("progress", ProgressEvent {
+//             progress: 1.0,
+//             message: "Error: No valid vertices".to_string(),
+//         });
+//         return ProcessingResult::Error("No valid vertices after processing".to_string());
+//     }
+
+//     // Send loading status (30% progress)
+//     let _ = app.emit_all("progress", ProgressEvent {
+//         progress: 0.3,
+//         message: "Creating mappings...".to_string(),
+//     });
+
+//     // Create mappings (50-100% progress)
+//     let mut id_to_username = HashMap::new();
+//     for (index, vertex) in unique_vertices.iter().enumerate() {
+//         let progress = 0.3 + (index as f32 / unique_vertices.len() as f32) * 0.7;
+//         let _ = app.emit_all("progress", ProgressEvent {
+//             progress,
+//             message: format!("Processing vertex {}", index),
+//         });
+        
+//         id_to_username.insert(index as u32, vertex.clone());
+//     }
+
+//     // Send completion
+//     let _ = app.emit_all("progress", ProgressEvent {
+//         progress: 1.0,
+//         message: "Processing complete".to_string(),
+//     });
+
+//     ProcessingResult::Complete(VerticesCentralityTable {
+//         columns: unique_vertices,
+//         status: Some(200),
+//         error: None,
+//         node_map: Some(id_to_username),
+//     })
+// }
+
+// #[derive(Serialize)]
+// struct ProgressEvent {
+//     progress: f32,
+//     message: String,
 // }
