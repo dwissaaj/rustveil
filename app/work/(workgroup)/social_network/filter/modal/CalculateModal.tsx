@@ -1,6 +1,8 @@
 "use client";
-import { graphTypeAvailable, vertex1ColumnSelected, vertex2ColumnSelected } from "@/app/lib/workstation/data/state";
+import {  vertex1ColumnSelected, vertex2ColumnSelected } from "@/app/lib/workstation/data/state";
 import { ProcessingResult, ProcessingStatus, useMapId } from "@/app/lib/workstation/social/useMapId";
+import { MappingProgress, useMapProgress } from "@/app/lib/workstation/social/useMapProgress";
+import { useVerticesData } from "@/app/lib/workstation/social/useVerticesData";
 import {
   Modal,
   ModalContent,
@@ -15,6 +17,7 @@ import {
   Progress,
 } from "@heroui/react";
 import { useAtom, useAtomValue } from "jotai";
+import { useEffect, useState } from "react";
 
 type CalculateModal = {
   isOpen: boolean;
@@ -24,34 +27,31 @@ export default function SocialCalculateModal({
   isOpen,
   onOpenChange,
 }: CalculateModal) {
-  const getData = useMapId()
-  const [graphType, setgraphType] = useAtom(graphTypeAvailable);
-  const vertex1Column = useAtomValue(vertex1ColumnSelected);
-  const vertex2Column = useAtomValue(vertex2ColumnSelected);
-  const handlemap = useMapId()
-  const closeModal = async () => {
+
+  const{ vertex1,vertex2, graphType } = useVerticesData()
+  const useCalculate = useMapId()
+  const mapProgress = useMapProgress()
+  const [currentProgress, setCurrentProgress] = useState<MappingProgress>();
+  const [progress, setProgress] = useState<"primary" | "danger">("primary");
+  const [buttonState, usebuttonState] = useState(false)
+  const calculate = async () => {
     try {
-      const response = await useMapId();
-      console.log(response)
-  
+      setProgress("primary")
+      usebuttonState(true)
+      const result = await useCalculate();
+      console.log(result)
     } catch (error) {
+      setProgress("danger")
       console.log(error)
+    } finally {
+      usebuttonState(false)
     }
-    console.log(graphType)
-    // onOpenChange();
   };
-  const calc = async () => {
-    try {
-      const data = await handlemap()
-      console.log(data)
-    } catch (error) {
-      console.log(error)
-    } 
-  };
-  const getGraphValue = (value: string) => {
-    console.log(graphType)
-    setgraphType(value)
-  }
+  useEffect(() => {
+        if (mapProgress) {
+            setCurrentProgress(mapProgress);
+        }
+    }, [mapProgress]);
 
   return (
     <>
@@ -61,47 +61,32 @@ export default function SocialCalculateModal({
             <>
               <ModalHeader className="flex flex-col gap-1 text-4xl text-primary-500">
                Calculate Centrality
-                <Progress color={'primary'} aria-label="Loading..." size="sm" value={30} />
+                <Progress color={`${progress}`} aria-label="Loading..." size="sm" value={currentProgress?.progress} />
               </ModalHeader>
               <ModalBody >
                 <div className="flex flex-col gap-4">
                     <div className="flex flex-col gap-2 items-start">
                       <div>
-                        <Tooltip content="Read more for the different">
-                          <Button>Graph Type Connection</Button>
+                        <Tooltip content="If there is mistake re-choose the graph type and column data">
+                          <Button>Metadata</Button>
                       </Tooltip>
-                      </div>
-                      <div>
-                        <RadioGroup 
-                       value={graphType}
-                      onValueChange={getGraphValue} 
-                         size="md" orientation="horizontal">
-                        <Radio value="direct">Direct</Radio>
-                        <Radio value="undirect">Undirect</Radio>
-                      </RadioGroup>
                       </div>
                     </div>
                     <div className="flex flex-col gap-4">
-                      <div>
-                        <Tooltip content="If you didn't see this try to upload a data">
-                          <Button>Selected Column</Button>
-                      </Tooltip>
-                      </div>
                       <div className="flex flex-row gap-4">
-                        <Code color="primary">{vertex1Column}</Code>
-                        <Code color="secondary">{vertex2Column}</Code>
+                        <Code color="primary">{vertex1}</Code>
+                        <Code color="secondary">{vertex2}</Code>
+                         <Code color="primary">{graphType}</Code>
                       </div>
-                      <div>
-                        <Button onPress={calc}>click</Button>
-                      </div>
+                      
                     </div>
                 </div>
               </ModalBody>
               <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
-                  Close
-                </Button>
-                <Button color="primary" onPress={closeModal}>
+                <Button
+                 color="primary" 
+                 onPress={calculate}
+                 isLoading={buttonState}>
                   Calculate
                 </Button>
               </ModalFooter>

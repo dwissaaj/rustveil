@@ -3,7 +3,7 @@
  *
  * @hook
  * @example
- * const { headers, vertex1, setVertex1, vertex2, setVertex2, vertex1Data, vertex2Data } = useColumnShow();
+ * const { headers, vertex1, setVertex1, vertex2, setVertex2, vertex1Data, vertex2Data } = useVerticesData();
  *
  * @description
  * Provides centralized state management for:
@@ -22,7 +22,9 @@
  *   vertex1Data: any[],
  *   vertex2: string,
  *   setVertex2: (value: string) => void,
- *   vertex2Data: any[]
+ *   vertex2Data: any[],
+ *   graphType: string,
+ *   setGraphType: (value: string) => void,
  * }
  *
  * @behavior
@@ -40,15 +42,16 @@ import {
   tableData,
   vertex1ColumnSelected,
   vertex2ColumnSelected,
+  vertexGraphTypeSelected,
 } from "../data/state";
 
 
 
-export const useColumnShow = () => {
+export const useVerticesData = () => {
   const data = useAtomValue(tableData);
   const [vertex1, setVertex1] = useAtom(vertex1ColumnSelected);
   const [vertex2, setVertex2] = useAtom(vertex2ColumnSelected);
-
+  const [graphType, setGraphType] = useAtom(vertexGraphTypeSelected);
   // Get column data directly
   const getColumnData = (columnName: string) => {
     if (!columnName || !data) return [];
@@ -63,5 +66,7 @@ export const useColumnShow = () => {
     vertex2,
     setVertex2,
     vertex2Data: getColumnData(vertex2),
+    graphType,
+    setGraphType
   };
 };

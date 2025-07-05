@@ -1,5 +1,5 @@
 "use client";
-import { useColumnShow } from "@/app/lib/workstation/social/GetColumn";
+import { useVerticesData } from "@/app/lib/workstation/social/useVerticesData";
 import {
   Table,
   TableHeader,
@@ -17,11 +17,11 @@ import {
  * <VertexTable />
  *
  * @description
- * Renders a two-column table showing selected vertex data from useColumnShow hook.
+ * Renders a two-column table showing selected vertex data from useVerticesData hook.
  * Automatically handles mismatched array lengths and null values.
  *
  * @hooks
- * - useColumnShow: Provides vertex selections and their data arrays
+ * - useVerticesData: Provides vertex selections and their data arrays
  *
  * @ui
  * - Hero UI Table component with border rounding
@@ -36,7 +36,7 @@ import {
  */
 
 export default function VertexTable() {
-  const { vertex1, vertex2, vertex1Data, vertex2Data } = useColumnShow();
+  const { vertex1, vertex2, vertex1Data, vertex2Data } = useVerticesData();
 
   const rowCount = Math.max(vertex1Data.length, vertex2Data.length);
 

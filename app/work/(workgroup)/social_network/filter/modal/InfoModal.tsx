@@ -19,9 +19,7 @@ export default function InfoModal({
   isOpen,
   onOpenChange,
 }: SocialNetworkReportModal) {
-  const closeModal = () => {
-    onOpenChange();
-  };
+
   const vertex1 = useAtomValue(vertex1ColumnSelected);
   const vertex2 = useAtomValue(vertex2ColumnSelected);
   const vertex1Data = useAtomValue(vertex1ColumnData);
@@ -64,6 +62,7 @@ export default function InfoModal({
                       <Code color="secondary">{vertex2Data?.length}</Code>
                     </div>
                   </div>
+                  
                 </div>
               </ModalBody>
               <ModalFooter>

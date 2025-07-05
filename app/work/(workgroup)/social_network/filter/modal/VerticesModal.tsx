@@ -32,7 +32,7 @@
  * - ColumnSelect child component
  */
 "use client";
-import ColumnSelect from "@/components/workstation/sna/ColumnSelect";
+import ColumnSelect from "@/components/workstation/sna/VerticesSelect";
 import {
   Modal,
   ModalContent,
@@ -40,6 +40,8 @@ import {
   ModalBody,
   ModalFooter,
   Button,
+  Radio,
+  RadioGroup
 } from "@heroui/react";
 
 type VerticesModalProps = {
@@ -50,7 +52,9 @@ export default function VerticesModal({
   isOpen,
   onOpenChange,
 }: VerticesModalProps) {
+
   const closeModal = () => {
+
     onOpenChange();
   };
   return (
@@ -64,6 +68,7 @@ export default function VerticesModal({
               </ModalHeader>
               <ModalBody>
                 <ColumnSelect />
+               
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>

@@ -2,18 +2,22 @@ use std::collections::{HashMap, HashSet};
 use rustworkx_core::petgraph; 
 use rustworkx_core::centrality::betweenness_centrality;
 use serde::Serialize;
-use tauri::command;
-
+use tauri::{command, Emitter};
+use tauri::{AppHandle, Manager};
 #[derive(Serialize)]
 pub struct ProcessingStatus {
     pub progress: f32,
     pub message: String,
 }
-
+#[derive(Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+struct MappingProgress {
+  progress: i32,
+  message: String,
+}
 #[derive(Serialize)]
 #[serde(tag = "status", content = "data")]
 pub enum ProcessingResult {
-    Loading(ProcessingStatus),
     Complete(VerticesCentralityTable),
     Error(String),
 }
@@ -34,6 +38,7 @@ struct UserNode {
 
 #[command]
 pub async fn user_to_vector(
+    app: AppHandle,
     vertices_one: Vec<String>,
     vertices_two: Vec<String>,
 ) -> ProcessingResult {
@@ -41,7 +46,10 @@ pub async fn user_to_vector(
     if vertices_one.is_empty() && vertices_two.is_empty() {
         return ProcessingResult::Error("No vertices provided".to_string());
     }
-    
+    app.emit("mapping-progress", MappingProgress {
+        progress: 30,
+        message: "Data Vertices available to process".to_string()
+    }).unwrap();
 
 
     let unique_vertices: Vec<String> = vertices_one
@@ -51,6 +59,12 @@ pub async fn user_to_vector(
         .into_iter()
         .collect();
 
+    app.emit("mapping-progress", MappingProgress {
+        progress: 50,
+        message: "Mapping process".to_string()
+    }).unwrap();
+
+
     if unique_vertices.is_empty() {
         return ProcessingResult::Error("No valid vertices after processing".to_string());
     }
@@ -59,20 +73,23 @@ pub async fn user_to_vector(
     // Create mappings (50% progress)
     let mut id_to_username = HashMap::new();
     let mut username_to_id = HashMap::new();
-
+    app.emit("Starting", 50).unwrap();
     for (index, vertex) in unique_vertices.iter().enumerate() {
         let id = index as u32;
         id_to_username.insert(id, vertex.clone());
         username_to_id.insert(vertex.clone(), UserNode { id, username: vertex.clone() });
-        
-        // Update progress periodically
-        if index % 10 == 0 {
-            let progress = 0.5 + (index as f32 / unique_vertices.len() as f32) * 0.5;
-            let _ = emit_loading_status(progress, &format!("Processing vertex {}", id));
-        }
-    }
+        app.emit("mapping-progress", MappingProgress {
+        progress: 50,
+        message: "Processing node".to_string()
+         }).unwrap();
 
-    // Send completion status
+       
+    }
+   app.emit("mapping-progress", MappingProgress {
+        progress: 100,
+        message: "Data Vertices available to process".to_string()
+    }).unwrap();
+
     ProcessingResult::Complete(VerticesCentralityTable {
         columns: unique_vertices,
         status: Some(200),
@@ -81,12 +98,6 @@ pub async fn user_to_vector(
     })
 }
 
-// Helper function to emit loading status (you'll need to implement the actual event emission)
-fn emit_loading_status(progress: f32, message: &str) -> Result<(), String> {
-    // In a real Tauri app, you would use window.emit here
-    println!("Progress: {}% - {}", (progress * 100.0) as u32, message);
-    Ok(())
-}
 
 
 

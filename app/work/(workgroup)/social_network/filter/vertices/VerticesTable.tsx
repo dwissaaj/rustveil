@@ -1,5 +1,5 @@
 "use client";
-import { useColumnShow } from "@/app/lib/workstation/social/GetColumn";
+import { useVerticesData } from "@/app/lib/workstation/social/useVerticesData";
 import VertexTable from "@/components/workstation/sna/VertexTable";
 import { Select, SelectItem, Chip } from "@heroui/react";
 /**
@@ -16,7 +16,7 @@ import { Select, SelectItem, Chip } from "@heroui/react";
  * - Integrated VertexTable display
  *
  * @hooks
- * - useColumnShow: Manages column state and data
+ * - useVerticesData: Manages column state and data
  *
  * @ui
  * - Horizontal select controls (gap-4)
@@ -31,11 +31,11 @@ import { Select, SelectItem, Chip } from "@heroui/react";
  *
  * @composition
  * - Embeds VertexTable component
- * - Manages selection state via useColumnShow
+ * - Manages selection state via useVerticesData
  */
 
 export default function VerticesTable() {
-  const { headers, vertex1, setVertex1, vertex2, setVertex2 } = useColumnShow();
+  const { headers, vertex1, setVertex1, vertex2, setVertex2 } = useVerticesData();
 
   return (
     <div className="space-y-4">
