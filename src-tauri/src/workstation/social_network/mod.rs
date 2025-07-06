@@ -18,6 +18,7 @@ struct MappingProgress {
 #[derive(Serialize)]
 #[serde(tag = "status", content = "data")]
 pub enum ProcessingResult {
+    Loading(ProcessingStatus),
     Complete(VerticesCentralityTable),
     Error(String),
 }
@@ -79,17 +80,14 @@ pub async fn user_to_vector(
         id_to_username.insert(id, vertex.clone());
         username_to_id.insert(vertex.clone(), UserNode { id, username: vertex.clone() });
         app.emit("mapping-progress", MappingProgress {
-        progress: 50,
-        message: "Processing node".to_string()
+        progress: 30,
+        message: "Still progreess".to_string()
          }).unwrap();
 
        
     }
-   app.emit("mapping-progress", MappingProgress {
-        progress: 100,
-        message: "Data Vertices available to process".to_string()
-    }).unwrap();
-
+    app.emit("Mapping vertex hold on", 100).unwrap();
+    // Send completion status
     ProcessingResult::Complete(VerticesCentralityTable {
         columns: unique_vertices,
         status: Some(200),
@@ -98,6 +96,12 @@ pub async fn user_to_vector(
     })
 }
 
+// Helper function to emit loading status (you'll need to implement the actual event emission)
+fn emit_loading_status(progress: f32, message: &str) -> Result<(), String> {
+    // In a real Tauri app, you would use window.emit here
+    println!("Progress: {}% - {}", (progress * 100.0) as u32, message);
+    Ok(())
+}
 
 
 
