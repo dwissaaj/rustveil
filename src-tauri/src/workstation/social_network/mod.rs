@@ -1,26 +1,22 @@
 use std::collections::{HashMap, HashSet};
-use rustworkx_core::petgraph; 
+use rustworkx_core::{centrality, petgraph}; 
 use rustworkx_core::centrality::betweenness_centrality;
 use serde::Serialize;
 use tauri::{command, Emitter};
-use tauri::{AppHandle, Manager};
-#[derive(Serialize)]
-pub struct ProcessingStatus {
-    pub progress: f32,
-    pub message: String,
-}
+use tauri::{AppHandle};
+
 #[derive(Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
-struct MappingProgress {
+struct ProcessProgress {
   progress: i32,
   message: String,
 }
+
 #[derive(Serialize)]
 #[serde(tag = "status", content = "data")]
 pub enum ProcessingResult {
-    Loading(ProcessingStatus),
     Complete(VerticesCentralityTable),
-    Error(String),
+    Error(ErrorResult),
 }
 #[derive(Serialize)]
 pub struct VerticesCentralityTable {
@@ -29,198 +25,139 @@ pub struct VerticesCentralityTable {
     pub error: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub node_map: Option<HashMap<u32, String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub edges: Option<Vec<u32, u32>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub centrality: Option<Vec<f64>>
 }
-
+#[derive(Clone, Serialize)]
+pub struct ErrorResult {
+  error_code: u32,
+  message: String,
+}
 #[derive(Serialize)]
-struct UserNode {
+pub struct UserNode {
     id: u32,
     username: String,
 }
-
 #[command]
 pub async fn user_to_vector(
     app: AppHandle,
     vertices_one: Vec<String>,
     vertices_two: Vec<String>,
+    graph_type: String,
 ) -> ProcessingResult {
     // Initial validation
     if vertices_one.is_empty() && vertices_two.is_empty() {
-        return ProcessingResult::Error("No vertices provided".to_string());
+        app.emit("mapping-progress", ProcessProgress {
+        progress: 0,
+        message: "No vertices selected".to_string()
+        }).unwrap();
+        return ProcessingResult::Error(ErrorResult { error_code: (401), message: ("No vertices inside the selected column".to_string()) });
     }
-    app.emit("mapping-progress", MappingProgress {
-        progress: 30,
-        message: "Data Vertices available to process".to_string()
-    }).unwrap();
+    let edges: Vec<(String, String)> = vertices_one.clone().into_iter()
+    .zip(vertices_two.clone().into_iter())
+    .collect();
 
-
-    let unique_vertices: Vec<String> = vertices_one
+    let unique_vertices: Vec<String> = vertices_one.clone()
         .into_iter()
-        .chain(vertices_two)
+        .chain(vertices_two.clone())
         .collect::<HashSet<_>>()
         .into_iter()
         .collect();
 
-    app.emit("mapping-progress", MappingProgress {
-        progress: 50,
+    app.emit("mapping-progress", ProcessProgress {
+        progress: 15,
         message: "Mapping process".to_string()
     }).unwrap();
 
 
     if unique_vertices.is_empty() {
-        return ProcessingResult::Error("No valid vertices after processing".to_string());
+        app.emit("mapping-progress", ProcessProgress {
+        progress: 0,
+        message: "Error at process vertices nowhere to found".to_string()
+        }).unwrap();
+        return ProcessingResult::Error(ErrorResult { error_code: (401), message: ("Verticess is Empty".to_string()) });
     }
 
    
-    // Create mappings (50% progress)
+
     let mut id_to_username = HashMap::new();
     let mut username_to_id = HashMap::new();
-    app.emit("Starting", 50).unwrap();
     for (index, vertex) in unique_vertices.iter().enumerate() {
         let id = index as u32;
         id_to_username.insert(id, vertex.clone());
         username_to_id.insert(vertex.clone(), UserNode { id, username: vertex.clone() });
-        app.emit("mapping-progress", MappingProgress {
+        app.emit("mapping-progress", ProcessProgress {
         progress: 30,
-        message: "Still progreess".to_string()
+        message: "Convert user to id".to_string()
          }).unwrap();
 
-       
     }
-    app.emit("Mapping vertex hold on", 100).unwrap();
-    // Send completion status
+    let to_edges = map_edges_to_ids(edges, &username_to_id);
+    
+    if to_edges.is_empty() {
+        app.emit("mapping-progress", ProcessProgress {
+        progress: 0,
+        message: "Error at merging edges".to_string()
+        }).unwrap();
+        return ProcessingResult::Error(ErrorResult { error_code: (401), message: ("Error at merging edges".to_string()) });
+    }
+    
+    if( graph_type == "direct") {
+        let centrality = calculate_centrality_direct(to_edges);
+    } else {
+        let centrality = calculate_centrality_undirect(to_edges);
+    }
+
     ProcessingResult::Complete(VerticesCentralityTable {
         columns: unique_vertices,
         status: Some(200),
         error: None,
         node_map: Some(id_to_username),
+        edges: Some(to_edges),
+        centrality: Some(centrality)
+
     })
 }
 
-// Helper function to emit loading status (you'll need to implement the actual event emission)
-fn emit_loading_status(progress: f32, message: &str) -> Result<(), String> {
-    // In a real Tauri app, you would use window.emit here
-    println!("Progress: {}% - {}", (progress * 100.0) as u32, message);
-    Ok(())
+
+pub fn map_edges_to_ids(
+    edges: Vec<(String, String)>,
+    user_map: &HashMap<String, UserNode>,
+) -> Vec<(u32, u32)> {
+    edges
+        .iter()
+        .map(|(a, b)| {
+            (
+                user_map.get(a).expect(&format!("Username {} not found", a)).id,
+                user_map.get(b).expect(&format!("Username {} not found", b)).id,
+            )
+        })
+        .collect()
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-// pub fn map_edges_to_ids(
-//     edges: Vec<(String, String)>,
-//     user_map: &HashMap<String, UserNode>,
-// ) -> Vec<(u32, u32)> {
-//     edges
-//         .iter()
-//         .map(|(a, b)| {
-//             (
-//                 user_map.get(a).expect(&format!("Username {} not found", a)).id,
-//                 user_map.get(b).expect(&format!("Username {} not found", b)).id,
-//             )
-//         })
-//         .collect()
-// }
-
-
-// pub fn calculate_centrality(numeric_edges: Vec<(u32, u32)>) -> Result<Vec<Option<f64>>, String> {
-//     // 1. Create graph
-//     let graph = petgraph::graph::UnGraph::<(), ()>::from_edges(&numeric_edges);
+pub fn calculate_centrality_direct(numeric_edges: Vec<(u32, u32)>) -> Result<Vec<Option<f64>>, String> {
+    // 1. Create graph
+    let graph = petgraph::graph::UnGraph::<(), ()>::from_edges(&numeric_edges);
     
-//     // 2. Calculate centrality
-//     let output = betweenness_centrality(&graph, false, false, 200);
+    // 2. Calculate centrality
+    let output = betweenness_centrality(&graph, false, false, 200);
     
 
-//     Ok(output)
-// }
+    Ok(output)
+}
 
 
-// use tauri::{AppHandle, Manager}; // Add Manager to get emit functionality
-// use serde::Serialize;
+pub fn calculate_centrality_undirect(numeric_edges: Vec<(u32, u32)>) -> Result<Vec<Option<f64>>, String> {
+    // 1. Create graph
+    let graph = petgraph::graph::UnGraph::<(), ()>::from_edges(&numeric_edges);
+    
+    // 2. Calculate centrality
+    let output = betweenness_centrality(&graph, false, false, 200);
+    
 
-// // ... (keep your existing struct definitions) ...
+    Ok(output)
+}
 
-// #[command]
-// pub async fn user_to_vector(
-//     app: AppHandle, // Add AppHandle parameter
-//     vertices_one: Vec<String>,
-//     vertices_two: Vec<String>,
-// ) -> ProcessingResult {
-//     // Initial validation
-//     if vertices_one.is_empty() && vertices_two.is_empty() {
-//         let _ = app.emit_all("progress", ProgressEvent { 
-//             progress: 1.0, 
-//             message: "Error: No vertices provided".to_string() 
-//         });
-//         return ProcessingResult::Error("No vertices provided".to_string());
-//     }
-
-//     // Send loading status (10% progress)
-//     let _ = app.emit_all("progress", ProgressEvent {
-//         progress: 0.1,
-//         message: "Starting processing...".to_string(),
-//     });
-
-//     // Process vertices (20% progress)
-//     let unique_vertices: Vec<String> = vertices_one
-//         .into_iter()
-//         .chain(vertices_two)
-//         .collect::<HashSet<_>>()
-//         .into_iter()
-//         .collect();
-
-//     if unique_vertices.is_empty() {
-//         let _ = app.emit_all("progress", ProgressEvent {
-//             progress: 1.0,
-//             message: "Error: No valid vertices".to_string(),
-//         });
-//         return ProcessingResult::Error("No valid vertices after processing".to_string());
-//     }
-
-//     // Send loading status (30% progress)
-//     let _ = app.emit_all("progress", ProgressEvent {
-//         progress: 0.3,
-//         message: "Creating mappings...".to_string(),
-//     });
-
-//     // Create mappings (50-100% progress)
-//     let mut id_to_username = HashMap::new();
-//     for (index, vertex) in unique_vertices.iter().enumerate() {
-//         let progress = 0.3 + (index as f32 / unique_vertices.len() as f32) * 0.7;
-//         let _ = app.emit_all("progress", ProgressEvent {
-//             progress,
-//             message: format!("Processing vertex {}", index),
-//         });
-        
-//         id_to_username.insert(index as u32, vertex.clone());
-//     }
-
-//     // Send completion
-//     let _ = app.emit_all("progress", ProgressEvent {
-//         progress: 1.0,
-//         message: "Processing complete".to_string(),
-//     });
-
-//     ProcessingResult::Complete(VerticesCentralityTable {
-//         columns: unique_vertices,
-//         status: Some(200),
-//         error: None,
-//         node_map: Some(id_to_username),
-//     })
-// }
-
-// #[derive(Serialize)]
-// struct ProgressEvent {
-//     progress: f32,
-//     message: String,
-// }

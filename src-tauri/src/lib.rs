@@ -20,8 +20,7 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
                 data::load_data,
                 data::get_sheet,
-                social_network::user_to_vector
-
+                social_network::user_to_vector,
                 ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
