@@ -39,6 +39,7 @@
 "use client";
 import { useAtomValue, useAtom } from "jotai";
 import {
+  centralityGraphValue,
   tableData,
   vertex1ColumnSelected,
   vertex2ColumnSelected,
@@ -52,7 +53,10 @@ export const useVerticesData = () => {
   const [vertex1, setVertex1] = useAtom(vertex1ColumnSelected);
   const [vertex2, setVertex2] = useAtom(vertex2ColumnSelected);
   const [graphType, setGraphType] = useAtom(vertexGraphTypeSelected);
-  // Get column data directly
+  const [centralityValue, setcentralityValue] = useAtom(centralityGraphValue);
+
+
+
   const getColumnData = (columnName: string) => {
     if (!columnName || !data) return [];
     return data.rows.map((row) => row[columnName]);
@@ -67,6 +71,8 @@ export const useVerticesData = () => {
     setVertex2,
     vertex2Data: getColumnData(vertex2),
     graphType,
-    setGraphType
+    setGraphType,
+    centralityValue,
+    setcentralityValue
   };
 };

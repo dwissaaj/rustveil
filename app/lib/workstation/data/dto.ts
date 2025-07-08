@@ -17,4 +17,9 @@ export interface VerticesCentralityTable {
   status?: number,
   error?: string,
   nodeMap?: Record<number, string>,
+  edges?: Record<number,number>,
+  centrality_result?: number[]
 }
+
+
+

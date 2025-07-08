@@ -17,8 +17,7 @@ export type ProcessingResult =
   | { status: "Error"; data: string };
 
 export const useMapId = () => {
-  const mapProgress = useMapProgress(); // If needed
-  const { vertex1Data, vertex2Data} = useVerticesData()
+  const { vertex1Data, vertex2Data, graphType} = useVerticesData()
   return async () => {
     try {
       console.log("vert1", vertex1Data);
@@ -26,7 +25,8 @@ export const useMapId = () => {
       
       const result = await invoke<ProcessingResult>("user_to_vector", { 
         verticesOne: vertex1Data,
-        verticesTwo: vertex2Data 
+        verticesTwo: vertex2Data ,
+        graphType : graphType
       });
       
       return result;

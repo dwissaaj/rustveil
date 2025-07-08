@@ -20,7 +20,7 @@ export default function Home() {
           className={buttonStyles({
             color: "primary",
             radius: "full",
-            variant: "shadow",
+            variant: "ghost",
           })}
           href={"/docs"}
         >
@@ -30,11 +30,11 @@ export default function Home() {
           className={buttonStyles({
             color: "primary",
             radius: "full",
-            variant: "ghost",
+            variant: "shadow",
           })}
-          href={"/docs"}
+          href={"/work"}
         >
-          Blogs
+          Working
         </Link>
       </div>
 

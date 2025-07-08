@@ -1,5 +1,5 @@
 use std::collections::{HashMap, HashSet};
-use rustworkx_core::{centrality, petgraph}; 
+use rustworkx_core::{petgraph}; 
 use rustworkx_core::centrality::betweenness_centrality;
 use serde::Serialize;
 use tauri::{command, Emitter};
@@ -26,9 +26,9 @@ pub struct VerticesCentralityTable {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub node_map: Option<HashMap<u32, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub edges: Option<Vec<u32, u32>>,
+    pub edges: Option<Vec<(u32, u32)>>,  // Fixed: Vec of tuples
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub centrality: Option<Vec<f64>>
+    pub centrality_result: Option<Vec<f64>>
 }
 #[derive(Clone, Serialize)]
 pub struct ErrorResult {
@@ -50,7 +50,7 @@ pub async fn user_to_vector(
     // Initial validation
     if vertices_one.is_empty() && vertices_two.is_empty() {
         app.emit("mapping-progress", ProcessProgress {
-        progress: 0,
+        progress: 5,
         message: "No vertices selected".to_string()
         }).unwrap();
         return ProcessingResult::Error(ErrorResult { error_code: (401), message: ("No vertices inside the selected column".to_string()) });
@@ -95,7 +95,10 @@ pub async fn user_to_vector(
 
     }
     let to_edges = map_edges_to_ids(edges, &username_to_id);
-    
+    app.emit("mapping-progress", ProcessProgress {
+        progress: 50,
+        message: "Processing Edges".to_string()
+        }).unwrap();
     if to_edges.is_empty() {
         app.emit("mapping-progress", ProcessProgress {
         progress: 0,
@@ -103,20 +106,48 @@ pub async fn user_to_vector(
         }).unwrap();
         return ProcessingResult::Error(ErrorResult { error_code: (401), message: ("Error at merging edges".to_string()) });
     }
-    
-    if( graph_type == "direct") {
-        let centrality = calculate_centrality_direct(to_edges);
-    } else {
-        let centrality = calculate_centrality_undirect(to_edges);
-    }
 
+    app.emit("mapping-progress", ProcessProgress {
+        progress: 75,
+        message: "Processing centrality".to_string()
+        }).unwrap();
+
+        
+    let centrality_process: Vec<f64>;
+
+    let result = if graph_type == "direct" {
+        calculate_centrality_direct(to_edges.clone())
+    } else {
+        calculate_centrality_undirect(to_edges.clone())
+    };
+
+    match result {
+    Ok(vec_opt) => {
+        centrality_process = vec_opt
+            .into_iter()
+            .map(|v| v.unwrap_or(0.0))
+            .collect();
+       
+    }
+    Err(_) => {
+        return ProcessingResult::Error(ErrorResult { error_code: (401), message: ("Error at calculate centrality".to_string()) });
+    }
+}
+
+
+    app.emit("mapping-progress", ProcessProgress {
+        progress: 100,
+        message: "Processing Completed".to_string()
+        }).unwrap();
+
+        
     ProcessingResult::Complete(VerticesCentralityTable {
         columns: unique_vertices,
         status: Some(200),
         error: None,
         node_map: Some(id_to_username),
         edges: Some(to_edges),
-        centrality: Some(centrality)
+        centrality_result: Some(centrality_process)
 
     })
 }
@@ -140,7 +171,7 @@ pub fn map_edges_to_ids(
 
 pub fn calculate_centrality_direct(numeric_edges: Vec<(u32, u32)>) -> Result<Vec<Option<f64>>, String> {
     // 1. Create graph
-    let graph = petgraph::graph::UnGraph::<(), ()>::from_edges(&numeric_edges);
+    let graph = petgraph::graph::DiGraph::<(), ()>::from_edges(&numeric_edges);
     
     // 2. Calculate centrality
     let output = betweenness_centrality(&graph, false, false, 200);
