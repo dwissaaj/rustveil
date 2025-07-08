@@ -33,7 +33,6 @@ import { Select, SelectItem , Radio, RadioGroup, Tooltip, Button} from "@heroui/
 
 export default function VerticesSelect() {
   const { headers, vertex1, setVertex1, vertex2, setVertex2, graphType, setGraphType } = useVerticesData();
-  console.log(graphType)
   return (
     <div className="">
       <div className="flex flex-col gap-4">

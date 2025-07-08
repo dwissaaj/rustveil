@@ -1,6 +1,6 @@
 "use client";
 import {  vertex1ColumnSelected, vertex2ColumnSelected } from "@/app/lib/workstation/data/state";
-import { ProcessingResult, ProcessingStatus, useMapId } from "@/app/lib/workstation/social/useMapId";
+import { useMapId } from "@/app/lib/workstation/social/useMapId";
 import { MappingProgress, useMapProgress } from "@/app/lib/workstation/social/useMapProgress";
 import { useVerticesData } from "@/app/lib/workstation/social/useVerticesData";
 import {
@@ -28,23 +28,54 @@ export default function SocialCalculateModal({
   onOpenChange,
 }: CalculateModal) {
 
-  const{ vertex1,vertex2, graphType } = useVerticesData()
+  const{ vertex1,vertex2, graphType , edgesValue, centralityValue} = useVerticesData()
   const useCalculate = useMapId()
   const mapProgress = useMapProgress()
   const [currentProgress, setCurrentProgress] = useState<MappingProgress>();
   const [progress, setProgress] = useState<"primary" | "danger">("primary");
-  const [buttonState, usebuttonState] = useState(false)
+  const [buttonState, setButtonState] = useState<{
+    isLoading: boolean;
+    message: string;
+    isDone: boolean;
+  }>({
+    isLoading: false,
+    message: "Calculate",
+    isDone: false
+  });
+  const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
   const calculate = async () => {
     try {
       setProgress("primary")
-      usebuttonState(true)
+      setButtonState({
+        isLoading: true,
+        message: "Calculating...",
+        isDone: false
+      });
+      setCurrentProgress({
+        progress: 30,
+        message: "Processing data",
+        isError: false
+      })
+      await delay(1000);
       const result = await useCalculate();
-      console.log(result)
+      setButtonState({
+        isLoading: false,
+        message: "Done You can close",
+        isDone: true
+      });
     } catch (error) {
-      setProgress("danger")
+      setButtonState({
+        isLoading: false,
+        message: "Error at calculate",
+        isDone: false
+      });
       console.log(error)
     } finally {
-      usebuttonState(false)
+      setButtonState({
+        isLoading: false,
+        message: "Calculate",
+        isDone: false
+      });
     }
   };
   useEffect(() => {
@@ -86,8 +117,8 @@ export default function SocialCalculateModal({
                 <Button
                  color="primary" 
                  onPress={calculate}
-                 isLoading={buttonState}>
-                  Calculate
+                 isLoading={buttonState.isLoading}>
+                  {buttonState.message}
                 </Button>
               </ModalFooter>
             </>

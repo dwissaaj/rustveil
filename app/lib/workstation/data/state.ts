@@ -20,4 +20,5 @@ export const vertex2ColumnSelected = atom<string>("");
 export const vertex1ColumnData = atom<string[]>([]); // Initialize with empty array
 export const vertex2ColumnData = atom<string[]>([]);
 export const vertexGraphTypeSelected = atom<string>("direct");
-export const centralityGraphValue = atom<number[]>([]);
+export const centralityGraphValue = atom<number[]>();
+export const edgesGraphValue = atom<Record<number, number>>()

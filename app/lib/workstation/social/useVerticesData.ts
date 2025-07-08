@@ -40,6 +40,7 @@
 import { useAtomValue, useAtom } from "jotai";
 import {
   centralityGraphValue,
+  edgesGraphValue,
   tableData,
   vertex1ColumnSelected,
   vertex2ColumnSelected,
@@ -54,7 +55,7 @@ export const useVerticesData = () => {
   const [vertex2, setVertex2] = useAtom(vertex2ColumnSelected);
   const [graphType, setGraphType] = useAtom(vertexGraphTypeSelected);
   const [centralityValue, setcentralityValue] = useAtom(centralityGraphValue);
-
+  const [edgesValue, setedgesValue] = useAtom(edgesGraphValue);
 
 
   const getColumnData = (columnName: string) => {
@@ -73,6 +74,8 @@ export const useVerticesData = () => {
     graphType,
     setGraphType,
     centralityValue,
-    setcentralityValue
+    setcentralityValue,
+    edgesValue,
+    setedgesValue
   };
 };
