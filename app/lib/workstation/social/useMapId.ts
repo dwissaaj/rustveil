@@ -4,7 +4,7 @@ import { RustResponse } from "../data/dto";
 import { useGraphData } from "./useGraphData";
 
 export const useMapId = () => {
-  const { vertex1Data, vertex2Data, graphType, setedgesValue, edgesValue, centralityValue, setcentralityValue} = useGraphData()
+  const { vertex1Data, vertex2Data, graphType, setedgesValue, setcentralityValue, setnodeMap, setverticesValue} = useGraphData()
 
 
   return async () => {
@@ -15,11 +15,12 @@ export const useMapId = () => {
         graphType : graphType
       });
         if(result.data.status === 200)
-          console.log(centralityValue)
-          console.log(edgesValue)
           console.log(result)
+          console.log('node map', result.data.node_map)
           setedgesValue(result.data.edges)
           setcentralityValue(result.data.centrality_result)
+          setverticesValue(result.data.columns)
+          setnodeMap(result.data.node_map)
          
     } catch (error) {
       console.error("Error loading table data:", error);

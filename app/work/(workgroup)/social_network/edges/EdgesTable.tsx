@@ -1,38 +1,8 @@
 "use client";
 import { useGraphData } from "@/app/lib/workstation/social/useGraphData";
-import VertexTable from "@/components/workstation/sna/EdgesTable";
+import EdgesTableViewer from "@/components/workstation/sna/EdgesTableViewer";
 import { Select, SelectItem, Chip } from "@heroui/react";
-/**
- * Vertex selection and display interface for social network analysis
- *
- * @component
- * @example
- * <VerticesTable />
- *
- * @description
- * Combines vertex selection controls with data display:
- * - Dual column selectors
- * - Active selection indicators
- * - Integrated VertexTable display
- *
- * @hooks
- * - useGraphData: Manages column state and data
- *
- * @ui
- * - Horizontal select controls (gap-4)
- * - Chip indicators for active selections
- * - Responsive spacing (space-y-4)
- * - Hero UI Select and Chip components
- *
- * @behavior
- * - Synchronized selection between dropdowns
- * - Real-time table updates
- * - Visual feedback for selected vertices
- *
- * @composition
- * - Embeds VertexTable component
- * - Manages selection state via useGraphData
- */
+
 
 export default function EdgesTable() {
   const { headers, vertex1, setVertex1, vertex2, setVertex2 } = useGraphData();
@@ -70,7 +40,7 @@ export default function EdgesTable() {
         {vertex2 && <Chip color="secondary">{vertex2}</Chip>}
       </div>
 
-      <VertexTable />
+      <EdgesTableViewer />
     </div>
   );
 }

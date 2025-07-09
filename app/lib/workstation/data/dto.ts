@@ -1,5 +1,5 @@
 export type TableCell = string | number | boolean | null;
-interface UserNode {
+export interface UserNode {
   id: number;
   username: string;
 }
@@ -16,7 +16,7 @@ export interface VerticesCentralityTable {
   columns: string[],
   status?: number,
   error?: string,
-  nodeMap?: Record<number, UserNode>,
+  node_map?: Record<number, string>,
   edges?: Record<number,number>,
   centrality_result?: number[]
 }

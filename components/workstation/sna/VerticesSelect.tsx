@@ -46,7 +46,7 @@ export default function VerticesSelect() {
        </Tooltip>
         </div>
         <div className="flex flex-col gap-4">
-           <Select
+          <Select
         label="Select Vertex 1"
         selectedKeys={vertex1 ? [vertex1] : []}
         onSelectionChange={(keys) => setVertex1(Array.from(keys)[0] as string)}

@@ -45,14 +45,14 @@ export default function SocialCalculateModal({
   const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
   const calculate = async () => {
     try {
-    //   setButtonState({
-    //   isLoading: true,
-    //   message: "Initializing...",
-    //   isDone: false,
-    //   color: "primary"
-    // });
+      setButtonState({
+      isLoading: true,
+      message: "Initializing...",
+      isDone: false,
+      color: "primary"
+    });
       await delay(1000); // Small initial delay
-      await useCalculate();
+      const result = await useCalculate();
       await delay(1000);
     } catch (error) {
       console.log(error)
@@ -71,7 +71,7 @@ export default function SocialCalculateModal({
         color: "danger"
       });
       
-    } else if (mapProgress.progress === 25) {
+    } else if (mapProgress.progress === 15) {
       await delay(2000)
       setButtonState({
         isLoading: true,
@@ -80,16 +80,8 @@ export default function SocialCalculateModal({
         color: "primary"
       });
     } 
-    else if (mapProgress.progress === 25) {
-      await delay(2000)
-      setButtonState({
-        isLoading: true,
-        message: "Calculate.....",
-        isDone: false,
-        color: "primary"
-      });
-    }else if (mapProgress.progress === 50) {
-      await delay(2000)
+    else if (mapProgress.progress === 50) {
+      await delay(1000)
       setButtonState({
         isLoading: true,
         message: "Hold on",
@@ -98,7 +90,7 @@ export default function SocialCalculateModal({
       });
     }
     else if (mapProgress.progress === 100) {
-      await delay(2000)
+      await delay(1000)
       setButtonState({
         isLoading: false,
         message: "Done - Close Now",
@@ -107,7 +99,7 @@ export default function SocialCalculateModal({
       });
     }
     else {
-      await delay(2000)
+      await delay(1000)
       setButtonState({
         isLoading: true,
         message: mapProgress.message,
