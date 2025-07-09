@@ -1,18 +1,11 @@
 // useMapId.ts
 import { invoke } from "@tauri-apps/api/core";
 import { RustResponse } from "../data/dto";
-import { useVerticesData } from "./useVerticesData";
-import { MappingProgress } from "./useMapProgress";
-import { useState } from "react";
-
+import { useGraphData } from "./useGraphData";
 
 export const useMapId = () => {
-  const { vertex1Data, vertex2Data, graphType, setedgesValue, setcentralityValue} = useVerticesData()
-  const [progress, setProgress] = useState<MappingProgress>({
-    progress: 0,
-    message: "Ready",
-    isError: false
-  });
+  const { vertex1Data, vertex2Data, graphType, setedgesValue, edgesValue, centralityValue, setcentralityValue} = useGraphData()
+
 
   return async () => {
     try {
@@ -22,6 +15,9 @@ export const useMapId = () => {
         graphType : graphType
       });
         if(result.data.status === 200)
+          console.log(centralityValue)
+          console.log(edgesValue)
+          console.log(result)
           setedgesValue(result.data.edges)
           setcentralityValue(result.data.centrality_result)
          

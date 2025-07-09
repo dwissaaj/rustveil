@@ -57,6 +57,7 @@ export default function EdgesModal({
 
     onOpenChange();
   };
+  
   return (
     <>
       <Modal backdrop="blur" isOpen={isOpen} onOpenChange={onOpenChange}>
@@ -75,7 +76,7 @@ export default function EdgesModal({
                   Close
                 </Button>
                 <Button color="primary" onPress={closeModal}>
-                  Load Table
+                  Choose
                 </Button>
               </ModalFooter>
             </>

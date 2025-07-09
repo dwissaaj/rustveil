@@ -2,7 +2,7 @@
 import {  vertex1ColumnSelected, vertex2ColumnSelected } from "@/app/lib/workstation/data/state";
 import { useMapId } from "@/app/lib/workstation/social/useMapId";
 import { MappingProgress, useMapProgress } from "@/app/lib/workstation/social/useMapProgress";
-import { useVerticesData } from "@/app/lib/workstation/social/useVerticesData";
+import { useGraphData } from "@/app/lib/workstation/social/useGraphData";
 import {
   Modal,
   ModalContent,
@@ -28,7 +28,7 @@ export default function SocialCalculateModal({
   onOpenChange,
 }: CalculateModal) {
 
-  const{ vertex1,vertex2, graphType , edgesValue, centralityValue} = useVerticesData()
+  const{ vertex1,vertex2, graphType , edgesValue, centralityValue} = useGraphData()
   const useCalculate = useMapId()
   const mapProgress = useMapProgress()
   const [buttonState, setButtonState] = useState<{
@@ -70,7 +70,34 @@ export default function SocialCalculateModal({
         isDone: false,
         color: "danger"
       });
-    } else if (mapProgress.progress === 100) {
+      
+    } else if (mapProgress.progress === 25) {
+      await delay(2000)
+      setButtonState({
+        isLoading: true,
+        message: "Calculate.....",
+        isDone: false,
+        color: "primary"
+      });
+    } 
+    else if (mapProgress.progress === 25) {
+      await delay(2000)
+      setButtonState({
+        isLoading: true,
+        message: "Calculate.....",
+        isDone: false,
+        color: "primary"
+      });
+    }else if (mapProgress.progress === 50) {
+      await delay(2000)
+      setButtonState({
+        isLoading: true,
+        message: "Hold on",
+        isDone: false,
+        color: "primary"
+      });
+    }
+    else if (mapProgress.progress === 100) {
       await delay(2000)
       setButtonState({
         isLoading: false,
@@ -78,7 +105,8 @@ export default function SocialCalculateModal({
         isDone: false,
         color: "secondary"
       });
-    } else {
+    }
+    else {
       await delay(2000)
       setButtonState({
         isLoading: true,

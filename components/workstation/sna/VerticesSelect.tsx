@@ -7,10 +7,10 @@
  *
  * @description
  * Provides two synchronized dropdown selectors for choosing vertex columns.
- * Maintains selection state via useVerticesData hook.
+ * Maintains selection state via useGraphData hook.
  *
  * @hooks
- * - useVerticesData: Manages available headers and selection state
+ * - useGraphData: Manages available headers and selection state
  *
  * @ui
  * - Hero UI Select components
@@ -23,16 +23,18 @@
  * - Synchronizes with parent component state
  *
  * @props
- * - Uses headers from useVerticesData for options
+ * - Uses headers from useGraphData for options
  * - Maintains vertex1 and vertex2 selections
  */
 "use client";
-import { useVerticesData } from "@/app/lib/workstation/social/useVerticesData";
+import { useGraphData } from "@/app/lib/workstation/social/useGraphData";
 import { TooltipIcon } from "@/components/icon/IconFilter";
 import { Select, SelectItem , Radio, RadioGroup, Tooltip, Button} from "@heroui/react";
 
 export default function VerticesSelect() {
-  const { headers, vertex1, setVertex1, vertex2, setVertex2, graphType, setGraphType } = useVerticesData();
+  const { headers, vertex1, setVertex1, vertex2, setVertex2, graphType, setGraphType } = useGraphData();
+
+  
   return (
     <div className="">
       <div className="flex flex-col gap-4">

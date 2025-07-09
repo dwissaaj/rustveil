@@ -1,5 +1,5 @@
 "use client";
-import { useVerticesData } from "@/app/lib/workstation/social/useVerticesData";
+import { useGraphData } from "@/app/lib/workstation/social/useGraphData";
 import {
   Table,
   TableHeader,
@@ -17,11 +17,11 @@ import {
  * <VertexTable />
  *
  * @description
- * Renders a two-column table showing selected vertex data from useVerticesData hook.
+ * Renders a two-column table showing selected vertex data from useGraphData hook.
  * Automatically handles mismatched array lengths and null values.
  *
  * @hooks
- * - useVerticesData: Provides vertex selections and their data arrays
+ * - useGraphData: Provides vertex selections and their data arrays
  *
  * @ui
  * - Hero UI Table component with border rounding
@@ -36,7 +36,7 @@ import {
  */
 
 export default function EdgesTable() {
-  const { vertex1, vertex2, vertex1Data, vertex2Data } = useVerticesData();
+  const { vertex1, vertex2, vertex1Data, vertex2Data } = useGraphData();
 
   const rowCount = Math.max(vertex1Data.length, vertex2Data.length);
 

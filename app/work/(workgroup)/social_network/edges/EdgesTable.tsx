@@ -1,5 +1,5 @@
 "use client";
-import { useVerticesData } from "@/app/lib/workstation/social/useVerticesData";
+import { useGraphData } from "@/app/lib/workstation/social/useGraphData";
 import VertexTable from "@/components/workstation/sna/EdgesTable";
 import { Select, SelectItem, Chip } from "@heroui/react";
 /**
@@ -16,7 +16,7 @@ import { Select, SelectItem, Chip } from "@heroui/react";
  * - Integrated VertexTable display
  *
  * @hooks
- * - useVerticesData: Manages column state and data
+ * - useGraphData: Manages column state and data
  *
  * @ui
  * - Horizontal select controls (gap-4)
@@ -31,11 +31,11 @@ import { Select, SelectItem, Chip } from "@heroui/react";
  *
  * @composition
  * - Embeds VertexTable component
- * - Manages selection state via useVerticesData
+ * - Manages selection state via useGraphData
  */
 
 export default function EdgesTable() {
-  const { headers, vertex1, setVertex1, vertex2, setVertex2 } = useVerticesData();
+  const { headers, vertex1, setVertex1, vertex2, setVertex2 } = useGraphData();
 
   return (
     <div className="space-y-4">

@@ -5,7 +5,6 @@ import DataTable from "./table/DataTable";
 import NoData from "@/components/workstation/data/NoData";
 import { tableData } from "@/app/lib/workstation/data/state";
 import DataPicker from "./picker/DataPickerModal";
-import DataFilter from "./picker/DataFilterFile";
 import FilterList from "@/components/workstation/data/FilterListWrapper";
 
 export default function Page() {
