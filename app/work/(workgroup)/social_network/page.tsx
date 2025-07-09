@@ -1,6 +1,6 @@
 import SocialFilterListWrapper from "@/components/workstation/sna/SocialFilterListWrapper";
 import React from "react";
-import Vertices from "./filter/vertices/Vertices";
+import Vertices from "./filter/edges/Graph";
 
 export default function SocialNetwork() {
   return (

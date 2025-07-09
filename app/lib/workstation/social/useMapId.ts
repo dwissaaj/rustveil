@@ -24,12 +24,7 @@ export const useMapId = () => {
         if(result.data.status === 200)
           setedgesValue(result.data.edges)
           setcentralityValue(result.data.centrality_result)
-      
-          return setProgress({
-            progress: 100,
-            message: "Calculation complete!",
-            isError: false
-        });
+         
     } catch (error) {
       console.error("Error loading table data:", error);
       throw error; // Re-throw for error handling

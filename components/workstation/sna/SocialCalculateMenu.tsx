@@ -1,5 +1,5 @@
 "use client";
-import VerticesModal from "@/app/work/(workgroup)/social_network/filter/modal/VerticesModal";
+import VerticesModal from "@/app/work/(workgroup)/social_network/filter/modal/EdgesModal";
 import {
   Dropdown,
   DropdownTrigger,

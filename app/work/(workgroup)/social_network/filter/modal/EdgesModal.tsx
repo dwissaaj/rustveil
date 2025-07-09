@@ -48,7 +48,7 @@ type VerticesModalProps = {
   isOpen: boolean;
   onOpenChange: () => void;
 };
-export default function VerticesModal({
+export default function EdgesModal({
   isOpen,
   onOpenChange,
 }: VerticesModalProps) {

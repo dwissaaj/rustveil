@@ -35,7 +35,7 @@
  */
 
 "use client";
-import VerticesModal from "@/app/work/(workgroup)/social_network/filter/modal/VerticesModal";
+import VerticesModal from "@/app/work/(workgroup)/social_network/filter/modal/EdgesModal";
 import {
   Dropdown,
   DropdownTrigger,
@@ -52,7 +52,7 @@ export default function SocialNodesMenu() {
     <>
       <Dropdown>
         <DropdownTrigger>
-          <Button variant="bordered">Nodes</Button>
+          <Button variant="bordered">Edit</Button>
         </DropdownTrigger>
         <DropdownMenu aria-label="Action event example">
           <DropdownItem textValue="vertices" key="new">

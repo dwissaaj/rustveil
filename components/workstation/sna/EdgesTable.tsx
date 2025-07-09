@@ -35,7 +35,7 @@ import {
  * - Syncs with vertex selections in real-time
  */
 
-export default function VertexTable() {
+export default function EdgesTable() {
   const { vertex1, vertex2, vertex1Data, vertex2Data } = useVerticesData();
 
   const rowCount = Math.max(vertex1Data.length, vertex2Data.length);

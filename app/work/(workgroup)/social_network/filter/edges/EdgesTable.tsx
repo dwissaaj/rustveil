@@ -1,6 +1,6 @@
 "use client";
 import { useVerticesData } from "@/app/lib/workstation/social/useVerticesData";
-import VertexTable from "@/components/workstation/sna/VertexTable";
+import VertexTable from "@/components/workstation/sna/EdgesTable";
 import { Select, SelectItem, Chip } from "@heroui/react";
 /**
  * Vertex selection and display interface for social network analysis
@@ -34,7 +34,7 @@ import { Select, SelectItem, Chip } from "@heroui/react";
  * - Manages selection state via useVerticesData
  */
 
-export default function VerticesTable() {
+export default function EdgesTable() {
   const { headers, vertex1, setVertex1, vertex2, setVertex2 } = useVerticesData();
 
   return (

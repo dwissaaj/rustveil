@@ -31,58 +31,65 @@ export default function SocialCalculateModal({
   const{ vertex1,vertex2, graphType , edgesValue, centralityValue} = useVerticesData()
   const useCalculate = useMapId()
   const mapProgress = useMapProgress()
-  const [currentProgress, setCurrentProgress] = useState<MappingProgress>();
-  const [progress, setProgress] = useState<"primary" | "danger">("primary");
   const [buttonState, setButtonState] = useState<{
     isLoading: boolean;
     message: string;
     isDone: boolean;
+    color: "primary" | "danger" | "secondary"
   }>({
     isLoading: false,
     message: "Calculate",
-    isDone: false
+    isDone: false,
+    color: "primary"
   });
   const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
   const calculate = async () => {
     try {
-      setProgress("primary")
-      setButtonState({
-        isLoading: true,
-        message: "Calculating...",
-        isDone: false
-      });
-      setCurrentProgress({
-        progress: 30,
-        message: "Processing data",
-        isError: false
-      })
+    //   setButtonState({
+    //   isLoading: true,
+    //   message: "Initializing...",
+    //   isDone: false,
+    //   color: "primary"
+    // });
+      await delay(1000); // Small initial delay
+      await useCalculate();
       await delay(1000);
-      const result = await useCalculate();
-      setButtonState({
-        isLoading: false,
-        message: "Done You can close",
-        isDone: true
-      });
     } catch (error) {
-      setButtonState({
-        isLoading: false,
-        message: "Error at calculate",
-        isDone: false
-      });
       console.log(error)
-    } finally {
-      setButtonState({
-        isLoading: false,
-        message: "Calculate",
-        isDone: false
-      });
-    }
+    } 
   };
   useEffect(() => {
-        if (mapProgress) {
-            setCurrentProgress(mapProgress);
-        }
-    }, [mapProgress]);
+    if (!mapProgress) return;
+    console.log(mapProgress)
+    const updateButton = async () => {
+      if (mapProgress.isError) {
+      await delay(2000)
+      setButtonState({
+        isLoading: false,
+        message: "Error! Try Again",
+        isDone: false,
+        color: "danger"
+      });
+    } else if (mapProgress.progress === 100) {
+      await delay(2000)
+      setButtonState({
+        isLoading: false,
+        message: "Done - Close Now",
+        isDone: false,
+        color: "secondary"
+      });
+    } else {
+      await delay(2000)
+      setButtonState({
+        isLoading: true,
+        message: mapProgress.message,
+        isDone: false,
+        color: "primary"
+      });
+    }
+    }
+    updateButton();
+  }, [mapProgress]);
 
   return (
     <>
@@ -92,7 +99,7 @@ export default function SocialCalculateModal({
             <>
               <ModalHeader className="flex flex-col gap-1 text-4xl text-primary-500">
                Calculate Centrality
-                <Progress color={`${progress}`} aria-label="Loading..." size="sm" value={currentProgress?.progress} />
+                <Progress color={'primary'} aria-label="Loading..." size="sm" value={mapProgress?.progress} />
               </ModalHeader>
               <ModalBody >
                 <div className="flex flex-col gap-4">
@@ -115,7 +122,7 @@ export default function SocialCalculateModal({
               </ModalBody>
               <ModalFooter>
                 <Button
-                 color="primary" 
+                 color={`${buttonState.color}`}
                  onPress={calculate}
                  isLoading={buttonState.isLoading}>
                   {buttonState.message}

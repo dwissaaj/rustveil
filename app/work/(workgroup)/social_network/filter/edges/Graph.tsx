@@ -1,11 +1,11 @@
-import VertexTable from "@/components/workstation/sna/VertexTable";
+import VertexTable from "@/components/workstation/sna/EdgesTable";
 import { useAtomValue } from "jotai";
 import React from "react";
-import VerticesTable from "./VerticesTable";
-import VerticesGraph from "./VerticesGraph";
+import VerticesTable from "./EdgesTable";
+import VerticesGraph from "./EdgesGraph";
 import { useVerticesData } from "@/app/lib/workstation/social/useVerticesData";
 
-export default function Vertices() {
+export default function Graph() {
  const { headers, vertex1, setVertex1, vertex2, setVertex2 , vertex1Data, vertex2Data} = useVerticesData();
   return (
     <div className="max-h-screen">
