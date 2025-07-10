@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import { TableDataType, UserNode } from "./dto";
+import { GraphTableData, TableDataType, UserNode } from "./dto";
 
 // for table data type
 export const tableData = atom<TableDataType | null>(null);
@@ -17,10 +17,11 @@ export const columnAvailable = atom<string[]>([]);
 
 export const vertex1ColumnSelected = atom<string>("");
 export const vertex2ColumnSelected = atom<string>("");
-export const vertex1ColumnData = atom<string[]>([]); 
+export const vertex1ColumnData = atom<string[]>([]);
 export const vertex2ColumnData = atom<string[]>([]);
 export const vertexGraphTypeSelected = atom<string>("direct");
 export const centralityGraphValue = atom<number[]>();
-export const edgesGraphValue = atom<Record<number, number>>()
-export const nodesMap = atom<Record<number, string>>()
+export const edgesGraphValue = atom<Record<number, number>>();
+export const nodesMap = atom<Record<number, string>>();
 export const vertices = atom<string[]>();
+export const graphTable = atom<GraphTableData[]>([]);

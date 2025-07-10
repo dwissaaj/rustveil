@@ -41,7 +41,7 @@ import {
   ModalFooter,
   Button,
   Radio,
-  RadioGroup
+  RadioGroup,
 } from "@heroui/react";
 
 type VerticesModalProps = {
@@ -52,12 +52,10 @@ export default function EdgesModal({
   isOpen,
   onOpenChange,
 }: VerticesModalProps) {
-
   const closeModal = () => {
-
     onOpenChange();
   };
-  
+
   return (
     <>
       <Modal backdrop="blur" isOpen={isOpen} onOpenChange={onOpenChange}>
@@ -69,7 +67,6 @@ export default function EdgesModal({
               </ModalHeader>
               <ModalBody>
                 <ColumnSelect />
-               
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>

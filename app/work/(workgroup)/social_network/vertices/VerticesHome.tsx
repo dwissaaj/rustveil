@@ -7,9 +7,7 @@ export default function VerticesHome() {
         <div>
           <VerticesTable />
         </div>
-        <div>
-          Graph
-        </div>
+        <div>Graph</div>
       </div>
     </div>
   );

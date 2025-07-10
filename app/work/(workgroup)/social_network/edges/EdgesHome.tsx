@@ -1,4 +1,3 @@
-
 import { useAtomValue } from "jotai";
 import React from "react";
 import EdgesTableViewer from "@/components/workstation/sna/EdgesTableViewer";
@@ -10,8 +9,7 @@ export default function EdgesHome() {
     <div className="max-h-screen">
       <div className="grid grid-cols-2 gap-2">
         <div>
-          <EdgesTable
-          />
+          <EdgesTable />
         </div>
         <div>
           <EdgesGraph />

@@ -1,9 +1,9 @@
-
 "use client";
 import { useAtomValue, useAtom } from "jotai";
 import {
   centralityGraphValue,
   edgesGraphValue,
+  graphTable,
   nodesMap,
   tableData,
   vertex1ColumnSelected,
@@ -11,8 +11,6 @@ import {
   vertexGraphTypeSelected,
   vertices,
 } from "../data/state";
-
-
 
 export const useGraphData = () => {
   const data = useAtomValue(tableData);
@@ -23,6 +21,7 @@ export const useGraphData = () => {
   const [edgesValue, setedgesValue] = useAtom(edgesGraphValue);
   const [nodeMapValue, setnodeMap] = useAtom(nodesMap);
   const [verticesUser, setverticesValue] = useAtom(vertices);
+  const [graphData, setgraphData] = useAtom(graphTable);
   const getColumnData = (columnName: string) => {
     if (!columnName || !data) return [];
     return data.rows.map((row) => row[columnName]);
@@ -45,6 +44,8 @@ export const useGraphData = () => {
     nodeMapValue,
     setnodeMap,
     verticesUser,
-    setverticesValue
+    setverticesValue,
+    graphData,
+    setgraphData,
   };
 };

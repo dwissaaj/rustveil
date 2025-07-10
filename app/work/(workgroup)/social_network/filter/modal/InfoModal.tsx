@@ -1,5 +1,11 @@
 "use client";
-import { vertex1ColumnData, vertex1ColumnSelected, vertex2ColumnData, vertex2ColumnSelected, vertexGraphTypeSelected } from "@/app/lib/workstation/data/state";
+import {
+  vertex1ColumnData,
+  vertex1ColumnSelected,
+  vertex2ColumnData,
+  vertex2ColumnSelected,
+  vertexGraphTypeSelected,
+} from "@/app/lib/workstation/data/state";
 import {
   Modal,
   ModalContent,
@@ -19,12 +25,11 @@ export default function InfoModal({
   isOpen,
   onOpenChange,
 }: SocialNetworkReportModal) {
-
   const vertex1 = useAtomValue(vertex1ColumnSelected);
   const vertex2 = useAtomValue(vertex2ColumnSelected);
   const vertex1Data = useAtomValue(vertex1ColumnData);
   const vertex2Data = useAtomValue(vertex2ColumnData);
-  const graphType = useAtomValue(vertexGraphTypeSelected)
+  const graphType = useAtomValue(vertexGraphTypeSelected);
   return (
     <>
       <Modal backdrop="blur" isOpen={isOpen} onOpenChange={onOpenChange}>
@@ -62,7 +67,6 @@ export default function InfoModal({
                       <Code color="secondary">{vertex2Data?.length}</Code>
                     </div>
                   </div>
-                  
                 </div>
               </ModalBody>
               <ModalFooter>
