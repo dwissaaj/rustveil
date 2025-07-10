@@ -1,3 +1,4 @@
+import VerticesGraph from "./VerticesGraph";
 import VerticesTable from "./VerticesTable";
 
 export default function VerticesHome() {
@@ -7,7 +8,9 @@ export default function VerticesHome() {
         <div>
           <VerticesTable />
         </div>
-        <div>Graph</div>
+        <div className="w-full h-full ">
+          <VerticesGraph />
+        </div>
       </div>
     </div>
   );

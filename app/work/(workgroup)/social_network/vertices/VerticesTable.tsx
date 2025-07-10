@@ -3,11 +3,6 @@ import { VerticesTableViewer } from "@/components/workstation/sna/VerticesTableV
 import React, { use } from "react";
 
 export default function VerticesTable() {
-  const { nodeMapValue, centralityValue, graphData } = useGraphData();
-
-  return (
-    <div>
-      <VerticesTableViewer />
-    </div>
-  );
+  const { graphData } = useGraphData();
+  return <VerticesTableViewer vertices={graphData} />;
 }

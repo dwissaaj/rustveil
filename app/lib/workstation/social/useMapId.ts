@@ -1,6 +1,6 @@
 // useMapId.ts
 import { invoke } from "@tauri-apps/api/core";
-import { GraphTableData, RustResponse } from "../data/dto";
+import { RustResponse } from "../data/dto";
 import { useGraphData } from "./useGraphData";
 
 export const useMapId = () => {
@@ -9,9 +9,6 @@ export const useMapId = () => {
     vertex2Data,
     graphType,
     setedgesValue,
-    setcentralityValue,
-    setnodeMap,
-    setverticesValue,
     graphData,
     setgraphData,
   } = useGraphData();
@@ -24,9 +21,6 @@ export const useMapId = () => {
         graphType: graphType,
       });
       if (result.data.status === 200) setedgesValue(result.data.edges);
-      setcentralityValue(result.data.centrality_result);
-      setverticesValue(result.data.columns);
-      setnodeMap(result.data.node_map);
 
       const newData = Object.entries(result?.data?.node_map || {}).map(
         ([key, value]) => ({
@@ -39,7 +33,7 @@ export const useMapId = () => {
       console.log("graph data", graphData);
     } catch (error) {
       console.error("Error loading table data:", error);
-      throw error; // Re-throw for error handling
+      throw error;
     }
   };
 };

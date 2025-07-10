@@ -1,13 +1,6 @@
 "use client";
-import {
-  vertex1ColumnSelected,
-  vertex2ColumnSelected,
-} from "@/app/lib/workstation/data/state";
 import { useMapId } from "@/app/lib/workstation/social/useMapId";
-import {
-  MappingProgress,
-  useMapProgress,
-} from "@/app/lib/workstation/social/useMapProgress";
+import { useMapProgress } from "@/app/lib/workstation/social/useMapProgress";
 import { useGraphData } from "@/app/lib/workstation/social/useGraphData";
 import {
   Modal,
@@ -16,13 +9,10 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-  RadioGroup,
-  Radio,
   Code,
   Tooltip,
   Progress,
 } from "@heroui/react";
-import { useAtom, useAtomValue } from "jotai";
 import { useEffect, useState } from "react";
 
 type CalculateModal = {
@@ -41,11 +31,13 @@ export default function SocialCalculateModal({
     message: string;
     isDone: boolean;
     color: "primary" | "danger" | "secondary";
+    isDisabled: boolean;
   }>({
     isLoading: false,
     message: "Calculate",
     isDone: false,
     color: "primary",
+    isDisabled: false,
   });
   const delay = (ms: number) =>
     new Promise((resolve) => setTimeout(resolve, ms));
@@ -56,9 +48,10 @@ export default function SocialCalculateModal({
         message: "Initializing...",
         isDone: false,
         color: "primary",
+        isDisabled: true,
       });
-      await delay(1000); // Small initial delay
-      const result = await useCalculate();
+      await delay(1000);
+      await useCalculate();
       await delay(1000);
     } catch (error) {
       console.log(error);
@@ -75,6 +68,7 @@ export default function SocialCalculateModal({
           message: "Error! Try Again",
           isDone: false,
           color: "danger",
+          isDisabled: false,
         });
       } else if (mapProgress.progress === 15) {
         await delay(2000);
@@ -83,6 +77,7 @@ export default function SocialCalculateModal({
           message: "Calculate.....",
           isDone: false,
           color: "primary",
+          isDisabled: true,
         });
       } else if (mapProgress.progress === 50) {
         await delay(1000);
@@ -91,6 +86,7 @@ export default function SocialCalculateModal({
           message: "Hold on",
           isDone: false,
           color: "primary",
+          isDisabled: true,
         });
       } else if (mapProgress.progress === 100) {
         await delay(1000);
@@ -99,6 +95,7 @@ export default function SocialCalculateModal({
           message: "Done - Close Now",
           isDone: true,
           color: "secondary",
+          isDisabled: true,
         });
       } else {
         await delay(1000);
@@ -107,6 +104,7 @@ export default function SocialCalculateModal({
           message: mapProgress.message,
           isDone: false,
           color: "primary",
+          isDisabled: false,
         });
       }
     };
@@ -148,6 +146,7 @@ export default function SocialCalculateModal({
               </ModalBody>
               <ModalFooter>
                 <Button
+                  isDisabled={buttonState.isDisabled}
                   color={`${buttonState.color}`}
                   onPress={calculate}
                   isLoading={buttonState.isLoading}

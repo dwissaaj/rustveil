@@ -1,11 +1,6 @@
 "use client";
-import {
-  vertex1ColumnData,
-  vertex1ColumnSelected,
-  vertex2ColumnData,
-  vertex2ColumnSelected,
-  vertexGraphTypeSelected,
-} from "@/app/lib/workstation/data/state";
+
+import { useGraphData } from "@/app/lib/workstation/social/useGraphData";
 import {
   Modal,
   ModalContent,
@@ -15,7 +10,6 @@ import {
   Button,
   Code,
 } from "@heroui/react";
-import { useAtomValue } from "jotai";
 
 type SocialNetworkReportModal = {
   isOpen: boolean;
@@ -25,11 +19,9 @@ export default function InfoModal({
   isOpen,
   onOpenChange,
 }: SocialNetworkReportModal) {
-  const vertex1 = useAtomValue(vertex1ColumnSelected);
-  const vertex2 = useAtomValue(vertex2ColumnSelected);
-  const vertex1Data = useAtomValue(vertex1ColumnData);
-  const vertex2Data = useAtomValue(vertex2ColumnData);
-  const graphType = useAtomValue(vertexGraphTypeSelected);
+  const { vertex1, vertex2, vertex1Data, vertex2Data, graphType } =
+    useGraphData();
+
   return (
     <>
       <Modal backdrop="blur" isOpen={isOpen} onOpenChange={onOpenChange}>

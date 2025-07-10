@@ -1,4 +1,3 @@
-import { useGraphData } from "@/app/lib/workstation/social/useGraphData";
 import {
   Table,
   TableHeader,
@@ -7,10 +6,16 @@ import {
   TableRow,
   TableCell,
 } from "@heroui/react";
+interface Vertex {
+  id: number;
+  username: string;
+  centrality: number;
+}
 
-export function VerticesTableViewer() {
-  const { graphData } = useGraphData();
-
+interface VerticesTableViewerProps {
+  vertices: Vertex[];
+}
+export function VerticesTableViewer({ vertices }: VerticesTableViewerProps) {
   return (
     <Table aria-label="Centrality Results" isStriped isVirtualized>
       <TableHeader>
@@ -19,11 +24,11 @@ export function VerticesTableViewer() {
         <TableColumn>Centrality</TableColumn>
       </TableHeader>
       <TableBody emptyContent={"No Vertices to show"}>
-        {graphData.map((vertices) => (
-          <TableRow key={vertices.id}>
-            <TableCell>{vertices.id}</TableCell>
-            <TableCell>{vertices.username}</TableCell>
-            <TableCell>{vertices.centrality}</TableCell>
+        {vertices.map((vertex) => (
+          <TableRow key={vertex.id}>
+            <TableCell>{vertex.id}</TableCell>
+            <TableCell>{vertex.username}</TableCell>
+            <TableCell>{vertex.centrality.toFixed(2)}</TableCell>
           </TableRow>
         ))}
       </TableBody>
