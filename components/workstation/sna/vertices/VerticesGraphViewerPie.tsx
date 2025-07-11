@@ -1,6 +1,6 @@
-import React from 'react';
-import { ResponsivePie } from '@nivo/pie';
-import { useTheme } from 'next-themes'; // Assuming you still need theme for text colors etc.
+import React from "react";
+import { ResponsivePie } from "@nivo/pie";
+import { useTheme } from "next-themes"; // Assuming you still need theme for text colors etc.
 import { primitiveColor } from "@/components/color-primitive"; // Assuming you want to use the same color scheme
 
 // This would be your NivoBarDatum or a similar type for pie chart
@@ -23,32 +23,24 @@ export const VerticesGraphViewerPie = ({ data }: NivoPieChartProps) => {
   return (
     <ResponsivePie
       data={data}
-      id="username"    
-      value="centrality" 
+      id="username"
+      value="centrality"
       margin={{ top: 80, right: 120, bottom: 80, left: 120 }}
-      innerRadius={0.3} 
+      innerRadius={0.3}
       padAngle={2}
       cornerRadius={10}
       activeOuterRadiusOffset={8}
       colors={primitiveColor} // Use your defined color scheme
       borderWidth={1}
       borderColor={{
-        from: 'color',
-        modifiers: [
-          [
-            'darker',
-            0.2
-          ]
-        ]
+        from: "color",
+        modifiers: [["darker", 0.2]],
       }}
       arcLinkLabelsSkipAngle={10}
-      arcLinkLabelsTextColor={textColor} 
+      arcLinkLabelsTextColor={textColor}
       arcLinkLabelsThickness={2}
-      arcLinkLabelsColor={{ from: 'color' }}
+      arcLinkLabelsColor={{ from: "color" }}
       arcLabelsSkipAngle={10}
-      
-      
-      
       theme={{
         labels: {
           text: {
@@ -69,12 +61,11 @@ export const VerticesGraphViewerPie = ({ data }: NivoPieChartProps) => {
           },
         },
       }}
-      
       // Optional: Add a legend if desired (separate from axis legends)
       legends={[
         {
-          anchor: 'top-left',
-          direction: 'column',
+          anchor: "top-left",
+          direction: "column",
           justify: false,
           translateX: -100,
           translateY: -30,
@@ -82,19 +73,19 @@ export const VerticesGraphViewerPie = ({ data }: NivoPieChartProps) => {
           itemWidth: 100,
           itemHeight: 18,
           itemTextColor: textColor, // Set legend item text color
-          itemDirection: 'left-to-right',
+          itemDirection: "left-to-right",
           itemOpacity: 1,
           symbolSize: 18,
-          symbolShape: 'circle',
+          symbolShape: "circle",
           effects: [
             {
-              on: 'hover',
+              on: "hover",
               style: {
-                itemTextColor: textColor // Also for hover state
-              }
-            }
-          ]
-        }
+                itemTextColor: textColor, // Also for hover state
+              },
+            },
+          ],
+        },
       ]}
     />
   );

@@ -1,4 +1,5 @@
-import { GraphTableData } from "./workstation/data/dto";
+import { CentralityTableData } from "../data/dto";
+
 export interface NivoBarDatum {
   username: string;
   centrality: number;
@@ -6,7 +7,7 @@ export interface NivoBarDatum {
 }
 
 export const NivoTransformTable = (
-  graphData: GraphTableData[],
+  graphData: CentralityTableData[],
 ): NivoBarDatum[] => {
   return graphData.map((item) => ({
     username: item.username,

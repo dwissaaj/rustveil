@@ -9,8 +9,7 @@ export const useMapId = () => {
     vertex2Data,
     graphType,
     setedgesValue,
-    graphData,
-    setgraphData,
+    setcentralityValueData,
   } = useGraphData();
 
   return async () => {
@@ -29,8 +28,7 @@ export const useMapId = () => {
           centrality: result?.data?.centrality_result?.[parseInt(key)] || 0,
         }),
       );
-      setgraphData(newData);
-      console.log("graph data", graphData);
+      setcentralityValueData(newData);
     } catch (error) {
       console.error("Error loading table data:", error);
       throw error;

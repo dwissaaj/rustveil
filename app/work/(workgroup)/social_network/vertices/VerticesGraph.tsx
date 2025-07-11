@@ -1,11 +1,12 @@
-import { NivoTransformTable } from "@/app/lib/NivoFormatTable";
+
+import { NivoTransformTable } from "@/app/lib/workstation/nivo/NivoFormatTable";
 import { useGraphData } from "@/app/lib/workstation/social/useGraphData";
 import { VerticesGraphViewerBar } from "@/components/workstation/sna/vertices/VerticesGraphViewerBar";
 
 import React from "react";
 
 export default function VerticesGraph() {
-  const { graphData } = useGraphData();
-  const nivoData = NivoTransformTable(graphData);
+  const { centralityValueData } = useGraphData();
+  const nivoData = NivoTransformTable(centralityValueData);
   return <VerticesGraphViewerBar data={nivoData} />;
 }
