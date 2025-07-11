@@ -1,6 +1,6 @@
 "use client";
 import { useGraphData } from "@/app/lib/workstation/social/useGraphData";
-import EdgesTableViewer from "@/components/workstation/sna/EdgesTableViewer";
+import EdgesTableViewer from "@/components/workstation/sna/edges/EdgesTableViewer";
 import { Select, SelectItem, Chip } from "@heroui/react";
 
 export default function EdgesTable() {

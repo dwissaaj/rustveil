@@ -32,7 +32,7 @@
  * - ColumnSelect child component
  */
 "use client";
-import ColumnSelect from "@/components/workstation/sna/VerticesSelect";
+import VerticesSelect from "@/components/workstation/sna/vertices/VerticesSelect";
 import {
   Modal,
   ModalContent,
@@ -40,8 +40,6 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-  Radio,
-  RadioGroup,
 } from "@heroui/react";
 
 type VerticesModalProps = {
@@ -66,7 +64,7 @@ export default function EdgesModal({
                 Pick For Vertices
               </ModalHeader>
               <ModalBody>
-                <ColumnSelect />
+                <VerticesSelect />
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>

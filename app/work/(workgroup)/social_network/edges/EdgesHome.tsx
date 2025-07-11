@@ -1,6 +1,6 @@
 import { useAtomValue } from "jotai";
 import React from "react";
-import EdgesTableViewer from "@/components/workstation/sna/EdgesTableViewer";
+import EdgesTableViewer from "@/components/workstation/sna/edges/EdgesTableViewer";
 import EdgesGraph from "./EdgesGraph";
 import EdgesTable from "./EdgesTable";
 

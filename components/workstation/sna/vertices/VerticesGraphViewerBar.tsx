@@ -7,11 +7,13 @@ import { NivoBarDatum } from "@/app/lib/NivoFormatTable";
 export interface NivoBarChartProps {
   data: NivoBarDatum[];
 }
-export const VerticesGraphViewer = ({ data }: NivoBarChartProps) => {
+export const VerticesGraphViewerBar = ({ data }: NivoBarChartProps) => {
   const { theme } = useTheme();
   const textColor = theme === "dark" ? "#e5e7eb" : "#1f2937";
   const axisColor = theme === "dark" ? "#9ca3af" : "#6b7280";
   const gridColor = theme === "dark" ? "#374151" : "#e5e7eb";
+   const tooltipBackgroundColor = theme === "dark" ? "#374151" : "#ffffff"; 
+  const tooltipTextColor = theme === "dark" ? "#e5e7eb" : "#1f2937"; 
   return (
     <ResponsiveBar
       data={data}
@@ -21,8 +23,10 @@ export const VerticesGraphViewer = ({ data }: NivoBarChartProps) => {
         tickRotation: -30,
         tickSize: 5,
         tickPadding: 5,
+        
       }}
-      axisLeft={{ legend: "Centrality Value", legendOffset: -40 }}
+      
+      axisLeft={{ legend: "Centrality Value", legendOffset: -40 ,}}
       keys={["centrality"]}
       indexBy="username"
       margin={{
@@ -34,26 +38,39 @@ export const VerticesGraphViewer = ({ data }: NivoBarChartProps) => {
       padding={0}
       theme={{
         axis: {
-          domain: {
+          domain: { 
             line: {
-              stroke: axisColor,
+              stroke: axisColor, 
             },
           },
-          ticks: {
+          ticks: { 
             line: {
-              stroke: axisColor,
+              stroke: axisColor, 
             },
             text: {
               fill: textColor,
             },
           },
+          legend: { 
+            text: {
+              fill: textColor,
+            },
+          },
         },
-        grid: {
+        grid: { 
           line: {
-            stroke: gridColor,
+            stroke: gridColor, 
             strokeWidth: 1,
           },
         },
+        tooltip : {
+          container: {
+            background: tooltipBackgroundColor, 
+            color: tooltipTextColor,          
+            fontSize: 12, 
+            borderRadius: 4, 
+          },
+        }
       }}
       colors={primitiveColor}
     />
