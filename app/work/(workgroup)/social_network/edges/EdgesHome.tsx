@@ -5,13 +5,13 @@ import EdgesGraph from "./EdgesGraph";
 import EdgesTable from "./EdgesTable";
 import { Select, SelectItem, Chip } from "@heroui/react";
 import { useGraphData } from "@/app/lib/workstation/social/useGraphData";
-import { useNivoLinks, useNivoNodes } from "@/app/lib/workstation/nivo/NivoNetworkFormat";
+import {  useNetworkData, useNivoLinks, useNivoNodes } from "@/app/lib/workstation/nivo/NivoNetworkFormat";
+import { EdgesGraphNetwork } from "@/components/workstation/sna/edges/EdgesGraphNetwork";
 export default function EdgesHome() {
-  const { headers, vertex1, setVertex1, vertex2, setVertex2 ,data, edgesValue, centralityValueData} = useGraphData();
-  const datanew = useNivoNodes(centralityValueData)
-  const datanew2 = useNivoLinks(edgesValue, centralityValueData)
-  console.log(datanew)
-  console.log(datanew2)
+  const { headers, vertex1, setVertex1, vertex2, setVertex2 ,data, edgesValue, centralityValueData, vertex1Data, vertex2Data} = useGraphData();
+  const datas = useNetworkData()
+  console.log(datas)
+
   return (
     <div className="max-h-screen">
       <div className="flex flex-col gap-2">
@@ -52,7 +52,7 @@ export default function EdgesHome() {
           <EdgesTable />
         </div>
         <div>
-          <EdgesGraph />
+          < EdgesGraphNetwork />
         </div>
       </div>
     </div>

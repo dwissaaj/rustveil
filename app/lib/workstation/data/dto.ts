@@ -44,6 +44,12 @@ export interface NetworkNodeLinkType {
   target: string,
   distance: number
 }
+
+export interface NetworkGraphDataType {
+  nodes: NetworkNodeType[];
+  links: NetworkNodeLinkType[];
+}
+
 // {
 //       "id": "Node 1",
 //       "height": 1,

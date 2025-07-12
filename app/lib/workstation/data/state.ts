@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import { CentralityTableData, NetworkNodeLinkType, NetworkNodeType, TableDataType, UserNode } from "./dto";
+import { CentralityTableData, NetworkGraphDataType, NetworkNodeLinkType, NetworkNodeType, TableDataType, UserNode } from "./dto";
 
 // for table data type
 export const tableData = atom<TableDataType | null>(null);
@@ -24,3 +24,7 @@ export const edgesGraphValue = atom<Record<number, number>>();
 export const centralityData = atom<CentralityTableData[]>([]);
 export const NodesNetworkNodes = atom<NetworkNodeType[]>();
 export const NodesNetworkLink = atom<NetworkNodeLinkType[]>();
+export const NodesNetworkData = atom<NetworkGraphDataType>({
+  nodes: [],
+  links: []
+});
