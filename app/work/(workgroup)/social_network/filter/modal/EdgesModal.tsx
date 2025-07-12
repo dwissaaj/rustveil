@@ -32,7 +32,7 @@
  * - ColumnSelect child component
  */
 "use client";
-import ColumnSelect from "@/components/workstation/sna/ColumnSelect";
+import VerticesSelect from "@/components/workstation/sna/vertices/VerticesSelect";
 import {
   Modal,
   ModalContent,
@@ -46,13 +46,14 @@ type VerticesModalProps = {
   isOpen: boolean;
   onOpenChange: () => void;
 };
-export default function VerticesModal({
+export default function EdgesModal({
   isOpen,
   onOpenChange,
 }: VerticesModalProps) {
   const closeModal = () => {
     onOpenChange();
   };
+
   return (
     <>
       <Modal backdrop="blur" isOpen={isOpen} onOpenChange={onOpenChange}>
@@ -63,14 +64,14 @@ export default function VerticesModal({
                 Pick For Vertices
               </ModalHeader>
               <ModalBody>
-                <ColumnSelect />
+                <VerticesSelect />
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>
                   Close
                 </Button>
                 <Button color="primary" onPress={closeModal}>
-                  Load Table
+                  Choose
                 </Button>
               </ModalFooter>
             </>

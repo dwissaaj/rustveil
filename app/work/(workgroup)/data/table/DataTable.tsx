@@ -43,7 +43,7 @@ type DataTableProps = {
 
 export default function DataTable({ data }: DataTableProps) {
   return (
-    <Table isStriped aria-label="Dynamic Table">
+    <Table isVirtualized isStriped aria-label="Dynamic Table">
       <TableHeader>
         {data.headers.map((header) => (
           <TableColumn key={header}>{header.toUpperCase()}</TableColumn>

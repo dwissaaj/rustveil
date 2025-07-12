@@ -5,7 +5,7 @@ import { Code } from "@heroui/code";
 
 export default function Home() {
   return (
-    <section className="w-full h-full flex flex-col items-center justify-center gap-4 py-8 md:py-10">
+    <section className="w-full h-full flex flex-col items-center justify-center gap-4 py-8 md:py-10 ">
       <div className="inline-block max-w-xl text-center justify-center">
         <span className={title()}>Data Processing&nbsp;</span>
         <span className={title({ color: "violet" })}>LLM&nbsp;</span>
@@ -20,7 +20,7 @@ export default function Home() {
           className={buttonStyles({
             color: "primary",
             radius: "full",
-            variant: "shadow",
+            variant: "ghost",
           })}
           href={"/docs"}
         >
@@ -30,11 +30,11 @@ export default function Home() {
           className={buttonStyles({
             color: "primary",
             radius: "full",
-            variant: "ghost",
+            variant: "shadow",
           })}
-          href={"/docs"}
+          href={"/work"}
         >
-          Blogs
+          Working
         </Link>
       </div>
 
