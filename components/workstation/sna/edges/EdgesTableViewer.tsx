@@ -1,5 +1,5 @@
 "use client";
-import { useGraphData } from "@/app/lib/workstation/social/useGraphData";
+import { TableCell as TableCellType } from "@/app/lib/workstation/data/dto";
 import {
   Table,
   TableHeader,
@@ -8,10 +8,18 @@ import {
   TableRow,
   TableCell,
 } from "@heroui/react";
-
-export default function EdgesTableViewer() {
-  const { vertex1, vertex2, vertex1Data, vertex2Data } = useGraphData();
-
+interface TableViewerProps {
+  vertex1: string;
+  vertex2: string;
+  vertex1Data: TableCellType[];
+  vertex2Data: TableCellType[];
+}
+export default function EdgesTableViewer({
+  vertex1,
+  vertex2,
+  vertex1Data,
+  vertex2Data,
+}: TableViewerProps) {
   const rowCount = Math.max(vertex1Data.length, vertex2Data.length);
 
   return (

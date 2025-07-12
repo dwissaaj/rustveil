@@ -1,13 +1,7 @@
 import { VerticesGraphViewerPie } from "@/components/workstation/sna/vertices/VerticesGraphViewerPie";
-import VerticesGraph from "./VerticesGraph";
 import VerticesTable from "./VerticesTable";
 import { useGraphData } from "@/app/lib/workstation/social/useGraphData";
-import {
-  Select,
-  SelectedItemProps,
-  SelectItem,
-  SharedSelection,
-} from "@heroui/react";
+import { Select, SelectItem, SharedSelection } from "@heroui/react";
 import { VerticesGraphViewerBar } from "@/components/workstation/sna/vertices/VerticesGraphViewerBar";
 
 import { useState } from "react";
@@ -17,7 +11,6 @@ export default function VerticesHome() {
   const { centralityValueData } = useGraphData();
   const nivoData = NivoTransformTable(centralityValueData);
   const [selectedChartType, setSelectedChartType] = useState<string>("bar");
-  console.log(centralityValueData)
   const renderChart = () => {
     switch (selectedChartType) {
       case "pie":

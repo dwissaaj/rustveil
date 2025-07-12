@@ -1,9 +1,7 @@
 import React from "react";
 import { ResponsivePie } from "@nivo/pie";
-import { useTheme } from "next-themes"; // Assuming you still need theme for text colors etc.
-import { primitiveColor } from "@/components/color-primitive"; // Assuming you want to use the same color scheme
-
-// This would be your NivoBarDatum or a similar type for pie chart
+import { useTheme } from "next-themes";
+import { primitiveColor } from "@/components/color-primitive";
 export interface NivoPieDatum {
   id: number;
   username: string;
