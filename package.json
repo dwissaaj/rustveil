@@ -27,6 +27,7 @@
     "@nivo/bar": "^0.99.0",
     "@nivo/core": "^0.99.0",
     "@nivo/network": "^0.99.0",
+    "@nivo/pie": "^0.99.0",
     "@react-aria/ssr": "3.9.9",
     "@react-aria/visually-hidden": "3.8.24",
     "@tauri-apps/api": "^2.5.0",
