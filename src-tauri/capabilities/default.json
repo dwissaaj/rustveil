@@ -8,6 +8,7 @@
   "permissions": [
     "core:default",
     "fs:default",
+  
     {
       "identifier": "fs:allow-app-read-recursive",
       "allow": [
@@ -21,6 +22,15 @@
     "store:default",
     "sql:default",
     "upload:default",
-    "http:default"
+    "http:default",
+    "dialog:allow-ask",
+    "dialog:allow-confirm",
+    "dialog:allow-message",
+    "dialog:allow-save",
+    "dialog:allow-open",
+    "sql:allow-close",
+    "sql:allow-execute",
+    "sql:allow-load",
+    "sql:allow-select"
   ]
 }

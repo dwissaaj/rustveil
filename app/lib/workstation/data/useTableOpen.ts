@@ -2,7 +2,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { useAtomValue, useSetAtom } from "jotai";
 import { filePath, sheetSelected, tableData } from "./state";
 import { TableDataType } from "./dto";
-
+import Database from '@tauri-apps/plugin-sql';
 /**
  * Custom hook for loading table data from an Excel sheet
  *
@@ -22,31 +22,13 @@ import { TableDataType } from "./dto";
  *
  * @throws {Error} Logs errors to console if data loading fails
  */
-export const useTableOpen = () => {
-  /**
-   * Current file path from Jotai state
-   * @type {string}
-   */
+export const useTableOpen = async  () => {
+
   const url = useAtomValue(filePath);
-
-  /**
-   * Currently selected sheet name from Jotai state
-   * @type {string}
-   */
   const sheet = useAtomValue(sheetSelected);
-
-  /**
-   * Setter function for table data
-   * @type {Function}
-   */
   const setData = useSetAtom(tableData);
 
-  /**
-   * Loads table data from the specified Excel file and sheet
-   * @async
-   * @returns {Promise<void>}
-   * @throws {Error} If the data loading fails
-   */
+   const db = await Database.load('sqlite:data.db');
   return async () => {
     try {
       // Call Rust backend to load data
@@ -55,6 +37,19 @@ export const useTableOpen = () => {
         sheetName: sheet,
       });
       if (data.status === 200) {
+const columns = data.headers.map(h => `${h} TEXT`).join(', ');
+  await db.execute(`CREATE TABLE IF NOT EXISTS excel_sheet (${columns})`);
+  
+  // 2. Insert all rows
+  for (const row of data.rows) {
+    const values = data.headers.map(h => row[h] ?? null);
+    const placeholders = data.headers.map((_, i) => `$${i+1}`).join(', ');
+    
+    await db.execute(
+      `INSERT INTO excel_sheet VALUES (${placeholders})`,
+      values
+    );
+  }
         setData(data);
         return {
           status: 200,
