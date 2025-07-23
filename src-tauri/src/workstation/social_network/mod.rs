@@ -47,7 +47,6 @@ pub async fn user_to_vector(
     vertices_two: Vec<String>,
     graph_type: String,
 ) -> ProcessingResult {
-    // Initial validation
     if vertices_one.is_empty() && vertices_two.is_empty() {
         app.emit(
             "mapping-progress",
