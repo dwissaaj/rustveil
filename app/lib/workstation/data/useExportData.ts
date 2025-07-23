@@ -3,7 +3,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { useSetAtom } from "jotai";
 import { filePath, sheetAvailable, sheetSelected } from "./state";
 
-export const useFileOpener = () => {
+export const useexport = () => {
   const setSheets = useSetAtom(sheetAvailable);
   const setSelectedSheet = useSetAtom(sheetSelected);
   const setPath = useSetAtom(filePath);

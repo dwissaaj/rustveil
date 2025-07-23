@@ -2,7 +2,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { useAtomValue, useSetAtom } from "jotai";
 import { filePath, sheetSelected, tableData } from "./state";
 import { TableDataType } from "./dto";
-import Database from '@tauri-apps/plugin-sql';
+
 /**
  * Custom hook for loading table data from an Excel sheet
  *
@@ -22,13 +22,11 @@ import Database from '@tauri-apps/plugin-sql';
  *
  * @throws {Error} Logs errors to console if data loading fails
  */
-export const useTableOpen = async  () => {
-
+export const useTableOpen = () => {
   const url = useAtomValue(filePath);
   const sheet = useAtomValue(sheetSelected);
   const setData = useSetAtom(tableData);
 
-   const db = await Database.load('sqlite:data.db');
   return async () => {
     try {
       // Call Rust backend to load data
@@ -37,19 +35,6 @@ export const useTableOpen = async  () => {
         sheetName: sheet,
       });
       if (data.status === 200) {
-const columns = data.headers.map(h => `${h} TEXT`).join(', ');
-  await db.execute(`CREATE TABLE IF NOT EXISTS excel_sheet (${columns})`);
-  
-  // 2. Insert all rows
-  for (const row of data.rows) {
-    const values = data.headers.map(h => row[h] ?? null);
-    const placeholders = data.headers.map((_, i) => `$${i+1}`).join(', ');
-    
-    await db.execute(
-      `INSERT INTO excel_sheet VALUES (${placeholders})`,
-      values
-    );
-  }
         setData(data);
         return {
           status: 200,
