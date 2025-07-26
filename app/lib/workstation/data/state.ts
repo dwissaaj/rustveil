@@ -17,9 +17,14 @@ export const sheetAvailable = atom<string[]>([]);
 // single selected sheet to load
 export const sheetSelected = atom<string>("");
 
-// file path for the excel
-export const filePath = atom<string>("");
-
+export const filePath = atom<{
+  isSelected: boolean;
+  url: string;
+}>({
+  isSelected: false, // Default: no file selected
+  url: "", // Default: empty string
+});
+// export const filePath = atom<string>("")
 export const columnAvailable = atom<string[]>([]);
 
 export const vertex1ColumnSelected = atom<string>("");
