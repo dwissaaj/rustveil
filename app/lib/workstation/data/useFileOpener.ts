@@ -1,27 +1,44 @@
 import { open } from "@tauri-apps/plugin-dialog";
 import { invoke } from "@tauri-apps/api/core";
-import { useSetAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { filePath, sheetAvailable, sheetSelected } from "./state";
 
 export const useFileOpener = () => {
   const setSheets = useSetAtom(sheetAvailable);
   const setSelectedSheet = useSetAtom(sheetSelected);
-  const setPath = useSetAtom(filePath);
+  const [fileState, setFileState] = useAtom(filePath);
   return async () => {
     try {
-      // Open system file dialog
-      const file = await open({
-        multiple: false,
-        directory: true,
-      });
-      if (!file) return;
-      console.log(file);
-      const sheets: string[] = await invoke("get_sheet", { url: file });
-      setPath(file);
-      setSheets(sheets);
-      setSelectedSheet(sheets[0] || "");
+      if (fileState.isSelected === false) {
+        const file = await open({
+          multiple: false,
+          directory: false,
+          filters: [
+            {
+              name: "Excel",
+              extensions: ["xlsx"],
+            },
+          ],
+        });
+        if (file === null) {
+          const newState = { isSelected: false, url: "" };
+          setFileState(newState);
+          return newState;
+        }
+        if (file) {
+          const sheets: string[] = await invoke("get_sheet", { url: file });
+          setSheets(sheets);
+          setSelectedSheet(sheets[0] || "");
+          const newState = { isSelected: true, url: file };
+          setFileState(newState);
+          return newState;
+        }
+      }
     } catch (error) {
-      console.error("Error loading file:", error);
+      console.log("Error at loading file", error);
+      const newState = { isSelected: false, url: "" };
+      setFileState(newState);
+      return newState;
     }
   };
 };

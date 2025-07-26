@@ -6,45 +6,14 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-  useDisclosure,
-  addToast,
   Alert,
 } from "@heroui/react";
 import { useFileOpener } from "@/app/lib/workstation/data/useFileOpener";
 import SheetSelector from "@/components/workstation/data/SheetSelect";
 import { useTableOpen } from "@/app/lib/workstation/data/useTableOpen";
-import { ErrorIcon, UploadIcon } from "@/components/icon/IconFilter";
+import { ErrorIcon } from "@/components/icon/IconFilter";
 import { useState } from "react";
-/**
- * A modal-based component for selecting and processing Excel (.xlsx) files with sheet selection
- *
- * @component
- * @example
- * // Basic usage
- * <DataPicker />
- *
- * @description
- * Features:
- * - Two-step workflow: file selection → sheet selection → table loading
- * - Built with Hero UI modal and button components
- * - Handles Excel file parsing and sheet selection
- * - Clean separation of file and table operations
- *
- * @ui
- * - Modal dialog with header, body and footer sections
- * - Primary action buttons for file/table operations
- * - Secondary button for cancellation
- * - Responsive layout with consistent spacing
- *
- * @workflow
- * 1. User clicks "Open File" button
- * 2. Modal opens with file selection options
- * 3. User selects .xlsx file
- * 4. Sheet selector becomes available
- * 5. User selects sheet and clicks "Open Table"
- * 6.
- *
- */
+import { useCloseModal } from "@/app/lib/workstation/data/useCloseModal";
 
 type DataPickerModalType = {
   isOpen: boolean;
@@ -61,6 +30,8 @@ export default function DataPicker({
 }: DataPickerModalType) {
   const fileOpener = useFileOpener();
   const tableOpener = useTableOpen();
+  const [openButtonState, setopenButtonState] = useState(true);
+  const { closeModal } = useCloseModal(onOpenChange);
   const [isLoading, setIsLoading] = useState(false);
   const [errorInfo, setErrorInfo] = useState<{
     isError: boolean;
@@ -70,8 +41,10 @@ export default function DataPicker({
   const openFile = async () => {
     try {
       setIsLoading(true);
-      await fileOpener();
-      setFileLoaded(true);
+      const file = await fileOpener();
+      if (file?.isSelected === true) {
+        setopenButtonState(false);
+      }
     } catch (error) {
       setFileLoaded(false);
     } finally {
@@ -99,56 +72,50 @@ export default function DataPicker({
   return (
     <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
       <ModalContent>
-        {(onClose) => (
-          <>
-            <ModalHeader className="flex flex-col gap-1">
-              Data & Sheet
-            </ModalHeader>
-            <ModalBody className="flex flex-col gap-2">
-              <div>
-                <div className="flex flex-col gap-2">
-                  <p>Pick a .xlsx file</p>
-                  <Button
-                    color="secondary"
-                    variant="light"
-                    onPress={openFile}
-                    isLoading={isLoading}
-                    isDisabled={isLoading || fileLoaded}
-                  >
-                    {isLoading
-                      ? "Loading..."
-                      : fileLoaded
-                        ? "File Loaded"
-                        : "Get File"}
-                  </Button>
-                </div>
-                <div>
-                  <SheetSelector />
-                </div>
-              </div>
-            </ModalBody>
-            <ModalFooter>
-              <Button color="danger" variant="light" onPress={onClose}>
-                Close
-              </Button>
+        <ModalHeader className="flex flex-col gap-1">Data & Sheet</ModalHeader>
+        <ModalBody className="flex flex-col gap-2">
+          <div>
+            <div className="flex flex-col gap-2">
+              <p>Pick a .xlsx file</p>
               <Button
-                color="primary"
-                onPress={openTable}
-                isDisabled={!fileLoaded || isLoading}
+                color="secondary"
+                variant="light"
+                onPress={openFile}
                 isLoading={isLoading}
+                isDisabled={fileLoaded}
               >
-                {isLoading ? "Opening..." : "Open Table"}
+                {isLoading
+                  ? "Loading..."
+                  : fileLoaded
+                    ? "File Loaded"
+                    : "Get File"}
               </Button>
+            </div>
+            <div>
+              <SheetSelector />
+            </div>
+          </div>
+        </ModalBody>
+        <ModalFooter>
+          <Button onPress={closeModal} color="danger" variant="light">
+            Close
+          </Button>
+          <Button
+            color="primary"
+            onPress={openTable}
+            isDisabled={openButtonState}
+            isLoading={isLoading}
+          >
+            Open Table
+          </Button>
 
-              <Alert
-                startContent={<ErrorIcon />}
-                title={errorInfo.message}
-                isVisible={errorInfo.isError}
-                color="danger"
-              />
-            </ModalFooter>
-          </>
-        )}
+          <Alert
+            startContent={<ErrorIcon />}
+            title={errorInfo.message}
+            isVisible={errorInfo.isError}
+            color="danger"
+          />
+        </ModalFooter>
       </ModalContent>
     </Modal>
   );
