@@ -5,12 +5,15 @@ export interface UserNode {
 }
 
 export interface TableDataType {
-  headers: string[];
   rows: Record<string, TableCell>[];
-  status?: number;
-  error?: string;
+  response_code?: number;
+  message?: string;
 }
-
+// pub struct DataTable {
+//     response_code: u32,
+//     pub data: Vec<Value>,
+//     message: String,
+// }
 export interface VerticesCentralityTable {
   columns: string[];
   status?: number;
