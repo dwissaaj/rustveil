@@ -1,5 +1,8 @@
+use crate::database::lib::to_sqlite;
+use crate::database::lib::open_or_create_sqlite;
 use calamine::{open_workbook, Data, Reader, Xlsx};
 use chrono::NaiveDate;
+use crate::state::DatabaseProcess;
 use serde_json::{json, Value};
 use tauri::command;
 use serde::Serialize;
@@ -53,7 +56,7 @@ pub fn load_data(url: String, sheet_name: String) -> ProcessingResult {
     let headers: Vec<String> = rows[0].iter().map(|cell| cell.to_string()).collect();
 
     
-       let data_json: Vec<Value> = rows[1..].iter().map(|row| {
+    let data_json: Vec<Value> = rows[1..].iter().map(|row| {
         let mut obj = serde_json::Map::new();
         for (i, header) in headers.iter().enumerate() {
             let value = row.get(i).unwrap_or(&Data::Empty);
@@ -69,12 +72,37 @@ pub fn load_data(url: String, sheet_name: String) -> ProcessingResult {
         }
         Value::Object(obj)
     }).collect();
-    
-    ProcessingResult::Complete(DataTable {
+
+    let connect = match open_or_create_sqlite("output.sqlite") {
+    Ok(conn) => conn,
+    Err(_e) => {
+        return ProcessingResult::Error(ErrorResult {
+            error_code: 401,
+            message: format!("Error at sqlite connection - Details")
+        })
+    }
+    };
+
+    let sqlite_result = to_sqlite(data_json.clone(), headers.clone(), connect);
+
+    match sqlite_result {
+    DatabaseProcess::Complete(_) => {
+        ProcessingResult::Complete(DataTable {
         response_code: 200,
         message: "Success at loading".to_string(),
         data: data_json
     })
+    },
+    DatabaseProcess::Error(_e) => {
+        return ProcessingResult::Error(ErrorResult { 
+                error_code: (401),
+                message: ("Error at process data to sqlite".to_string()) })
+    }
+}
+
+    
+
+    
 }
 
 
