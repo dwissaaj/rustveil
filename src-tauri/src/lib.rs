@@ -2,7 +2,7 @@ mod workstation;
 mod database;
 use workstation::data;
 use workstation::social_network;
-use database::query;
+use database::state;
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
