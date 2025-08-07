@@ -37,3 +37,4 @@ tauri-plugin-log = "2"
 rusqlite = { version = "0.32.0", features = ["bundled"] } # Must match sea-query-rusqlite's requirement
 sea-query = "0.32.6" # Version compatible with rusqlite 0.32
 sea-query-rusqlite = "0.7.0" # The version you want to use
+uuid = { version = "1.3", features = ["v4"] }
