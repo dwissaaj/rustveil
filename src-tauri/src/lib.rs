@@ -1,8 +1,12 @@
 mod workstation;
 mod database;
+mod global;
 use workstation::data;
 use workstation::social_network;
 use database::state;
+use tauri_plugin_fs::FsExt;
+use global::app_path;
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -17,7 +21,15 @@ pub fn run() {
                         .build(),
                 )?;
             }
+    let scope = app.fs_scope();
+    if let Err(e) = scope.allow_directory("/path/to/directory", false) {
+        log::error!("Failed to allow directory access: {}", e);
+    }
+
+let creation_result = app_path::create_folder(app);
+    log::info!("{}", creation_result);
             Ok(())
+
         })
         .invoke_handler(tauri::generate_handler![
             data::load_data,
@@ -25,5 +37,6 @@ pub fn run() {
             social_network::user_to_vector,
         ])
         .run(tauri::generate_context!())
+        
         .expect("error while running tauri application");
 }
