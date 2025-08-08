@@ -61,10 +61,13 @@ pub fn load_data(url: String, sheet_name: String) -> ProcessingResult {
         for (i, header) in headers.iter().enumerate() {
             let value = row.get(i).unwrap_or(&Data::Empty);
             let json_value = match value {
+                Data::Float(f) if f.fract() == 0.0 => {json!(*f as i64)},
                 Data::String(s) => json!(s),
                 Data::Float(f) => json!(f),
                 Data::Int(i) => json!(i),
                 Data::Bool(b) => json!(b),
+                Data::DateTimeIso(s) => json!(s),
+                Data::DurationIso(s) => json!(s),
                 Data::DateTime(dt) => json!(excel_serial_to_date(dt.as_f64())),
                 _ => json!(null),
             };
