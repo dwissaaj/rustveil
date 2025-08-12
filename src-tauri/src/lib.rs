@@ -1,13 +1,12 @@
 mod workstation;
 mod database;
 mod global;
-use tauri::Manager;
 use workstation::data;
 use workstation::social_network;
 use database::state;
 use tauri_plugin_fs::FsExt;
 use global::app_path;
-use tauri::path;
+
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -17,15 +16,13 @@ pub fn run() {
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_log::Builder::new()
                 .target(tauri_plugin_log::Target::new(
-            tauri_plugin_log::TargetKind::Webview,
-                ))
+            tauri_plugin_log::TargetKind::Webview,))
+                .level(log::LevelFilter::Warn)
                 .build())
         .setup(|app| {
-            
             app.fs_scope();
             app_path::create_folder_main_app(app);
             Ok(())
-
         })
         .invoke_handler(tauri::generate_handler![
             data::load_data,

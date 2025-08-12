@@ -6,7 +6,9 @@ use chrono::NaiveDate;
 use serde::Serialize;
 use serde_json::{json, Value};
 use tauri::command;
-
+use tauri::{Builder, Window, WindowEvent, Manager};
+use crate::app_path::AppFolderPath;
+use std::sync::Mutex;
 #[derive(Serialize)]
 pub enum ProcessingResult {
     Complete(DataTable),
@@ -80,8 +82,8 @@ pub fn load_data(url: String, sheet_name: String) -> ProcessingResult {
             }
             Value::Object(obj)
         })
-        .collect();
-
+        .collect(); 
+    
     let connect = match open_or_create_sqlite("output.sqlite") {
         Ok(conn) => conn,
         Err(_e) => {
