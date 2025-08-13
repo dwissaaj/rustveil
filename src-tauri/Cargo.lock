@@ -116,6 +116,7 @@ dependencies = [
  "calamine",
  "chrono",
  "log",
+ "once_cell",
  "petgraph 0.8.2",
  "rusqlite",
  "rustworkx-core",

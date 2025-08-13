@@ -4,11 +4,10 @@ use sea_query::{Alias, ColumnDef, Query, SimpleExpr, SqliteQueryBuilder, Table};
 use sea_query_rusqlite::RusqliteBinder;
 use serde_json::Value;
 use uuid::Uuid;
-use tauri::{Manager};
+
 
 
 pub fn open_or_create_sqlite(file_path: &str) -> Result<Connection, DatabaseError> {
-
     match Connection::open(file_path) {
         Ok(conn) => Ok(conn),
         Err(e) => {
@@ -20,14 +19,15 @@ pub fn open_or_create_sqlite(file_path: &str) -> Result<Connection, DatabaseErro
     }
 }
 
-pub fn to_sqlite(
+pub fn data_to_sqlite(
     data_json: Vec<Value>,
     headers: Vec<String>,
     connect: Connection,
 ) -> DatabaseProcess {
+    let table_name = "rustveil";
     let mut table = Table::create();
-    table.table(Alias::new("rustveil")).if_not_exists();
-
+    table.table(Alias::new(table_name)).if_not_exists();
+    table.col(ColumnDef::new(Alias::new("rv_uuid")).string().not_null());
     if let Some(first_row) = data_json.iter().find(|v| v.is_object()) {
         if let Some(obj) = first_row.as_object() {
             for h in &headers {
@@ -57,14 +57,8 @@ pub fn to_sqlite(
     }
 
     let mut insert = Query::insert();
-    insert.columns(
-        headers
-            .iter()
-            .map(|h| Alias::new(h.clone()))
-            .collect::<Vec<_>>(),
-    );
 
-    insert.into_table(Alias::new("data")).columns(
+    insert.into_table(Alias::new(table_name)).columns(
         std::iter::once(Alias::new("rv_uuid"))
             .chain(headers.iter().map(|h| Alias::new(h)))
             .collect::<Vec<_>>(),

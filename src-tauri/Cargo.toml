@@ -39,3 +39,4 @@ sea-query = "0.32.6" # Version compatible with rusqlite 0.32
 sea-query-rusqlite = "0.7.0" # The version you want to use
 uuid = { version = "1.3", features = ["v4"] }
 tauri-plugin-store = "2"
+once_cell = "1.21.3"
