@@ -1,14 +1,15 @@
 use crate::database::lib::open_or_create_sqlite;
-use crate::database::lib::to_sqlite;
+use crate::database::lib::data_to_sqlite;
 use crate::state::DatabaseProcess;
 use calamine::{open_workbook, Data, Reader, Xlsx};
 use chrono::NaiveDate;
 use serde::Serialize;
 use serde_json::{json, Value};
 use tauri::command;
-use tauri::{Builder, Window, WindowEvent, Manager};
+use tauri::{Manager};
 use crate::app_path::AppFolderPath;
-use std::sync::Mutex;
+use crate::app_path::APP_HANDLE;
+
 #[derive(Serialize)]
 pub enum ProcessingResult {
     Complete(DataTable),
@@ -36,8 +37,14 @@ fn excel_serial_to_date(serial: f64) -> String {
         .to_string()
 }
 
+
+
 #[command]
 pub fn load_data(url: String, sheet_name: String) -> ProcessingResult {
+    let handle = APP_HANDLE.get().expect("AppHandle not set");
+    let state = handle.state::<std::sync::Mutex<AppFolderPath>>();
+    let folder_path = state.lock().unwrap().file_url.clone();
+
     let mut workbook: Xlsx<_> = open_workbook(url).expect("Cannot open file");
     let range = match workbook.worksheet_range(&sheet_name) {
         Ok(range) => range,
@@ -83,8 +90,8 @@ pub fn load_data(url: String, sheet_name: String) -> ProcessingResult {
             Value::Object(obj)
         })
         .collect(); 
-    
-    let connect = match open_or_create_sqlite("output.sqlite") {
+    let db_path = folder_path.clone() + "/output.sqlite";
+    let connect = match open_or_create_sqlite(&db_path) {
         Ok(conn) => conn,
         Err(_e) => {
             return ProcessingResult::Error(ErrorResult {
@@ -94,7 +101,7 @@ pub fn load_data(url: String, sheet_name: String) -> ProcessingResult {
         }
     };
 
-    let sqlite_result = to_sqlite(data_json.clone(), headers.clone(), connect);
+    let sqlite_result = data_to_sqlite(data_json.clone(), headers.clone(), connect);
 
     match sqlite_result {
         DatabaseProcess::Complete(_) => ProcessingResult::Complete(DataTable {

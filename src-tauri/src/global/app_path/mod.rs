@@ -1,22 +1,20 @@
-use log::{error, info};
-use std::fs;
-use tauri::{Builder, Window, WindowEvent, Manager};
-use std::sync::Mutex;
+use log::{error};
+use tauri::{ Manager};
+use once_cell::sync::OnceCell;
+use tauri::AppHandle;
+
 #[derive(Default)]
 pub struct AppFolderPath {
   pub file_url: String,
 }
 
 
-pub fn global_path_app(window: &Window, _event: &WindowEvent) -> String {
-
-    let app_handle = window.app_handle();
-    let state = app_handle.state::<Mutex<AppFolderPath>>();
-    let path = state.lock().unwrap().file_url.clone();
-    path
-}
+pub static APP_HANDLE: OnceCell<AppHandle> = OnceCell::new();
 
 pub fn create_folder_main_app(app: &tauri::App) -> String {
+
+    let _ = APP_HANDLE.set(app.handle().clone());
+
     let public_dir = match app.handle().path().home_dir() {
         Ok(path) => path,
         Err(e) => {
@@ -24,18 +22,16 @@ pub fn create_folder_main_app(app: &tauri::App) -> String {
             return format!("Error: {}", e);
         }
     };
+
     let full_path = public_dir.join("Rust Veil");
-    match fs::create_dir_all(&full_path) {
-        Ok(_) => {
-            app.manage(Mutex::new(AppFolderPath {
-                file_url: full_path.display().to_string(),
-            }));
-            info!("Successfully created directory at: {}", full_path.display());
-            format!("Created at: {}", full_path.display())
-        }
-        Err(e) => {
-            error!("Failed to create directory: {}", e);
-            format!("Error: {}", e)
-        }
+
+    if let Err(e) = std::fs::create_dir_all(&full_path) {
+        return format!("Error: {}", e);
     }
+
+    app.manage(std::sync::Mutex::new(AppFolderPath {
+        file_url: full_path.display().to_string(),
+    }));
+
+    format!("Created at: {}", full_path.display())
 }
