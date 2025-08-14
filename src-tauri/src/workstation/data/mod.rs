@@ -5,8 +5,9 @@ use chrono::NaiveDate;
 use serde::Serialize;
 use serde_json::{json, Value};
 use tauri::{command, Manager};
-use crate::app_path::{AppFolderPath, APP_HANDLE};
-
+use crate::app_path::{AppFolderPath};
+use tauri::AppHandle;
+use std::sync::Mutex;
 /// Represents the result of processing data from Excel into SQLite.
 #[derive(Serialize)]
 pub enum ProcessingResult {
@@ -78,10 +79,11 @@ fn excel_serial_to_date(serial: f64) -> String {
 /// - The Excel file contains no rows.
 /// - SQLite connection fails.
 #[command]
-pub fn load_data(url: String, sheet_name: String) -> ProcessingResult {
-    let handle = APP_HANDLE.get().expect("AppHandle not set");
-    let state = handle.state::<std::sync::Mutex<AppFolderPath>>();
-    let folder_path = state.lock().unwrap().file_url.clone();
+pub fn load_data(app: AppHandle,url: String, sheet_name: String) -> ProcessingResult {
+    let file_app = app.state::<Mutex<AppFolderPath>>();
+
+    // Lock the mutex to get mutable access:
+    let file_path = file_app.lock().unwrap();
 
     let mut workbook: Xlsx<_> = open_workbook(url).expect("Cannot open file");
     let range = match workbook.worksheet_range(&sheet_name) {
@@ -130,7 +132,7 @@ pub fn load_data(url: String, sheet_name: String) -> ProcessingResult {
         .collect();
 
     // SQLite file path inside the app's folder.
-    let db_path = folder_path.clone() + "/output.sqlite";
+    let db_path = file_path.file_url.as_str().to_owned() + "/output.sqlite";
     let connect = match open_or_create_sqlite(&db_path) {
         Ok(conn) => conn,
         Err(_) => {
