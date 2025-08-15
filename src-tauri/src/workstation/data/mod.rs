@@ -2,41 +2,12 @@ use crate::database::lib::{open_or_create_sqlite, data_to_sqlite};
 use crate::state::DatabaseProcess;
 use calamine::{open_workbook, Data, Reader, Xlsx};
 use chrono::NaiveDate;
-use serde::Serialize;
 use serde_json::{json, Value};
-use tauri::{command, Manager};
+use tauri::{command, Manager, AppHandle};
 use crate::app_path::{AppFolderPath};
-use tauri::AppHandle;
 use std::sync::Mutex;
-/// Represents the result of processing data from Excel into SQLite.
-#[derive(Serialize)]
-pub enum ProcessingResult {
-    /// Processing completed successfully with resulting data.
-    Complete(DataTable),
-    /// An error occurred during processing.
-    Error(ErrorResult),
-}
-
-/// Successful data processing result containing the imported data.
-#[derive(Serialize)]
-pub struct DataTable {
-    /// HTTP-like response code (e.g., 200 for success).
-    response_code: u32,
-    /// The processed dataset as an array of JSON objects.
-    pub data: Vec<Value>,
-    /// Descriptive message for the result.
-    message: String,
-}
-
-/// Error result containing details about what failed.
-#[derive(Clone, Serialize)]
-pub struct ErrorResult {
-    /// Error code (e.g., 401 for connection failure).
-    error_code: u32,
-    /// Description of the error.
-    message: String,
-}
-
+use crate::workstation::state_response::{ProcessingResult,ErrorResult,DataTable};
+use crate::database::lib::get_all_data;
 /// Converts an Excel serial date number into a `YYYY-MM-DD` formatted string.
 ///
 /// # Arguments
@@ -143,22 +114,34 @@ pub fn load_data(app: AppHandle,url: String, sheet_name: String) -> ProcessingRe
         }
     };
 
-    // Store data in SQLite.
+
     let sqlite_result = data_to_sqlite(data_json.clone(), headers.clone(), connect);
 
-    match sqlite_result {
-        DatabaseProcess::Complete(_) => ProcessingResult::Complete(DataTable {
-            response_code: 200,
-            message: "Success at loading".to_string(),
-            data: data_json,
-        }),
-        DatabaseProcess::Error(_) => ProcessingResult::Error(ErrorResult {
-            error_code: 401,
-            message: "Error processing data into SQLite".to_string(),
-        }),
-    }
-}
+   match sqlite_result {
+    DatabaseProcess::Complete(_) => {
+        // Now fetch all data from SQLite
+        let all_data_result = get_all_data(&app); // call your get_all_data function
 
+        match all_data_result {
+            DatabaseProcess::Complete(db_complete) => {
+                ProcessingResult::Complete(DataTable {
+                    response_code: db_complete.response_code,
+                    message: db_complete.message,
+                    data: db_complete.data.unwrap_or_else(|| vec![]), 
+                })
+            }
+            DatabaseProcess::Error(err) => ProcessingResult::Error(ErrorResult {
+                error_code: err.error_code,
+                message: err.message,
+            }),
+        }
+    }
+    DatabaseProcess::Error(err) => ProcessingResult::Error(ErrorResult {
+        error_code: err.error_code,
+        message: err.message,
+    }),
+}
+}
 /// Retrieves the list of sheet names from an Excel file.
 ///
 /// # Arguments
