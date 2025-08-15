@@ -4,6 +4,11 @@ use sea_query::{Alias, ColumnDef, Query, SimpleExpr, SqliteQueryBuilder, Table};
 use sea_query_rusqlite::RusqliteBinder;
 use serde_json::Value;
 use uuid::Uuid;
+use std::sync::Mutex;
+use crate::app_path::{AppFolderPath};
+use tauri::{AppHandle, Manager};
+
+
 
 /// Opens (or creates) a SQLite database connection.
 /// 
@@ -51,7 +56,7 @@ pub fn data_to_sqlite(
     table.table(Alias::new(table_name)).if_not_exists();
 
     // Always add the UUID column
-    table.col(ColumnDef::new(Alias::new("rv_uuid")).string().not_null());
+    table.col(ColumnDef::new(Alias::new("rv_uuid")).string().not_null().unique_key());
 
     // Infer column types from the first valid JSON object
     if let Some(first_row) = data_json.iter().find(|v| v.is_object()) {
@@ -120,10 +125,80 @@ pub fn data_to_sqlite(
         Ok(_) => DatabaseProcess::Complete(DatabaseComplete {
             response_code: 200,
             message: "Success insert data".to_string(),
+            data: None
         }),
-        Err(_) => DatabaseProcess::Error(DatabaseError {
+        Err(e) => DatabaseProcess::Error(DatabaseError {
             error_code: 401,
-            message: "Error at execute insert data".to_string(),
+            message: format!("Error at execute insert data {}", e)
         }),
     }
+}
+
+
+pub fn get_all_data(app: &AppHandle) -> DatabaseProcess {
+    let file_app = app.state::<Mutex<AppFolderPath>>();
+    let file_path = file_app.lock().unwrap();
+    let db_path = file_path.file_url.as_str().to_owned() + "/output.sqlite";
+
+    let connect = match open_or_create_sqlite(&db_path) {
+        Ok(conn) => conn,
+        Err(e) => {
+            return DatabaseProcess::Error(DatabaseError {
+                error_code: 401,
+                message: "Error at SQLite connection".to_string(),
+            })
+        }
+    };
+
+    let mut stmt = match connect.prepare("SELECT * FROM rustveil") {
+        Ok(s) => s,
+        Err(e) => {
+
+            return DatabaseProcess::Error(DatabaseError {
+                error_code: 402,
+                message: format!("Failed to prepare statement: {}", e),
+            });
+        }
+    };
+
+    // Collect column names once to avoid borrow issues
+    let col_names: Vec<String> = (0..stmt.column_count())
+        .map(|i| stmt.column_name(i).unwrap_or("unknown").to_string())
+        .collect();
+
+    let mut rows = match stmt.query([]) {
+        Ok(r) => r,
+        Err(_) => {
+            return DatabaseProcess::Error(DatabaseError {
+                error_code: 403,
+                message: "Error at SQLite query".to_string(),
+            })
+        }
+    };
+
+    let mut all_data = Vec::new();
+
+    while let Ok(Some(row)) = rows.next() {
+        let mut obj = serde_json::Map::new();
+
+        for i in 0..col_names.len() {
+            let col_name = &col_names[i];
+            let val: Result<String, _> = row.get(i);
+            obj.insert(
+                col_name.clone(),
+                match val {
+                    Ok(v) => Value::String(v),
+                    Err(_) => Value::Null,
+                },
+            );
+        }
+
+        all_data.push(Value::Object(obj));
+    }
+
+    DatabaseProcess::Complete(DatabaseComplete {
+        response_code: 200,
+        message: "Data fetched successfully".to_string(),
+        data: if all_data.is_empty() { None } else { Some(all_data) },
+    })
 }
