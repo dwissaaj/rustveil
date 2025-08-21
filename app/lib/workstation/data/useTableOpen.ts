@@ -3,40 +3,36 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { filePath, sheetSelected, tableData } from "./state";
 import { TableDataType } from "./dto";
 
+import { useCallback } from "react";
+
 export const useTableOpen = () => {
-  const { isSelected, url } = useAtomValue(filePath);
+  const { url } = useAtomValue(filePath);
   const sheet = useAtomValue(sheetSelected);
   const setData = useSetAtom(tableData);
 
-  return async () => {
+  return useCallback(async () => {
     try {
-      // Call Rust backend to load data
-      const data = await invoke<TableDataType>("load_data", {
-        url: url,
+      const response = await invoke<TableDataType>("load_data", {
+        url,
         sheetName: sheet,
       });
-      console.log(data);
-      if (data.response_code === 200) {
-        setData(data);
-        return {
-          response_code: 200,
-          message: "Good",
-        };
+      console.log(response);
+
+      if (response.response_code === 200) {
+        setData(response);
+        return { response_code: 200, message: response.message };
       }
 
-      if (data.response_code === 404) {
-        return {
-          response_code: 404,
-          message: "Sheet not found",
-        };
+      if (response.response_code === 404) {
+        return { response_code: 404, message: response.message };
       }
 
       return {
-        status: data.response_code,
-        error: data.message || "Unknown error",
+        status: response.response_code,
+        error: response.message || "Unknown error",
       };
     } catch (error) {
       console.error("Error loading table data:", error);
     }
-  };
+  }, [url, sheet, setData]);
 };

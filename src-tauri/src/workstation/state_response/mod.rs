@@ -28,3 +28,11 @@ pub struct ErrorResult {
     /// Description of the error.
     pub message: String,
 }
+
+
+#[derive(Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ProcessData {
+    pub progress: i32,
+    pub message: String,
+}

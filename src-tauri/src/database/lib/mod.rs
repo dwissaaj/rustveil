@@ -7,7 +7,7 @@ use uuid::Uuid;
 use std::sync::Mutex;
 use crate::app_path::{AppFolderPath};
 use tauri::{AppHandle, Manager};
-
+use std::path::Path;
 
 
 /// Opens (or creates) a SQLite database connection.
@@ -17,135 +17,43 @@ use tauri::{AppHandle, Manager};
 /// 
 /// # Returns
 /// - `Ok(Connection)` if successful
-/// - `Err(DatabaseError)` if the connection fails
-pub fn open_or_create_sqlite(file_path: &str) -> Result<Connection, DatabaseError> {
-    match Connection::open(file_path) {
-        Ok(conn) => Ok(conn),
-        Err(e) => {
-            Err(DatabaseError {
-                error_code: 401,
-                message: format!("Error at connection: {}", e),
-            })
-        }
-    }
-}
-
-/// Inserts JSON data into a SQLite database table.
 /// 
-/// - Creates the table if it doesn't exist
-/// - Infers column types from the first JSON object in `data_json`
-/// - Adds a `rv_uuid` column automatically as a unique identifier
-/// 
-/// # Parameters
-/// - `data_json`: Vector of JSON objects (rows of data)
-/// - `headers`: Column names (extracted from JSON keys)
-/// - `connect`: An open SQLite database connection
-/// 
-/// # Returns
-/// - `DatabaseProcess::Complete` on success
-/// - `DatabaseProcess::Error` on failure
-pub fn data_to_sqlite(
-    data_json: Vec<Value>,
-    headers: Vec<String>,
-    connect: Connection,
-) -> DatabaseProcess {
-    let table_name = "rustveil";
 
-    // ----- STEP 1: CREATE TABLE IF NOT EXISTS -----
-    let mut table = Table::create();
-    table.table(Alias::new(table_name)).if_not_exists();
+pub fn open_or_create_sqlite(base_path: &str) -> Result<Connection, String> {
+    let mut final_path = base_path.to_string();
 
-    // Always add the UUID column
-    table.col(ColumnDef::new(Alias::new("rv_uuid")).string().not_null().unique_key());
-
-    // Infer column types from the first valid JSON object
-    if let Some(first_row) = data_json.iter().find(|v| v.is_object()) {
-        if let Some(obj) = first_row.as_object() {
-            for h in &headers {
-                let mut col = ColumnDef::new(Alias::new(h));
-                let col = match obj.get(h) {
-                    Some(v) if v.is_boolean() => col.boolean(),
-                    Some(v) if v.is_i64() || v.is_u64() => col.integer(),
-                    Some(v) if v.is_f64() => col.double(),
-                    Some(v) if v.is_string() => col.string(),
-                    _ => col.string(), // Default to string
-                };
-                table.col(col.null());
+    // if file exists, find next available filename
+    if Path::new(&final_path).exists() {
+        let mut counter = 1;
+        loop {
+            let candidate = format!("{}({}).sqlite", base_path.trim_end_matches(".sqlite"), counter);
+            if !Path::new(&candidate).exists() {
+                final_path = candidate;
+                break;
             }
+            counter += 1;
         }
     }
 
-    // Execute CREATE TABLE statement
-    let sql = table.to_string(SqliteQueryBuilder);
-    if let Err(e) = connect.execute(sql.as_str(), []) {
-        return DatabaseProcess::Error(DatabaseError {
-            error_code: 401,
-            message: format!("Error at execute table: {}", e),
-        });
-    }
-
-    // ----- STEP 2: BUILD INSERT QUERY -----
-    let mut insert = Query::insert();
-    insert.into_table(Alias::new(table_name)).columns(
-        std::iter::once(Alias::new("rv_uuid"))
-            .chain(headers.iter().map(|h| Alias::new(h)))
-            .collect::<Vec<_>>(),
-    );
-
-    // Add rows from JSON
-    for row in &data_json {
-        if let Some(obj) = row.as_object() {
-            // First column: auto-generated UUID
-            let mut exprs = vec![SimpleExpr::Value(sea_query::Value::String(Some(Box::new(
-                Uuid::new_v4().to_string(),
-            ))))];
-
-            // Add column values based on type
-            exprs.extend(headers.iter().map(|h| match obj.get(h) {
-                Some(Value::Bool(b)) => SimpleExpr::Value(sea_query::Value::Bool(Some(*b))),
-                Some(Value::Number(n)) if n.is_i64() => {
-                    SimpleExpr::Value(sea_query::Value::Int(Some(n.as_i64().unwrap() as i32)))
-                }
-                Some(Value::Number(n)) => {
-                    SimpleExpr::Value(sea_query::Value::Double(Some(n.as_f64().unwrap())))
-                }
-                Some(Value::String(s)) => {
-                    SimpleExpr::Value(sea_query::Value::String(Some(Box::new(s.clone()))))
-                }
-                _ => SimpleExpr::Value(sea_query::Value::String(Some(Box::new("".to_string())))),
-            }));
-
-            insert.values_panic(exprs);
-        }
-    }
-
-    // Execute INSERT query
-    let (sql, params) = insert.build_rusqlite(SqliteQueryBuilder);
-    match connect.execute(sql.as_str(), &*params.as_params()) {
-        Ok(_) => DatabaseProcess::Complete(DatabaseComplete {
-            response_code: 200,
-            message: "Success insert data".to_string(),
-            data: None
-        }),
-        Err(e) => DatabaseProcess::Error(DatabaseError {
-            error_code: 401,
-            message: format!("Error at execute insert data {}", e)
-        }),
+    match Connection::open(&final_path) {
+        Ok(conn) => Ok(conn),
+        Err(e) => Err(format!("Error at connection: {}", e)),
     }
 }
-
 
 pub fn get_all_data(app: &AppHandle) -> DatabaseProcess {
     let file_app = app.state::<Mutex<AppFolderPath>>();
     let file_path = file_app.lock().unwrap();
-    let db_path = file_path.file_url.as_str().to_owned() + "/output.sqlite";
+
+    // Use the *exact* SQLite path stored when the file was created
+    let db_path = file_path.file_url.clone();
 
     let connect = match open_or_create_sqlite(&db_path) {
         Ok(conn) => conn,
-        Err(e) => {
+        Err(_) => {
             return DatabaseProcess::Error(DatabaseError {
                 error_code: 401,
-                message: "Error at SQLite connection".to_string(),
+                message: "Error at SQLite connection Get All Data".to_string(),
             })
         }
     };
@@ -153,7 +61,6 @@ pub fn get_all_data(app: &AppHandle) -> DatabaseProcess {
     let mut stmt = match connect.prepare("SELECT * FROM rustveil") {
         Ok(s) => s,
         Err(e) => {
-
             return DatabaseProcess::Error(DatabaseError {
                 error_code: 402,
                 message: format!("Failed to prepare statement: {}", e),
@@ -168,10 +75,10 @@ pub fn get_all_data(app: &AppHandle) -> DatabaseProcess {
 
     let mut rows = match stmt.query([]) {
         Ok(r) => r,
-        Err(_) => {
+        Err(e) => {
             return DatabaseProcess::Error(DatabaseError {
                 error_code: 403,
-                message: "Error at SQLite query".to_string(),
+                message: format!("Error at Get All Data Sqlite query get rows: {}", e),
             })
         }
     };
@@ -200,5 +107,127 @@ pub fn get_all_data(app: &AppHandle) -> DatabaseProcess {
         response_code: 200,
         message: "Data fetched successfully".to_string(),
         data: if all_data.is_empty() { None } else { Some(all_data) },
+    })
+}
+
+
+/// Inserts JSON data into a SQLite database table.
+/// 
+/// - Creates the table if it doesn't exist
+/// - Infers column types from the first JSON object in `data_json`
+/// - Adds a `rv_uuid` column automatically as a unique identifier
+/// 
+/// # Parameters
+/// - `data_json`: Vector of JSON objects (rows of data)
+/// - `headers`: Column names (extracted from JSON keys)
+/// - `connect`: An open SQLite database connection
+/// 
+/// # Returns
+/// - `DatabaseProcess::Complete` on success
+/// - `DatabaseProcess::Error` on failure
+pub fn data_to_sqlite(
+    data_json: Vec<Value>,
+    headers: Vec<String>,
+    connect: &Connection,
+) -> DatabaseProcess {
+    let table_name = "rustveil";
+
+    // ----- STEP 0: SANITIZE HEADERS -----
+    let mut col_map = Vec::new();
+    for h in headers {
+        let h = h.trim();
+        if h.is_empty() { continue }
+        let sanitized = h.replace(" ", "_");
+        col_map.push((h.to_string(), sanitized));
+    }
+
+    // ----- STEP 1: CREATE TABLE -----
+    let mut table = Table::create();
+    table.table(Alias::new(table_name)).if_not_exists();
+    table.col(ColumnDef::new(Alias::new("rv_uuid")).string().not_null().unique_key());
+
+    if let Some(first_row) = data_json.iter().find(|v| v.is_object()) {
+        if let Some(obj) = first_row.as_object() {
+            for (orig, col_name) in &col_map {
+                let mut col = ColumnDef::new(Alias::new(col_name));
+                let col = match obj.get(orig) {
+                    Some(Value::Bool(_)) => col.boolean(),
+                    Some(Value::Number(n)) if n.is_i64() => col.integer(),
+                    Some(Value::Number(_)) => col.double(),
+                    Some(Value::String(_)) => col.string(),
+                    _ => col.string(),
+                };
+                table.col(col.null());
+            }
+        }
+    }
+
+    let sql = table.to_string(SqliteQueryBuilder);
+    if let Err(e) = connect.execute(sql.as_str(), []) {
+        return DatabaseProcess::Error(DatabaseError {
+            error_code: 401,
+            message: format!("Error creating table: {}", e),
+        });
+    } else {
+        log::info!("Created table `{}` successfully", table_name);
+    }
+
+    // ----- STEP 2: INSERT DATA IN BATCHES -----
+    let max_variables = 999;
+    let num_columns = col_map.len() + 1; // +1 for rv_uuid
+    let batch_size = if num_columns > 0 { max_variables / num_columns } else { 1 };
+
+    let mut total_inserted = 0;
+    for (i, chunk) in data_json.chunks(batch_size).enumerate() {
+        let mut insert = Query::insert();
+        insert.into_table(Alias::new(table_name)).columns(
+            std::iter::once(Alias::new("rv_uuid"))
+                .chain(col_map.iter().map(|(_, col_name)| Alias::new(col_name)))
+                .collect::<Vec<_>>(),
+        );
+
+        for row in chunk {
+            if let Some(obj) = row.as_object() {
+                let mut exprs = vec![SimpleExpr::Value(sea_query::Value::String(Some(Box::new(
+                    Uuid::new_v4().to_string(),
+                ))))];
+
+                exprs.extend(col_map.iter().map(|(orig, _)| match obj.get(orig) {
+                    Some(Value::Bool(b)) => SimpleExpr::Value(sea_query::Value::Bool(Some(*b))),
+                    Some(Value::Number(n)) if n.is_i64() => {
+                        SimpleExpr::Value(sea_query::Value::Int(Some(n.as_i64().unwrap() as i32)))
+                    }
+                    Some(Value::Number(n)) => {
+                        SimpleExpr::Value(sea_query::Value::Double(Some(n.as_f64().unwrap())))
+                    }
+                    Some(Value::String(s)) => {
+                        SimpleExpr::Value(sea_query::Value::String(Some(Box::new(s.clone()))))
+                    }
+                    _ => SimpleExpr::Value(sea_query::Value::String(Some(Box::new("".to_string())))),
+                }));
+
+                insert.values_panic(exprs);
+            }
+        }
+
+        let (sql, params) = insert.build_rusqlite(SqliteQueryBuilder);
+
+        match connect.execute(sql.as_str(), &*params.as_params()) {
+            Ok(count) => {
+                total_inserted += count;
+            }
+            Err(e) => {
+                return DatabaseProcess::Error(DatabaseError {
+                    error_code: 401,
+                    message: format!("Error inserting batch {}: {}", i, e),
+                });
+            }
+        }
+    }
+
+    DatabaseProcess::Complete(DatabaseComplete {
+        response_code: 200,
+        message: format!("Success: inserted {} rows", total_inserted),
+        data: Some(data_json),
     })
 }
