@@ -41,3 +41,7 @@ pub struct DatabaseError {
     /// Description of the error for logging or UI display.
     pub message: String,
 }
+
+pub struct SqliteDataState {
+    pub file_url: String,
+}

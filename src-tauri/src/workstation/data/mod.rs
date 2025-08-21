@@ -7,6 +7,7 @@ use tauri::{command, Manager, AppHandle, Emitter};
 use crate::app_path::{AppFolderPath};
 use std::sync::Mutex;
 use crate::workstation::state_response::{ProcessingResult,ErrorResult,DataTable, ProcessData};
+use crate::database::state::{SqliteDataState};
 use crate::database::lib::get_all_data;
 /// Converts an Excel serial date number into a `YYYY-MM-DD` formatted string.
 ///
@@ -51,11 +52,14 @@ fn excel_serial_to_date(serial: f64) -> String {
 /// - SQLite connection fails.
 #[command]
 pub fn load_data(app: AppHandle,url: String, sheet_name: String) -> ProcessingResult {
-    let file_app = app.state::<Mutex<AppFolderPath>>();
+    let app_folder_path = app.state::<Mutex<AppFolderPath>>();
 
     // Lock the mutex to get mutable access:
-    let file_path = file_app.lock().unwrap();
+    let app_path = app_folder_path.lock().unwrap();
+    let database_path_state = app.state::<Mutex<SqliteDataState>>();
 
+    // Lock the mutex to get mutable access:
+    let db_path = database_path_state.lock().unwrap();
     let mut workbook: Xlsx<_> = open_workbook(url).expect("Cannot open file");
     let range = match workbook.worksheet_range(&sheet_name) {
         Ok(range) => {
@@ -126,8 +130,8 @@ pub fn load_data(app: AppHandle,url: String, sheet_name: String) -> ProcessingRe
                 },
                 );
     // SQLite file path inside the app's folder.
-    let db_path = file_path.file_url.as_str().to_owned() + "/output.sqlite";
-    let connect = match open_or_create_sqlite(&db_path) {
+    let db_path = db_path.file_url.as_str().to_owned() + "/output.sqlite";
+    let connect = match open_or_create_sqlite(&app, &db_path) {
         Ok(conn) => conn,
         Err(_) => {
             return ProcessingResult::Error(ErrorResult {

@@ -8,6 +8,7 @@ use tauri_plugin_fs::FsExt;
 use global::app_path;
 use app_path::AppFolderPath;
 use std::sync::Mutex;
+use database::state::SqliteDataState;
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -32,6 +33,7 @@ pub fn run() {
         .manage(Mutex::new(AppFolderPath {
             file_url: String::new(),
         }))
+        .manage(Mutex::new(SqliteDataState { file_url: String::new() }))
         .setup(|app| {
             app.fs_scope();
             app_path::create_folder_main_app(app);

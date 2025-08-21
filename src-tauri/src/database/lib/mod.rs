@@ -5,10 +5,9 @@ use sea_query_rusqlite::RusqliteBinder;
 use serde_json::Value;
 use uuid::Uuid;
 use std::sync::Mutex;
-use crate::app_path::{AppFolderPath};
 use tauri::{AppHandle, Manager};
 use std::path::Path;
-
+use crate::SqliteDataState;
 
 /// Opens (or creates) a SQLite database connection.
 /// 
@@ -19,7 +18,7 @@ use std::path::Path;
 /// - `Ok(Connection)` if successful
 /// 
 
-pub fn open_or_create_sqlite(base_path: &str) -> Result<Connection, String> {
+pub fn open_or_create_sqlite(app: &AppHandle, base_path: &str) -> Result<Connection, String> {
     let mut final_path = base_path.to_string();
 
     // if file exists, find next available filename
@@ -34,7 +33,11 @@ pub fn open_or_create_sqlite(base_path: &str) -> Result<Connection, String> {
             counter += 1;
         }
     }
-
+    if let Some(state) = app.try_state::<Mutex<SqliteDataState>>() {
+            if let Ok(mut sqlite_state) = state.lock() {
+                sqlite_state.file_url = final_path.clone();
+            }
+        }
     match Connection::open(&final_path) {
         Ok(conn) => Ok(conn),
         Err(e) => Err(format!("Error at connection: {}", e)),
@@ -42,11 +45,11 @@ pub fn open_or_create_sqlite(base_path: &str) -> Result<Connection, String> {
 }
 
 pub fn get_all_data(app: &AppHandle) -> DatabaseProcess {
-    let file_app = app.state::<Mutex<AppFolderPath>>();
-    let file_path = file_app.lock().unwrap();
-    let db_path = file_path.file_url.as_str().to_owned() + "/output.sqlite";
-
-    let connect = match open_or_create_sqlite(&db_path) {
+    let db_state = app.state::<Mutex<SqliteDataState>>();
+    let db = db_state.lock().unwrap(); // now "db" holds the sqlite file state
+    let db_path = db.file_url.clone();  // read the path
+    
+    let connect = match Connection::open(&db_path) {
         Ok(conn) => conn,
         Err(_) => {
             return DatabaseProcess::Error(DatabaseError {
@@ -57,29 +60,29 @@ pub fn get_all_data(app: &AppHandle) -> DatabaseProcess {
     };
 
     let mut stmt = match connect.prepare("SELECT * FROM rustveil") {
-    Ok(s) => s,
-    Err(e) => {
-        return DatabaseProcess::Error(DatabaseError {
-            error_code: 402,
-            message: format!("Failed to prepare statement: {}", e),
-        });
-    }
-};
+        Ok(s) => s,
+        Err(e) => {
+            return DatabaseProcess::Error(DatabaseError {
+                error_code: 402,
+                message: format!("Failed to prepare statement: {}", e),
+            })
+        }
+    };
 
-    // Collect column names once to avoid borrow issues
+    // Collect column names once
     let col_names: Vec<String> = (0..stmt.column_count())
         .map(|i| stmt.column_name(i).unwrap_or("unknown").to_string())
         .collect();
 
     let mut rows = match stmt.query([]) {
-    Ok(r) => r,
-    Err(e) => {
-        return DatabaseProcess::Error(DatabaseError {
-            error_code: 403,
-            message: format!("Error at Get All Data Sqlite query get rows: {}", e),
-        })
-    }
-};
+        Ok(r) => r,
+        Err(e) => {
+            return DatabaseProcess::Error(DatabaseError {
+                error_code: 403,
+                message: format!("Error at Get All Data Sqlite query get rows: {}", e),
+            })
+        }
+    };
 
     let mut all_data = Vec::new();
 
@@ -107,7 +110,6 @@ pub fn get_all_data(app: &AppHandle) -> DatabaseProcess {
         data: if all_data.is_empty() { None } else { Some(all_data) },
     })
 }
-
 
 /// Inserts JSON data into a SQLite database table.
 /// 
