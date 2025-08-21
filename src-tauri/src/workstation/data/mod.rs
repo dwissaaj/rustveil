@@ -3,10 +3,10 @@ use crate::state::DatabaseProcess;
 use calamine::{open_workbook, Data, Reader, Xlsx};
 use chrono::NaiveDate;
 use serde_json::{json, Value};
-use tauri::{command, Manager, AppHandle};
+use tauri::{command, Manager, AppHandle, Emitter};
 use crate::app_path::{AppFolderPath};
 use std::sync::Mutex;
-use crate::workstation::state_response::{ProcessingResult,ErrorResult,DataTable};
+use crate::workstation::state_response::{ProcessingResult,ErrorResult,DataTable, ProcessData};
 use crate::database::lib::get_all_data;
 /// Converts an Excel serial date number into a `YYYY-MM-DD` formatted string.
 ///
@@ -58,17 +58,34 @@ pub fn load_data(app: AppHandle,url: String, sheet_name: String) -> ProcessingRe
 
     let mut workbook: Xlsx<_> = open_workbook(url).expect("Cannot open file");
     let range = match workbook.worksheet_range(&sheet_name) {
-        Ok(range) => range,
-        Err(_) => {
+        Ok(range) => {
+            let _ = app.emit(
+            "load-data-progress",
+            ProcessData {
+                progress: 5,
+                message: "Processing Excel Data".to_string(),
+            },
+            );
+                range
+
+            },
+        Err(e ) => {
             return ProcessingResult::Error(ErrorResult {
                 error_code: 401,
-                message: "Sheet not found".to_string(),
+                message: format!("Sheet not found {}",e)
             })
         }
     };
     let rows: Vec<Vec<Data>> = range.rows().map(|r| r.to_vec()).collect();
 
     if rows.is_empty() {
+        let _ = app.emit(
+            "load-data-progress",
+            ProcessData {
+                progress: 0,
+                message: "Failed To Process No Rows".to_string(),
+            },
+        );
         return ProcessingResult::Error(ErrorResult {
             error_code: 401,
             message: "Rows are empty, no data available".to_string(),
@@ -101,7 +118,13 @@ pub fn load_data(app: AppHandle,url: String, sheet_name: String) -> ProcessingRe
             Value::Object(obj)
         })
         .collect();
-
+    let _ = app.emit(
+                "load-data-progress",
+                ProcessData {
+                    progress: 30,
+                    message: "Change Data Type".to_string(),
+                },
+                );
     // SQLite file path inside the app's folder.
     let db_path = file_path.file_url.as_str().to_owned() + "/output.sqlite";
     let connect = match open_or_create_sqlite(&db_path) {
@@ -109,38 +132,44 @@ pub fn load_data(app: AppHandle,url: String, sheet_name: String) -> ProcessingRe
         Err(_) => {
             return ProcessingResult::Error(ErrorResult {
                 error_code: 401,
-                message: "Error at SQLite connection".to_string(),
+                message: "When Load Data Sqlite Error Connection".to_string(),
             })
         }
     };
 
+    let _ = app.emit(
+                "load-data-progress",
+                ProcessData {
+                    progress: 50,
+                    message: "Create sqlite file".to_string(),
+                },
+                );
+    let sqlite_result = data_to_sqlite(data_json.clone(), headers.clone(), &connect);
+    match sqlite_result {
+    DatabaseProcess::Complete(db_complete) => {
+        let _ = app.emit(
+            "load-data-progress",
+            ProcessData {
+                progress: 100,
+                message: "Process Done".to_string(),
+            },
+        );
 
-    let sqlite_result = data_to_sqlite(data_json.clone(), headers.clone(), connect);
-
-   match sqlite_result {
-    DatabaseProcess::Complete(_) => {
-        // Now fetch all data from SQLite
-        let all_data_result = get_all_data(&app); // call your get_all_data function
-
-        match all_data_result {
-            DatabaseProcess::Complete(db_complete) => {
-                ProcessingResult::Complete(DataTable {
-                    response_code: db_complete.response_code,
-                    message: db_complete.message,
-                    data: db_complete.data.unwrap_or_else(|| vec![]), 
-                })
-            }
-            DatabaseProcess::Error(err) => ProcessingResult::Error(ErrorResult {
-                error_code: err.error_code,
-                message: err.message,
-            }),
-        }
+        ProcessingResult::Complete(DataTable {
+            response_code: db_complete.response_code,
+            message: db_complete.message,
+            data: db_complete.data.unwrap_or_else(|| vec![]),
+        })
     }
-    DatabaseProcess::Error(err) => ProcessingResult::Error(ErrorResult {
-        error_code: err.error_code,
-        message: err.message,
-    }),
+    DatabaseProcess::Error(err) => {
+        ProcessingResult::Error(ErrorResult {
+            error_code: err.error_code,
+            message: err.message,
+        })
+    }
 }
+
+
 }
 /// Retrieves the list of sheet names from an Excel file.
 ///

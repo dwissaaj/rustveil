@@ -25,14 +25,14 @@ pub fn create_folder_main_app(app: &tauri::App) -> String {
         Ok(path) => path,
         Err(e) => {
             error!("Failed to get public directory: {}", e);
-            return format!("Error: {}", e);
+            return format!("Error at create main folder: {}", e);
         }
     };
 
     let full_path = public_dir.join("Rust Veil");
 
     if let Err(e) = std::fs::create_dir_all(&full_path) {
-        return format!("Error: {}", e);
+        return format!("Error at create dir: {}", e);
     }
 
     let state = app.state::<Mutex<AppFolderPath>>();

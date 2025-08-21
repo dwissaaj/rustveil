@@ -1,19 +1,24 @@
 export type TableCell = string | number | boolean | null;
+export interface TableDataType {
+  data: Record<string, TableCell>[];
+  response_code?: number;
+  message?: string;
+}
 export interface UserNode {
   id: number;
   username: string;
 }
 
-export interface TableDataType {
-  rows: Record<string, TableCell>[];
-  response_code?: number;
-  message?: string;
-}
+
 // pub struct DataTable {
-//     response_code: u32,
+//     /// HTTP-like response code (e.g., 200 for success).
+//     pub response_code: u32,
+//     /// The processed dataset as an array of JSON objects.
 //     pub data: Vec<Value>,
-//     message: String,
+//     /// Descriptive message for the result.
+//     pub message: String,
 // }
+
 export interface VerticesCentralityTable {
   columns: string[];
   status?: number;
