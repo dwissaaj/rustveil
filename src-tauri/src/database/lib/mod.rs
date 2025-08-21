@@ -44,9 +44,7 @@ pub fn open_or_create_sqlite(base_path: &str) -> Result<Connection, String> {
 pub fn get_all_data(app: &AppHandle) -> DatabaseProcess {
     let file_app = app.state::<Mutex<AppFolderPath>>();
     let file_path = file_app.lock().unwrap();
-
-    // Use the *exact* SQLite path stored when the file was created
-    let db_path = file_path.file_url.clone();
+    let db_path = file_path.file_url.as_str().to_owned() + "/output.sqlite";
 
     let connect = match open_or_create_sqlite(&db_path) {
         Ok(conn) => conn,
@@ -59,14 +57,14 @@ pub fn get_all_data(app: &AppHandle) -> DatabaseProcess {
     };
 
     let mut stmt = match connect.prepare("SELECT * FROM rustveil") {
-        Ok(s) => s,
-        Err(e) => {
-            return DatabaseProcess::Error(DatabaseError {
-                error_code: 402,
-                message: format!("Failed to prepare statement: {}", e),
-            });
-        }
-    };
+    Ok(s) => s,
+    Err(e) => {
+        return DatabaseProcess::Error(DatabaseError {
+            error_code: 402,
+            message: format!("Failed to prepare statement: {}", e),
+        });
+    }
+};
 
     // Collect column names once to avoid borrow issues
     let col_names: Vec<String> = (0..stmt.column_count())
@@ -74,14 +72,14 @@ pub fn get_all_data(app: &AppHandle) -> DatabaseProcess {
         .collect();
 
     let mut rows = match stmt.query([]) {
-        Ok(r) => r,
-        Err(e) => {
-            return DatabaseProcess::Error(DatabaseError {
-                error_code: 403,
-                message: format!("Error at Get All Data Sqlite query get rows: {}", e),
-            })
-        }
-    };
+    Ok(r) => r,
+    Err(e) => {
+        return DatabaseProcess::Error(DatabaseError {
+            error_code: 403,
+            message: format!("Error at Get All Data Sqlite query get rows: {}", e),
+        })
+    }
+};
 
     let mut all_data = Vec::new();
 
@@ -164,6 +162,7 @@ pub fn data_to_sqlite(
 
     let sql = table.to_string(SqliteQueryBuilder);
     if let Err(e) = connect.execute(sql.as_str(), []) {
+
         return DatabaseProcess::Error(DatabaseError {
             error_code: 401,
             message: format!("Error creating table: {}", e),
