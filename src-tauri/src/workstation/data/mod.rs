@@ -162,6 +162,7 @@ pub fn load_data(app: AppHandle,url: String, sheet_name: String) -> ProcessingRe
         })
     }
     DatabaseProcess::Error(err) => {
+
         ProcessingResult::Error(ErrorResult {
             error_code: err.error_code,
             message: err.message,
