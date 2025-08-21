@@ -9,14 +9,34 @@ use tauri::{AppHandle, Manager};
 use std::path::Path;
 use crate::SqliteDataState;
 
-/// Opens (or creates) a SQLite database connection.
+/// Opens an SQLite connection for the given `base_path`.
 /// 
-/// # Parameters
-/// - `file_path`: Path to the SQLite database file.
+/// ### Behavior
+/// - If `base_path` does **not** exist:
+///   - A new SQLite file is created at `base_path`.
 /// 
-/// # Returns
-/// - `Ok(Connection)` if successful
+/// - If `base_path` **already exists**:
+///   - It will automatically find the **next available filename** by appending a counter:
+///   - Example: `db.sqlite`, then `db(1).sqlite`, then `db(2).sqlite`, etc.
+///   - This ensures existing database files are not overwritten accidentally.
 /// 
+/// - The **final resolved file path** is stored in the global app state 
+///   (`SqliteDataState.file_url`) so the frontend (or other parts of the app) 
+///   can always reference the currently active database file.
+///
+/// ### Parameters
+/// - `app`: Reference to the Tauri [`AppHandle`], used to update global state.
+/// - `base_path`: The requested SQLite database path (e.g., `"data.sqlite"`).
+///
+/// ### Returns
+/// - `Ok(Connection)` if the connection was successfully opened.
+/// - `Err(String)` if the SQLite connection fails.
+///
+/// ### Example
+/// ```rust
+/// let conn = open_or_create_sqlite(&app, "data.sqlite")
+///     .expect("Failed to open SQLite database");
+/// ```
 
 pub fn open_or_create_sqlite(app: &AppHandle, base_path: &str) -> Result<Connection, String> {
     let mut final_path = base_path.to_string();
@@ -44,6 +64,41 @@ pub fn open_or_create_sqlite(app: &AppHandle, base_path: &str) -> Result<Connect
     }
 }
 
+/// Fetches all data from the `rustveil` table in the SQLite database.
+///
+/// # Arguments
+/// * `app` - A reference to the Tauri [`AppHandle`] that provides access to the app state,
+///   including the current SQLite database path.
+///
+/// # Returns
+/// A [`DatabaseProcess`] enum that represents either:
+/// - `DatabaseProcess::Complete`: containing a success response with all rows retrieved,
+/// - `DatabaseProcess::Error`: containing an error code and message describing what failed.
+///
+/// # Errors
+/// Returns `DatabaseProcess::Error` in the following cases:
+/// - `401`: Unable to open SQLite connection.
+/// - `402`: Failed to prepare the SQL statement.
+/// - `403`: Query execution error (failed to fetch rows).
+///
+/// # Success Response
+/// If successful, the response includes:
+/// - `response_code: 200`
+/// - `message: "Data fetched successfully"`
+/// - `data`: A JSON array of objects, where each object represents a row,
+///   with column names as keys and cell values as strings (or `null` if unavailable).
+///
+/// # Example
+/// ```ignore
+/// let result = get_all_data(&app);
+/// match result {
+///     DatabaseProcess::Complete(success) => {
+///         println!("Fetched data: {:?}", success.data);
+///     }
+///     DatabaseProcess::Error(err) => {
+///         eprintln!("Error {}: {}", err.error_code, err.message);
+///     }
+/// }
 pub fn get_all_data(app: &AppHandle) -> DatabaseProcess {
     let db_state = app.state::<Mutex<SqliteDataState>>();
     let db = db_state.lock().unwrap(); // now "db" holds the sqlite file state

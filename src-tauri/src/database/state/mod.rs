@@ -42,6 +42,10 @@ pub struct DatabaseError {
     pub message: String,
 }
 
+/// Sqlite Database File Path
+///
+/// Url for app to determine the sqlite used
+/// 
 pub struct SqliteDataState {
     pub file_url: String,
 }
