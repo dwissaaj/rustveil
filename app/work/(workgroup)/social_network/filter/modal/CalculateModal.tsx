@@ -59,7 +59,6 @@ export default function SocialCalculateModal({
   };
   useEffect(() => {
     if (!mapProgress) return;
-    console.log(mapProgress);
     const updateButton = async () => {
       if (mapProgress.isError) {
         await delay(2000);

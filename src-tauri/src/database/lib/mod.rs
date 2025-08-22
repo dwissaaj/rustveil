@@ -5,9 +5,12 @@ use sea_query_rusqlite::RusqliteBinder;
 use serde_json::Value;
 use uuid::Uuid;
 use std::sync::Mutex;
-use tauri::{AppHandle, Manager};
+use tauri::{AppHandle, Manager,Emitter};
 use std::path::Path;
 use crate::SqliteDataState;
+use crate::state::DatabaseInsertionProgress;
+
+
 
 /// Opens an SQLite connection for the given `base_path`.
 /// 
@@ -184,6 +187,7 @@ pub fn data_to_sqlite(
     data_json: Vec<Value>,
     headers: Vec<String>,
     connect: &Connection,
+    app: &AppHandle
 ) -> DatabaseProcess {
     let table_name = "rustveil";
 
@@ -232,7 +236,7 @@ pub fn data_to_sqlite(
     let max_variables = 999;
     let num_columns = col_map.len() + 1; // +1 for rv_uuid
     let batch_size = if num_columns > 0 { max_variables / num_columns } else { 1 };
-
+    let total_data = (data_json.len() / batch_size) * batch_size + (data_json.len() % batch_size);
     let mut total_inserted = 0;
     for (i, chunk) in data_json.chunks(batch_size).enumerate() {
         let mut insert = Query::insert();
@@ -271,6 +275,12 @@ pub fn data_to_sqlite(
         match connect.execute(sql.as_str(), &*params.as_params()) {
             Ok(count) => {
                 total_inserted += count;
+                app.emit("database-insert-progress", DatabaseInsertionProgress {
+                total_rows: total_data, 
+                count: total_inserted,
+               
+                }).unwrap();
+ 
             }
             Err(e) => {
                 return DatabaseProcess::Error(DatabaseError {
