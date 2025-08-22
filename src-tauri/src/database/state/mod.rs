@@ -1,4 +1,5 @@
 use serde::Serialize;
+use serde_json::{ Value};
 
 /// Represents the result of a database-related process.
 ///
@@ -26,6 +27,8 @@ pub struct DatabaseComplete {
 
     /// Description of the result for logging or UI display.
     pub message: String,
+
+    pub data: Option<Vec<Value>>
 }
 
 /// Failed database process payload.
@@ -38,4 +41,19 @@ pub struct DatabaseError {
 
     /// Description of the error for logging or UI display.
     pub message: String,
+}
+
+/// Sqlite Database File Path
+///
+/// Url for app to determine the sqlite used
+/// 
+pub struct SqliteDataState {
+    pub file_url: String,
+}
+
+
+#[derive(Clone, Serialize)]
+pub struct DatabaseInsertionProgress {
+  pub total_rows: usize,
+  pub count: usize
 }
