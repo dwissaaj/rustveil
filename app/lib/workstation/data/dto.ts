@@ -9,7 +9,6 @@ export interface UserNode {
   username: string;
 }
 
-
 // pub struct DataTable {
 //     /// HTTP-like response code (e.g., 200 for success).
 //     pub response_code: u32,

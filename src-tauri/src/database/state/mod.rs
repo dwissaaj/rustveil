@@ -1,5 +1,6 @@
 use serde::Serialize;
 use serde_json::{ Value};
+
 /// Represents the result of a database-related process.
 ///
 /// This enum is serialized so it can be sent to the Tauri frontend (or any other consumer)
@@ -48,4 +49,11 @@ pub struct DatabaseError {
 /// 
 pub struct SqliteDataState {
     pub file_url: String,
+}
+
+
+#[derive(Clone, Serialize)]
+pub struct DatabaseInsertionProgress {
+  pub total_rows: usize,
+  pub count: usize
 }

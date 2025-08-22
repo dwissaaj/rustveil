@@ -161,7 +161,7 @@ pub fn load_data(app: AppHandle, url: String, sheet_name: String) -> ProcessingR
         },
     );
 
-    let sqlite_result = data_to_sqlite(data_json.clone(), headers.clone(), &connect);
+    let sqlite_result = data_to_sqlite(data_json.clone(), headers.clone(), &connect, &app);
     match sqlite_result {
         DatabaseProcess::Complete(_) => {
             let _ = app.emit(

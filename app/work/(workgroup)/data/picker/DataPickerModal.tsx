@@ -7,13 +7,15 @@ import {
   ModalFooter,
   Button,
   Alert,
+  Progress,
 } from "@heroui/react";
 import { useFileOpener } from "@/app/lib/workstation/data/useFileOpener";
 import SheetSelector from "@/components/workstation/data/SheetSelect";
 import { useTableOpen } from "@/app/lib/workstation/data/useTableOpen";
 import { ErrorIcon } from "@/components/icon/IconFilter";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCloseModal } from "@/app/lib/workstation/data/useCloseModal";
+import { useDatabaseProgress } from "@/app/lib/workstation/data/useDatabaseProgress";
 
 type DataPickerModalType = {
   isOpen: boolean;
@@ -30,6 +32,8 @@ export default function DataPicker({
 }: DataPickerModalType) {
   const fileOpener = useFileOpener();
   const tableOpener = useTableOpen();
+  const progress = useDatabaseProgress();
+  const [openProgress, setopenProgress] = useState(false);
   const [openButtonState, setopenButtonState] = useState(true);
   const { closeModal } = useCloseModal(onOpenChange);
   const [isLoading, setIsLoading] = useState(false);
@@ -56,6 +60,7 @@ export default function DataPicker({
     try {
       const result = await tableOpener();
       setIsLoading(true);
+      setopenProgress(true);
       if (result?.status === 404) {
         setErrorInfo({ isError: true, message: `${result.error}` });
       }
@@ -63,6 +68,7 @@ export default function DataPicker({
         onOpenChange(false);
       }
     } catch (error) {
+      setopenProgress(false);
       setErrorInfo({ isError: true, message: "Error at picking sheet" });
     } finally {
       setIsLoading(false);
@@ -70,53 +76,76 @@ export default function DataPicker({
   };
 
   return (
-    <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-      <ModalContent>
-        <ModalHeader className="flex flex-col gap-1">Data & Sheet</ModalHeader>
-        <ModalBody className="flex flex-col gap-2">
-          <div>
-            <div className="flex flex-col gap-2">
-              <p>Pick a .xlsx file</p>
-              <Button
-                color="secondary"
-                variant="light"
-                onPress={openFile}
-                isLoading={isLoading}
-                isDisabled={fileLoaded}
-              >
-                {isLoading
-                  ? "Loading..."
-                  : fileLoaded
-                    ? "File Loaded"
-                    : "Get File"}
-              </Button>
+    <>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent>
+          <ModalHeader className="flex flex-col gap-1">
+            Data & Sheet
+          </ModalHeader>
+          <ModalBody className="flex flex-col gap-2">
+            <div>
+              <div className="flex flex-col gap-2">
+                <p>Pick a .xlsx file</p>
+                <Button
+                  color="secondary"
+                  variant="light"
+                  onPress={openFile}
+                  isLoading={isLoading}
+                  isDisabled={fileLoaded}
+                >
+                  {isLoading
+                    ? "Loading..."
+                    : fileLoaded
+                      ? "File Loaded"
+                      : "Get File"}
+                </Button>
+              </div>
+              <div>
+                <SheetSelector />
+              </div>
             </div>
             <div>
-              <SheetSelector />
+              {openProgress && (
+                <div className="w-full flex-col gap-1 flex p-4">
+                  <Progress
+                    className="max-w-md"
+                    color="primary"
+                    value={progress?.count}
+                    maxValue={progress?.total_rows}
+                    showValueLabel={true}
+                    label={`Process ${progress?.count}/${progress?.total_rows}`}
+                  />
+                </div>
+              )}
+              {errorInfo.isError && (
+                <div className="w-full flex-col gap-1 flex p-4">
+                  <Alert
+                    className="flex items-center"
+                    icon={<ErrorIcon />}
+                    title={errorInfo.message ?? "Something went wrong"}
+                    isVisible={true}
+                    color="danger"
+                  />
+                </div>
+              )}
             </div>
-          </div>
-        </ModalBody>
-        <ModalFooter>
-          <Button onPress={closeModal} color="danger" variant="light">
-            Close
-          </Button>
-          <Button
-            color="primary"
-            onPress={openTable}
-            isDisabled={openButtonState}
-            isLoading={isLoading}
-          >
-            Open Table
-          </Button>
+          </ModalBody>
+          <ModalFooter>
+            <Button onPress={closeModal} color="danger" variant="light">
+              Close
+            </Button>
+            <Button
+              color="primary"
+              onPress={openTable}
+              isDisabled={openButtonState}
+              isLoading={isLoading}
+            >
+              Open Table
+            </Button>
 
-          <Alert
-            startContent={<ErrorIcon />}
-            title={errorInfo.message}
-            isVisible={errorInfo.isError}
-            color="danger"
-          />
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
   );
 }
