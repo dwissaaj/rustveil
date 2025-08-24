@@ -24,6 +24,14 @@ export const filePath = atom<{
   isSelected: false, // Default: no file selected
   url: "", // Default: empty string
 });
+
+export const loadDatabase = atom<{
+  isSelected: boolean;
+  url: string;
+}>({
+  isSelected: false, // Default: no file selected
+  url: "", // Default: empty string
+});
 // export const filePath = atom<string>("")
 export const columnAvailable = atom<string[]>([]);
 
