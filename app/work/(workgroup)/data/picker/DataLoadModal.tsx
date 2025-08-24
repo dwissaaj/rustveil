@@ -16,6 +16,7 @@ import { ErrorIcon } from "@/components/icon/IconFilter";
 import { useState, useEffect } from "react";
 import { useCloseModal } from "@/app/lib/workstation/data/useCloseModal";
 import { useDatabaseProgress } from "@/app/lib/workstation/data/useDatabaseProgress";
+import { useLoadDatabase } from "@/app/lib/workstation/data/useLoadDatabase";
 
 type DataPickerModalType = {
   isOpen: boolean;
@@ -30,8 +31,7 @@ export default function DataLoader({
   fileLoaded,
   setFileLoaded,
 }: DataPickerModalType) {
-
-  const [openProgress, setopenProgress] = useState(false);
+  const loadDatabase = useLoadDatabase()
   const [openButtonState, setopenButtonState] = useState(true);
   const { closeModal } = useCloseModal(onOpenChange);
   const [isLoading, setIsLoading] = useState(false);
@@ -69,7 +69,7 @@ export default function DataLoader({
             </Button>
             <Button
               color="primary"
-            //   onPress={openTable}
+              onPress={() => loadDatabase}
               isDisabled={openButtonState}
               isLoading={isLoading}
             >
