@@ -8,6 +8,9 @@ use crate::app_path::{AppFolderPath};
 use std::sync::Mutex;
 use crate::workstation::state_response::{ProcessingResult,ErrorResult,DataTable, ProcessData};
 use crate::database::lib::get_all_data;
+
+
+
 /// Converts an Excel serial date number into a `YYYY-MM-DD` formatted string.
 ///
 /// # Arguments
@@ -142,7 +145,7 @@ pub fn load_data(app: AppHandle, url: String, sheet_name: String) -> ProcessingR
     );
 
     // SQLite file path inside the app's folder.
-    let db_path = file_path.file_url.as_str().to_owned() + "/output.sqlite";
+    let db_path = file_path.file_url.as_str().to_owned();
     let connect = match open_or_create_sqlite(&app, &db_path) {
         Ok(conn) => conn,
         Err(_) => {
@@ -172,7 +175,6 @@ pub fn load_data(app: AppHandle, url: String, sheet_name: String) -> ProcessingR
                 },
             );
 
-            // ✅ Now fetch the *fresh* data from SQLite state
             match get_all_data(&app) {
                 DatabaseProcess::Complete(fresh_data) => {
                     ProcessingResult::Complete(DataTable {

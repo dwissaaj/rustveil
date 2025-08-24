@@ -43,6 +43,7 @@ pub fn run() {
             data::load_data,
             data::get_sheet,
             social_network::user_to_vector,
+            database::lib::load_data_sqlite
         ])
         .run(tauri::generate_context!())
         

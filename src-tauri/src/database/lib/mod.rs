@@ -5,7 +5,7 @@ use sea_query_rusqlite::RusqliteBinder;
 use serde_json::Value;
 use uuid::Uuid;
 use std::sync::Mutex;
-use tauri::{AppHandle, Manager,Emitter};
+use tauri::{AppHandle, Manager,Emitter, command};
 use std::path::Path;
 use crate::SqliteDataState;
 use crate::state::DatabaseInsertionProgress;
@@ -71,7 +71,7 @@ pub fn open_or_create_sqlite(app: &AppHandle, base_path: &str) -> Result<Connect
 ///
 /// # Arguments
 /// * `app` - A reference to the Tauri [`AppHandle`] that provides access to the app state,
-///   including the current SQLite database path.
+///   including the current SQLite database path no need to call again 
 ///
 /// # Returns
 /// A [`DatabaseProcess`] enum that represents either:
@@ -296,4 +296,17 @@ pub fn data_to_sqlite(
         message: format!("Success: inserted {} rows", total_inserted),
         data: Some(data_json),
     })
+}
+
+
+#[command]
+pub fn load_data_sqlite(app: AppHandle, pathfile: String) -> DatabaseProcess {
+    let db_state = app.state::<Mutex<SqliteDataState>>();
+    let mut db = db_state.lock().unwrap();
+    
+    // 1. Update the file path in state
+    db.file_url = pathfile;
+    
+    // 2. Call get_all_data and return its result directly
+    get_all_data(&app)
 }

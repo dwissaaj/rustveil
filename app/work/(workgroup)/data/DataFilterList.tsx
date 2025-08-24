@@ -12,6 +12,7 @@ import {
 import { UploadIcon } from "@/components/icon/IconFilter";
 import DataPicker from "./picker/DataPickerModal";
 import { useState } from "react";
+import DataLoader from "./picker/DataLoadModal";
 
 export default function DataFilterList() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -24,7 +25,7 @@ export default function DataFilterList() {
           <Button variant="bordered">File</Button>
         </DropdownTrigger>
         <DropdownMenu aria-label="File actions">
-          <DropdownItem key="open" onPress={onOpen}>
+          <DropdownItem key="pick-file" onPress={onOpen}>
             <Button
               isDisabled={fileLoaded}
               endContent={<UploadIcon />}
@@ -36,9 +37,27 @@ export default function DataFilterList() {
               Open File
             </Button>
           </DropdownItem>
+          <DropdownItem key="load-file" onPress={onOpen}>
+            <Button
+              isDisabled={fileLoaded}
+              endContent={<UploadIcon />}
+              className="w-full justify-start"
+              color="secondary"
+              variant="ghost"
+              onPress={onOpen}
+            >
+              Load File
+            </Button>
+          </DropdownItem>
         </DropdownMenu>
       </Dropdown>
       <DataPicker
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        fileLoaded={fileLoaded}
+        setFileLoaded={setFileLoaded}
+      />
+      <DataLoader
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         fileLoaded={fileLoaded}
