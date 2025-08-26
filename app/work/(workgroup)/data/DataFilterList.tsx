@@ -1,4 +1,3 @@
-// components/DataFilter.tsx
 "use client";
 import {
   Dropdown,
@@ -15,7 +14,8 @@ import { useState } from "react";
 import DataLoader from "./picker/DataLoadModal";
 
 export default function DataFilterList() {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen: isPickerOpen, onOpen: onPickerOpen, onOpenChange: onPickerOpenChange } = useDisclosure();
+  const { isOpen: isLoaderOpen, onOpen: onLoaderOpen, onOpenChange: onLoaderOpenChange } = useDisclosure();
   const [fileLoaded, setFileLoaded] = useState(false);
 
   return (
@@ -25,26 +25,26 @@ export default function DataFilterList() {
           <Button variant="bordered">File</Button>
         </DropdownTrigger>
         <DropdownMenu aria-label="File actions">
-          <DropdownItem key="pick-file" onPress={onOpen}>
+          <DropdownItem key="pick-file" onPress={onPickerOpen}>
             <Button
               isDisabled={fileLoaded}
               endContent={<UploadIcon />}
               className="w-full justify-start"
               color="secondary"
               variant="ghost"
-              onPress={onOpen}
+              onPress={onPickerOpen}
             >
               Open File
             </Button>
           </DropdownItem>
-          <DropdownItem key="load-file" onPress={onOpen}>
+          <DropdownItem key="load-file" onPress={onLoaderOpen}>
             <Button
               isDisabled={fileLoaded}
               endContent={<UploadIcon />}
               className="w-full justify-start"
               color="secondary"
               variant="ghost"
-              onPress={onOpen}
+              onPress={onLoaderOpen}
             >
               Load File
             </Button>
@@ -52,14 +52,14 @@ export default function DataFilterList() {
         </DropdownMenu>
       </Dropdown>
       <DataPicker
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
+        isOpen={isPickerOpen}
+        onOpenChange={onPickerOpenChange}
         fileLoaded={fileLoaded}
         setFileLoaded={setFileLoaded}
       />
       <DataLoader
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
+        isOpen={isLoaderOpen}
+        onOpenChange={onLoaderOpenChange}
         fileLoaded={fileLoaded}
         setFileLoaded={setFileLoaded}
       />

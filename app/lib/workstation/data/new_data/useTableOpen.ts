@@ -1,7 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { useAtomValue, useSetAtom } from "jotai";
-import { filePath, sheetSelected, tableData } from "./state";
-import { TableDataType } from "./dto";
+import { filePath, sheetSelected, tableData } from "../state";
+import { TableDataType } from "../dto";
 
 import { useCallback } from "react";
 

@@ -8,14 +8,15 @@ import {
   Button,
   Alert,
   Progress,
+  addToast,
 } from "@heroui/react";
-import { useFileOpener } from "@/app/lib/workstation/data/useFileOpener";
+import { useFileOpener } from "@/app/lib/workstation/data/new_data/useFileOpener";
 import SheetSelector from "@/components/workstation/data/SheetSelect";
-import { useTableOpen } from "@/app/lib/workstation/data/useTableOpen";
+import { useTableOpen } from "@/app/lib/workstation/data/new_data/useTableOpen";
 import { ErrorIcon } from "@/components/icon/IconFilter";
 import { useState, useEffect } from "react";
 import { useCloseModal } from "@/app/lib/workstation/data/useCloseModal";
-import { useDatabaseProgress } from "@/app/lib/workstation/data/useDatabaseProgress";
+import { useDatabaseProgress } from "@/app/lib/workstation/data/progress/useDatabaseProgress";
 
 type DataPickerModalType = {
   isOpen: boolean;
@@ -35,7 +36,7 @@ export default function DataPicker({
   const progress = useDatabaseProgress();
   const [openProgress, setopenProgress] = useState(false);
   const [openButtonState, setopenButtonState] = useState(true);
-  const { closeModal } = useCloseModal(onOpenChange);
+const { closeModal } = useCloseModal(onOpenChange, addToast);
   const [isLoading, setIsLoading] = useState(false);
   const [errorInfo, setErrorInfo] = useState<{
     isError: boolean;
@@ -131,7 +132,10 @@ export default function DataPicker({
             </div>
           </ModalBody>
           <ModalFooter>
-            <Button onPress={closeModal} color="danger" variant="light">
+            <Button 
+           onPress={closeModal}
+            color="danger" 
+            variant="light">
               Close
             </Button>
             <Button
