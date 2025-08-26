@@ -8,15 +8,17 @@ import {
   Button,
   Alert,
   Progress,
+  addToast,
 } from "@heroui/react";
-import { useFileOpener } from "@/app/lib/workstation/data/useFileOpener";
+import { useFileOpener } from "@/app/lib/workstation/data/new_data/useFileOpener";
 import SheetSelector from "@/components/workstation/data/SheetSelect";
-import { useTableOpen } from "@/app/lib/workstation/data/useTableOpen";
+import { useTableOpen } from "@/app/lib/workstation/data/new_data/useTableOpen";
 import { ErrorIcon } from "@/components/icon/IconFilter";
 import { useState, useEffect } from "react";
 import { useCloseModal } from "@/app/lib/workstation/data/useCloseModal";
-import { useDatabaseProgress } from "@/app/lib/workstation/data/useDatabaseProgress";
-import { useLoadDatabase } from "@/app/lib/workstation/data/useLoadDatabase";
+import { useDatabaseProgress } from "@/app/lib/workstation/data/progress/useDatabaseProgress";
+import { useLoadDatabase } from "@/app/lib/workstation/data/load_data/useLoadDatabase";
+
 
 type DataPickerModalType = {
   isOpen: boolean;
@@ -31,16 +33,26 @@ export default function DataLoader({
   fileLoaded,
   setFileLoaded,
 }: DataPickerModalType) {
-  const loadDatabase = useLoadDatabase()
+
   const [openButtonState, setopenButtonState] = useState(true);
-  const { closeModal } = useCloseModal(onOpenChange);
+const { closeModal } = useCloseModal(onOpenChange, addToast);
   const [isLoading, setIsLoading] = useState(false);
   const [errorInfo, setErrorInfo] = useState<{
     isError: boolean;
     message?: string;
   }>({ isError: false });
-
-
+const loadDatabase = useLoadDatabase();
+const handleOpenFile = async () => {
+    setIsLoading(true);
+    try {
+      const result = await loadDatabase();
+      console.log(result)
+    } catch (error) {
+      console.error("Failed to load database:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   return (
     <>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
@@ -54,11 +66,11 @@ export default function DataLoader({
                 <Button
                   color="secondary"
                   variant="light"
-                //   onPress={openFile}
+                  onPress={handleOpenFile}
                   isLoading={isLoading}
                   isDisabled={fileLoaded}
                 >
-                  Load a Database
+                  Pick the file
                 </Button>
               </div>
             </div>
@@ -69,7 +81,7 @@ export default function DataLoader({
             </Button>
             <Button
               color="primary"
-              onPress={() => loadDatabase}
+              onPress={handleOpenFile}
               isDisabled={openButtonState}
               isLoading={isLoading}
             >
