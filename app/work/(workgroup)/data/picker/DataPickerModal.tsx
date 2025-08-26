@@ -6,15 +6,13 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-  Alert,
   Progress,
   addToast,
 } from "@heroui/react";
 import { useFileOpener } from "@/app/lib/workstation/data/new_data/useFileOpener";
 import SheetSelector from "@/components/workstation/data/SheetSelect";
 import { useTableOpen } from "@/app/lib/workstation/data/new_data/useTableOpen";
-import { ErrorIcon } from "@/components/icon/IconFilter";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useCloseModal } from "@/app/lib/workstation/data/useCloseModal";
 import { useDatabaseProgress } from "@/app/lib/workstation/data/progress/useDatabaseProgress";
 
@@ -36,12 +34,8 @@ export default function DataPicker({
   const progress = useDatabaseProgress();
   const [openProgress, setopenProgress] = useState(false);
   const [openButtonState, setopenButtonState] = useState(true);
-const { closeModal } = useCloseModal(onOpenChange, addToast);
+  const { closeModal } = useCloseModal(onOpenChange, addToast);
   const [isLoading, setIsLoading] = useState(false);
-  const [errorInfo, setErrorInfo] = useState<{
-    isError: boolean;
-    message?: string;
-  }>({ isError: false });
 
   const openFile = async () => {
     try {
@@ -62,15 +56,24 @@ const { closeModal } = useCloseModal(onOpenChange, addToast);
       const result = await tableOpener();
       setIsLoading(true);
       setopenProgress(true);
-      if (result?.status === 404) {
-        setErrorInfo({ isError: true, message: `${result.error}` });
+      console.log("res", result);
+      if (result?.response_code === 200) {
+        addToast({
+          title: "Table Opened",
+          description: "Table data loaded successfully",
+          color: "success",
+        });
       }
-      if (result?.status === 200) {
-        onOpenChange(false);
+      if (result?.response_code !== 200) {
+        addToast({
+          title: "Operation Error",
+          description: `${result?.message}`,
+          color: "danger",
+        });
+        setopenProgress(false);
       }
     } catch (error) {
       setopenProgress(false);
-      setErrorInfo({ isError: true, message: "Error at picking sheet" });
     } finally {
       setIsLoading(false);
     }
@@ -118,24 +121,10 @@ const { closeModal } = useCloseModal(onOpenChange, addToast);
                   />
                 </div>
               )}
-              {errorInfo.isError && (
-                <div className="w-full flex-col gap-1 flex p-4">
-                  <Alert
-                    className="flex items-center"
-                    icon={<ErrorIcon />}
-                    title={errorInfo.message ?? "Something went wrong"}
-                    isVisible={true}
-                    color="danger"
-                  />
-                </div>
-              )}
             </div>
           </ModalBody>
           <ModalFooter>
-            <Button 
-           onPress={closeModal}
-            color="danger" 
-            variant="light">
+            <Button onPress={closeModal} color="danger" variant="light">
               Close
             </Button>
             <Button
@@ -146,7 +135,6 @@ const { closeModal } = useCloseModal(onOpenChange, addToast);
             >
               Open Table
             </Button>
-
           </ModalFooter>
         </ModalContent>
       </Modal>

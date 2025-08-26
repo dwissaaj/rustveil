@@ -9,7 +9,6 @@ export interface ResponseError {
   message: string;
 }
 
-
-export type InvokeResponse = 
+export type InvokeResponse =
   | { Complete: ResponseSuccess }
   | { Error: ResponseError };

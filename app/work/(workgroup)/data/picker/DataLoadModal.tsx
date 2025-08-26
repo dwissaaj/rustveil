@@ -19,7 +19,6 @@ import { useCloseModal } from "@/app/lib/workstation/data/useCloseModal";
 import { useDatabaseProgress } from "@/app/lib/workstation/data/progress/useDatabaseProgress";
 import { useLoadDatabase } from "@/app/lib/workstation/data/load_data/useLoadDatabase";
 
-
 type DataPickerModalType = {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
@@ -31,22 +30,20 @@ export default function DataLoader({
   isOpen,
   onOpenChange,
   fileLoaded,
-
 }: DataPickerModalType) {
-
   const [openButtonState, setopenButtonState] = useState(true);
-const { closeModal } = useCloseModal(onOpenChange, addToast);
+  const { closeModal } = useCloseModal(onOpenChange, addToast);
   const [isLoading, setIsLoading] = useState(false);
   const [errorInfo, setErrorInfo] = useState<{
     isError: boolean;
     message?: string;
   }>({ isError: false });
-const loadDatabase = useLoadDatabase();
-const handleOpenFile = async () => {
+  const loadDatabase = useLoadDatabase();
+  const handleOpenFile = async () => {
     setIsLoading(true);
     try {
       const result = await loadDatabase();
-      console.log(result)
+      console.log(result);
     } catch (error) {
       console.error("Failed to load database:", error);
     } finally {
