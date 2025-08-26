@@ -31,7 +31,7 @@ export default function DataLoader({
   isOpen,
   onOpenChange,
   fileLoaded,
-  setFileLoaded,
+
 }: DataPickerModalType) {
 
   const [openButtonState, setopenButtonState] = useState(true);

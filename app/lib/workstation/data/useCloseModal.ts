@@ -12,7 +12,7 @@ export const useCloseModal = (onOpenChange: (open: boolean) => void, addToast: a
         title: "Warning",
         description: "No file selected. Please select a file first.",
         variant: "flat",
-        color: "danger"
+        color: "warning"
       });
       
     }
