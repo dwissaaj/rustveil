@@ -14,8 +14,16 @@ import { useState } from "react";
 import DataLoader from "./picker/DataLoadModal";
 
 export default function DataFilterList() {
-  const { isOpen: isPickerOpen, onOpen: onPickerOpen, onOpenChange: onPickerOpenChange } = useDisclosure();
-  const { isOpen: isLoaderOpen, onOpen: onLoaderOpen, onOpenChange: onLoaderOpenChange } = useDisclosure();
+  const {
+    isOpen: isPickerOpen,
+    onOpen: onPickerOpen,
+    onOpenChange: onPickerOpenChange,
+  } = useDisclosure();
+  const {
+    isOpen: isLoaderOpen,
+    onOpen: onLoaderOpen,
+    onOpenChange: onLoaderOpenChange,
+  } = useDisclosure();
   const [fileLoaded, setFileLoaded] = useState(false);
 
   return (

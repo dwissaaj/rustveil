@@ -40,6 +40,6 @@ export function useFileOpener() {
       setFileState(newState);
       return newState;
     }
-  }
-  return fileOpenerHandler; 
+  };
+  return fileOpenerHandler;
 }

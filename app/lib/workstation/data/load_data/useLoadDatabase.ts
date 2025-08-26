@@ -14,18 +14,20 @@ export function useLoadDatabase() {
         const file = await open({
           multiple: false,
           directory: false,
-          filters: [{
-            name: "Sqlite",
-            extensions: ["sqlite"],
-          }],
+          filters: [
+            {
+              name: "Sqlite",
+              extensions: ["sqlite"],
+            },
+          ],
         });
-        
+
         if (file === null) {
           const newState = { isSelected: false, url: "" };
           setFileState(newState);
           return newState;
         }
-        
+
         if (file) {
           const data = await invoke("load_data_sqlite", { pathfile: file });
           const newState = { isSelected: true, url: file };

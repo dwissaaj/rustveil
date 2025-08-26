@@ -69,11 +69,20 @@ fn excel_serial_to_date(serial: f64) -> String {
 
 #[command]
 pub fn load_data(app: AppHandle, url: String, sheet_name: String) -> ProcessingResult {
+
     let file_app = app.state::<Mutex<AppFolderPath>>();
 
     // Lock the mutex to get mutable access:
     let file_path = file_app.lock().unwrap();
 
+
+    // return ProcessingResult::Error(ErrorResult {
+    //         error_code: 401,
+    //         message: "FAKE ERROR - Connection failed".to_string(),
+    //     });
+
+
+    
     let mut workbook: Xlsx<_> = open_workbook(url).expect("Cannot open file");
     let range = match workbook.worksheet_range(&sheet_name) {
         Ok(range) => {
@@ -147,7 +156,6 @@ pub fn load_data(app: AppHandle, url: String, sheet_name: String) -> ProcessingR
     // SQLite file path inside the app's folder.
     let db_path = file_path.file_url.as_str().to_owned();
     let full_db_path = format!("{}/database.sqlite", db_path); 
-     println!("{:#?}",db_path);
     let connect = match open_or_create_sqlite(&app, &full_db_path) {
         Ok(conn) => conn,
         Err(_) => {

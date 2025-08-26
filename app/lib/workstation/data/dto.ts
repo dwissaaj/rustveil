@@ -9,15 +9,6 @@ export interface UserNode {
   username: string;
 }
 
-// pub struct DataTable {
-//     /// HTTP-like response code (e.g., 200 for success).
-//     pub response_code: u32,
-//     /// The processed dataset as an array of JSON objects.
-//     pub data: Vec<Value>,
-//     /// Descriptive message for the result.
-//     pub message: String,
-// }
-
 export interface VerticesCentralityTable {
   columns: string[];
   status?: number;

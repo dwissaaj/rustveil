@@ -11,10 +11,9 @@ import { useToast } from "@heroui/toast";
 
 export default function Page() {
   const [data] = useAtom(tableData);
-  
+
   return (
     <div className="flex flex-col gap-4">
-
       <div>
         <FilterList />
       </div>

@@ -1,8 +1,10 @@
 import { useAtom, useSetAtom } from "jotai";
 import { filePath, sheetAvailable } from "./state";
 
-
-export const useCloseModal = (onOpenChange: (open: boolean) => void, addToast: any) => {
+export const useCloseModal = (
+  onOpenChange: (open: boolean) => void,
+  addToast: any,
+) => {
   const [fileState, setFileState] = useAtom(filePath);
   const setSelectedSheet = useSetAtom(sheetAvailable);
 
@@ -12,11 +14,10 @@ export const useCloseModal = (onOpenChange: (open: boolean) => void, addToast: a
         title: "Warning",
         description: "No file selected. Please select a file first.",
         variant: "flat",
-        color: "warning"
+        color: "warning",
       });
-      
     }
-    
+
     const newState = { isSelected: false, url: "" };
     setFileState(newState);
     setSelectedSheet([]);

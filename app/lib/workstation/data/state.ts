@@ -8,7 +8,7 @@ import {
   UserNode,
 } from "./dto";
 
-// for table data type
+// need to deleted since we not ising jotai atom
 export const tableData = atom<TableDataType | null>(null);
 
 // get all sheets from the file
