@@ -2,15 +2,12 @@ import { invoke } from "@tauri-apps/api/core";
 import { useAtomValue, useSetAtom } from "jotai";
 import { filePath, sheetSelected, tableData } from "../state";
 import { TableDataType } from "../dto";
-
-import { useCallback } from "react";
-
-export const useTableOpen = () => {
+export function useTableOpen() {
   const { url } = useAtomValue(filePath);
   const sheet = useAtomValue(sheetSelected);
   const setData = useSetAtom(tableData);
 
-  return useCallback(async () => {
+  const loadTable = async () => { 
     try {
       const response = await invoke<TableDataType>("load_data", {
         url,
@@ -34,5 +31,6 @@ export const useTableOpen = () => {
     } catch (error) {
       console.error("Error loading table data:", error);
     }
-  }, [url, sheet, setData]);
-};
+  }
+  return loadTable;
+}

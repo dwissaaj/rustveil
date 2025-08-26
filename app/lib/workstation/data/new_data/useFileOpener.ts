@@ -2,12 +2,12 @@ import { open } from "@tauri-apps/plugin-dialog";
 import { invoke } from "@tauri-apps/api/core";
 import { useAtom, useSetAtom } from "jotai";
 import { filePath, sheetAvailable, sheetSelected } from "./../state";
-
-export const useFileOpener = () => {
+export function useFileOpener() {
   const setSheets = useSetAtom(sheetAvailable);
   const setSelectedSheet = useSetAtom(sheetSelected);
   const [fileState, setFileState] = useAtom(filePath);
-  return async () => {
+
+  const fileOpenerHandler = async () => {
     try {
       if (fileState.isSelected === false) {
         const file = await open({
@@ -40,5 +40,6 @@ export const useFileOpener = () => {
       setFileState(newState);
       return newState;
     }
-  };
-};
+  }
+  return fileOpenerHandler; 
+}

@@ -1,7 +1,7 @@
 export interface ResponseSuccess {
   response_code: number;
   message: string;
-  data?: Record<string, any>[]; 
+  data: Record<string, any>[];
 }
 
 export interface ResponseError {
@@ -10,7 +10,6 @@ export interface ResponseError {
 }
 
 
-export interface InvokeResponse {
-  Complete?: ResponseSuccess;
-  Error?: ResponseError;
-}
+export type InvokeResponse = 
+  | { Complete: ResponseSuccess }
+  | { Error: ResponseError };
