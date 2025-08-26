@@ -43,7 +43,7 @@ use crate::state::DatabaseInsertionProgress;
 
 pub fn open_or_create_sqlite(app: &AppHandle, base_path: &str) -> Result<Connection, String> {
     let mut final_path = base_path.to_string();
-
+    
     // if file exists, find next available filename
     if Path::new(&final_path).exists() {
         let mut counter = 1;
