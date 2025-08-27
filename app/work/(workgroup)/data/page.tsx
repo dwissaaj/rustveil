@@ -2,15 +2,15 @@ import FilterListWrapper from "@/components/workstation/data/FilterListWrapper";
 import DataTable from "./table/DataTable";
 import DataFileDropdown from "./dropdown/DataFileDropdown";
 import { ViewDropdown } from "./dropdown/ViewDropdown";
-import { useRef, useState } from "react";
+import {  useState } from "react";
 
 export default function Page() {
-  const dataRef = useRef<any[]>([]);
-  const [, forceUpdate] = useState(0); // just used to trigger re-render
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const handleDataFetched = (data: any[]) => {
-    dataRef.current = data;           // ✅ put data in ref (not React state)
-    forceUpdate((n) => n + 1);        // ✅ trigger re-render so DataTable sees new data
+  const handleDataFetched = (newData: any[]) => {
+    setLoading(false); 
+    setData(newData);
   };
 
   return (
@@ -20,8 +20,11 @@ export default function Page() {
         <ViewDropdown onDataFetched={handleDataFetched} />
       </div>
       <div>
-        {/* ✅ DataTable untouched — still gets `data` prop */}
-        <DataTable data={dataRef.current} isLoading={false} />
+         <DataTable 
+        data={data} 
+        isLoading={loading} 
+        onDataFetched={handleDataFetched} 
+      />
       </div>
     </div>
   );

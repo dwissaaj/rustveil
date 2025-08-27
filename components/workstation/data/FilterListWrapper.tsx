@@ -12,7 +12,7 @@ export default function FilterListWrapper() {
         <DataFileDropdown />
       </div>
       <div>
- 
+        <ViewDropdown />
       </div>
     </div>
   );
