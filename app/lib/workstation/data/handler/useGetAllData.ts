@@ -1,11 +1,10 @@
-
 import { InvokeResponse } from "../response";
 import { invoke } from "@tauri-apps/api/core";
 export function useGetAllData() {
-  const getAll = async () => { 
+  const getAll = async () => {
     try {
-        const response = await invoke<InvokeResponse>('get_all_data')
-        if ("Complete" in response) {
+      const response = await invoke<InvokeResponse>("get_all_data");
+      if ("Complete" in response) {
         return {
           response_code: response.Complete.response_code,
           message: response.Complete.message,
@@ -18,9 +17,8 @@ export function useGetAllData() {
         };
       }
     } catch (error) {
-        console.log('Console at get all', error)
-     
+      console.log("Console at get all", error);
     }
   };
-    return getAll;
+  return getAll;
 }
