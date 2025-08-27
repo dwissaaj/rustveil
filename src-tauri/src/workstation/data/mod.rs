@@ -1,5 +1,6 @@
-use crate::database::lib::{open_or_create_sqlite, data_to_sqlite};
-use crate::state::DatabaseProcess;
+
+use crate::database::lib::handler::{open_or_create_sqlite, data_to_sqlite};
+use crate::database::lib::state::DatabaseProcess;
 use calamine::{open_workbook, Data, Reader, Xlsx};
 use chrono::NaiveDate;
 use serde_json::{json, Value};
@@ -7,7 +8,7 @@ use tauri::{command, Manager, AppHandle, Emitter};
 use crate::app_path::{AppFolderPath};
 use std::sync::Mutex;
 use crate::workstation::state_response::{ProcessingResult,ErrorResult,DataTable, ProcessData};
-use crate::database::lib::get_all_data;
+
 
 
 
@@ -176,36 +177,27 @@ pub fn load_data(app: AppHandle, url: String, sheet_name: String) -> ProcessingR
 
     let sqlite_result = data_to_sqlite(data_json.clone(), headers.clone(), &connect, &app);
     match sqlite_result {
-        DatabaseProcess::Complete(_) => {
-            let _ = app.emit(
-                "load-data-progress",
-                ProcessData {
-                    progress: 100,
-                    message: "Process Done".to_string(),
-                },
-            );
+    DatabaseProcess::Complete(_) => {
+        let _ = app.emit(
+            "load-data-progress",
+            ProcessData {
+                progress: 100,
+                message: "Process Done".to_string(),
+            },
+        );
 
-            match get_all_data(&app) {
-                DatabaseProcess::Complete(fresh_data) => {
-                    ProcessingResult::Complete(DataTable {
-                        response_code: fresh_data.response_code,
-                        message: fresh_data.message,
-                        data: fresh_data.data.unwrap_or_else(|| vec![]),
-                    })
-                }
-                DatabaseProcess::Error(err) => {
-                    ProcessingResult::Error(ErrorResult {
-                        error_code: err.error_code,
-                        message: err.message,
-                    })
-                }
-            }
-        }
-        DatabaseProcess::Error(err) => ProcessingResult::Error(ErrorResult {
-            error_code: err.error_code,
-            message: err.message,
-        }),
+      
+        ProcessingResult::Complete(DataTable {
+            response_code: 200,
+            message: "Data successfully imported to database. Please refresh to view.".to_string(),
+            data: vec![], 
+        })
     }
+    DatabaseProcess::Error(err) => ProcessingResult::Error(ErrorResult {
+        error_code: err.error_code,
+        message: err.message,
+    }),
+}
 }
 
 /// Retrieves the list of sheet names from an Excel file.

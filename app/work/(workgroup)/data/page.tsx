@@ -1,24 +1,24 @@
 "use client";
-
 import { useAtom } from "jotai";
 import DataTable from "./table/DataTable";
 import NoData from "@/components/workstation/data/NoData";
-import { tableData } from "@/app/lib/workstation/data/state";
-import DataPicker from "./picker/DataPickerModal";
 import FilterList from "@/components/workstation/data/FilterListWrapper";
-import { Alert, Button, Toast, addToast } from "@heroui/react";
-import { useToast } from "@heroui/toast";
-
+import { useState } from "react";
 export default function Page() {
-  const [data] = useAtom(tableData);
 
+const [tableData, setTableData] = useState<Record<string, any>[]>([]);
+
+  const handleRefresh = (newData: Record<string, any>[]) => {
+    setTableData(newData);
+  };
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <FilterList />
+        <FilterList onRefresh={handleRefresh} />
       </div>
       <div>
-        <div>{data ? <DataTable data={data} /> : <NoData />}</div>
+        <DataTable data={tableData} />
+        
       </div>
     </div>
   );
