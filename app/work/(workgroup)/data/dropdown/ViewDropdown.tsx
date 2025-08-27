@@ -17,7 +17,7 @@ import { RefreshIcon } from "@/components/icon/IconView";
 import { useGetAllData } from '@/app/lib/workstation/data/handler/useGetAllData';
 
 
-export function ViewDropdown() {
+export function ViewDropdown({ onDataFetched }: { onDataFetched: (data: any[]) => void }) {
   const getData = useGetAllData();
 
   const refresh = async () => {
@@ -25,17 +25,17 @@ export function ViewDropdown() {
       const result = await getData();
       console.log(result);
       
-      if (result?.response_code === 200) {
-      
+      if (result?.response_code === 200 && result.data) {
+        onDataFetched(result.data);
         addToast({
           title: "Success",
-          description: "Data refreshed successfully",
+          description: `${result.message}`,
           color: "success",
         });
       } else {
         addToast({
-          title: "Error",
-          description: result?.message || "Refresh failed",
+          title: "Error at Fetch",
+          description: `${result?.message}`,
           color: "danger",
         });
       }
