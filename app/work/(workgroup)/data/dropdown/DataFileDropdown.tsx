@@ -9,7 +9,7 @@ import {
   Button,
   Alert,
 } from "@heroui/react";
-import {  UploadNewData, LoadNewData } from "@/components/icon/IconFilter";
+import { UploadNewData, LoadNewData } from "@/components/icon/IconFilter";
 import DataPicker from "../picker/DataPickerModal";
 import DataLoader from "../picker/DataLoadModal";
 
@@ -33,11 +33,21 @@ export default function DataFileDropdown() {
           <Button variant="light">File</Button>
         </DropdownTrigger>
         <DropdownMenu aria-label="File actions">
-          <DropdownItem description="Start with new data" startContent={<UploadNewData />} key="pick-file" onPress={onPickerOpen}>
-              Open File
+          <DropdownItem
+            description="Start with new data"
+            startContent={<UploadNewData />}
+            key="pick-file"
+            onPress={onPickerOpen}
+          >
+            Open File
           </DropdownItem>
-          <DropdownItem description="Load existed sqlite file" startContent={<LoadNewData />} key="load-file" onPress={onLoaderOpen}>
-              Load File
+          <DropdownItem
+            description="Load existed sqlite file"
+            startContent={<LoadNewData />}
+            key="load-file"
+            onPress={onLoaderOpen}
+          >
+            Load File
           </DropdownItem>
         </DropdownMenu>
       </Dropdown>

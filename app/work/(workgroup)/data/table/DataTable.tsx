@@ -21,7 +21,12 @@ interface DataTableProps {
   onDataFetched?: (data: any[]) => void; // 👈 add this
 }
 
-export default function DataTable({ data, isLoading = false, rowsPerPage = 100, onDataFetched }: DataTableProps) {
+export default function DataTable({
+  data,
+  isLoading = false,
+  rowsPerPage = 100,
+  onDataFetched,
+}: DataTableProps) {
   const [page, setPage] = React.useState(1);
 
   // calculate total pages
@@ -39,17 +44,20 @@ export default function DataTable({ data, isLoading = false, rowsPerPage = 100, 
   return (
     <div className="flex flex-col gap-4">
       <Table
-      topContent={
-      <Button 
-        isIconOnly
-        color="primary" 
-        variant="light" 
-        startContent={<RefreshIcon  />} 
-        onPress={refresh}
+        topContent={
+          <Button
+            isIconOnly
+            color="primary"
+            variant="light"
+            startContent={<RefreshIcon />}
+            onPress={refresh}
+          ></Button>
+        }
+        isHeaderSticky
+        isVirtualized
+        isStriped
+        aria-label="Dynamic data table"
       >
-      </Button>
-  }
-      isHeaderSticky isVirtualized isStriped aria-label="Dynamic data table">
         <TableHeader>
           {columns.map((column) => (
             <TableColumn key={column}>{column}</TableColumn>
