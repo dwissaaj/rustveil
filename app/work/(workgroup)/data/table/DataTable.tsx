@@ -1,59 +1,28 @@
-import { TableDataType } from "@/app/lib/workstation/data/dto";
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableColumn,
-  TableCell,
-  TableRow,
-} from "@heroui/react";
-import React from "react";
+import NoData from "@/components/workstation/data/NoData";
+import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@heroui/react";
 
-/**
- * Displays tabular data from Excel files in a styled table format
- *
- * @component
- * @param {Object} props - Component props
- * @param {TableDataType} props.data - The table data to display
- *
- * @example
- * // Basic usage with sample data
- * const sampleData = {
- *   headers: ['Name', 'Age'],
- *   rows: [{ Name: 'Alice', Age: 30 }, { Name: 'Bob', Age: 25 }]
- * };
- *
- * <DataTable data={sampleData} />
- *
- * @description
- * Features:
- * - Automatically renders headers in uppercase
- * - Converts all cell values to strings
- * - Uses Hero UI's striped table styling
- * - Handles dynamic column counts
- *
- * @ui
- * - Striped rows for better readability
- * - Responsive design
- * - Accessible (ARIA-labeled)
- */
-type DataTableProps = {
-  data: TableDataType;
-};
+interface DataTableProps {
+  data?: Record<string, any>[]; // Make data optional
+}
 
-export default function DataTable({ data }: DataTableProps) {
+export default function DataTable({ data = [] }: DataTableProps) { 
+ 
+  const columns = data && data.length > 0 ? Object.keys(data[0]) : [];
+
   return (
-    <Table isVirtualized isStriped aria-label="Dynamic Table">
+    <Table isStriped isVirtualized aria-label="Data table">
       <TableHeader>
-        {data.headers.map((header) => (
-          <TableColumn key={header}>{header.toUpperCase()}</TableColumn>
+        {columns.map((column) => (
+          <TableColumn key={column}>{column}</TableColumn>
         ))}
       </TableHeader>
-      <TableBody>
-        {data.rows.map((row, i) => (
-          <TableRow key={i}>
-            {data.headers.map((header) => (
-              <TableCell key={header}>{String(row[header])}</TableCell>
+      <TableBody emptyContent={<NoData />}>
+        {data.map((row, index) => (
+          <TableRow key={index}>
+            {columns.map((column) => (
+              <TableCell key={column}>
+                {row[column]} 
+              </TableCell>
             ))}
           </TableRow>
         ))}

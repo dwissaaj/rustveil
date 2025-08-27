@@ -56,11 +56,10 @@ export default function DataPicker({
       const result = await tableOpener();
       setIsLoading(true);
       setopenProgress(true);
-      console.log("res", result);
       if (result?.response_code === 200) {
         addToast({
           title: "Table Opened",
-          description: "Table data loaded successfully",
+          description: `${result?.message}`,
           color: "success",
         });
       }

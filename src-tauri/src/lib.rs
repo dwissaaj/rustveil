@@ -3,12 +3,11 @@ mod database;
 mod global;
 use workstation::data;
 use workstation::social_network;
-use database::state;
 use tauri_plugin_fs::FsExt;
 use global::app_path;
 use app_path::AppFolderPath;
 use std::sync::Mutex;
-use database::state::SqliteDataState;
+use database::lib::state::SqliteDataState;
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -43,7 +42,8 @@ pub fn run() {
             data::load_data,
             data::get_sheet,
             social_network::user_to_vector,
-            database::lib::load_data_sqlite
+            database::lib::handler::load_data_sqlite,
+            database::lib::get::get_all_data,
         ])
         .run(tauri::generate_context!())
         

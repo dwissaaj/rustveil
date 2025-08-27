@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import {
   Dropdown,
   useDisclosure,
@@ -8,12 +9,11 @@ import {
   Button,
   Alert,
 } from "@heroui/react";
-import { UploadIcon } from "@/components/icon/IconFilter";
-import DataPicker from "./picker/DataPickerModal";
-import { useState } from "react";
-import DataLoader from "./picker/DataLoadModal";
+import {  UploadNewData, LoadNewData } from "@/components/icon/IconFilter";
+import DataPicker from "../picker/DataPickerModal";
+import DataLoader from "../picker/DataLoadModal";
 
-export default function DataFilterList() {
+export default function DataFileDropdown() {
   const {
     isOpen: isPickerOpen,
     onOpen: onPickerOpen,
@@ -30,32 +30,14 @@ export default function DataFilterList() {
     <>
       <Dropdown>
         <DropdownTrigger>
-          <Button variant="bordered">File</Button>
+          <Button variant="light">File</Button>
         </DropdownTrigger>
         <DropdownMenu aria-label="File actions">
-          <DropdownItem key="pick-file" onPress={onPickerOpen}>
-            <Button
-              isDisabled={fileLoaded}
-              endContent={<UploadIcon />}
-              className="w-full justify-start"
-              color="secondary"
-              variant="ghost"
-              onPress={onPickerOpen}
-            >
+          <DropdownItem description="Start with new data" startContent={<UploadNewData />} key="pick-file" onPress={onPickerOpen}>
               Open File
-            </Button>
           </DropdownItem>
-          <DropdownItem key="load-file" onPress={onLoaderOpen}>
-            <Button
-              isDisabled={fileLoaded}
-              endContent={<UploadIcon />}
-              className="w-full justify-start"
-              color="secondary"
-              variant="ghost"
-              onPress={onLoaderOpen}
-            >
+          <DropdownItem description="Load existed sqlite file" startContent={<LoadNewData />} key="load-file" onPress={onLoaderOpen}>
               Load File
-            </Button>
           </DropdownItem>
         </DropdownMenu>
       </Dropdown>
