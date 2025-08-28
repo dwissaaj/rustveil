@@ -12,14 +12,68 @@ use crate::database::lib::state::DatabaseInsertionProgress;
 
 
 #[command]
-pub fn load_data_sqlite(app: AppHandle, pathfile: String)  {
+pub fn load_data_sqlite(app: AppHandle, pathfile: String) -> DatabaseProcess {
+    // 1. Update the file path in state
     let binding = app.state::<Mutex<SqliteDataState>>();
     let mut db = binding.lock().unwrap();
+    db.file_url = pathfile.clone();
+    if(pathfile.is_empty()){
+        return DatabaseProcess::Error(DatabaseError {
+            error_code: 404,
+            message: "File path or database is unkown".to_string(),
+        });
+    }
+    // 2. Check if rustveil table exists
+    let conn = match Connection::open(&pathfile) {
+        Ok(conn) => conn,
+        Err(e) => {
+            return DatabaseProcess::Error(DatabaseError {
+                error_code: 404,
+                message: format!("Failed to open database: {}", e),
+            });
+        }
+    };
     
-    // 1. Update the file path in state
-    db.file_url = pathfile;
+    // Check if rustveil table exists
+    let table_exists: bool = match conn.query_row(
+    "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='rustveil'",
+    [],
+    |row| row.get::<_, i64>(0) // Specify i64 for COUNT(*)
+) {
+    Ok(count) => count > 0,
+    Err(e) => {
+        return DatabaseProcess::Error(DatabaseError {
+            error_code: 404,
+            message: format!("Error checking table existence: {}", e),
+        });
+    }
+};
     
-    // 2. Call get_all_data and return its result directly
+    if !table_exists {
+        return DatabaseProcess::Error(DatabaseError {
+            error_code: 404,
+            message: "Table 'rustveil' does not exist in the database".to_string(),
+        });
+    }
+    
+    // 3. Get total count of records (optional)
+        let all_count: usize = match conn.query_row("SELECT COUNT(*) FROM rustveil", [], |row| {
+            row.get::<_, i64>(0).map(|count| count as usize) // Convert i64 to usize
+        }) {
+            Ok(count) => count,
+            Err(e) => {
+                return DatabaseProcess::Error(DatabaseError {
+                    error_code: 500,
+                    message: format!("Error counting records: {}", e),
+                });
+            }
+        };
+    DatabaseProcess::Complete(DatabaseComplete {
+        response_code: 200,
+        message: "Data table `Rustveil` exist you can refresh".to_string(),
+        data: None, // You can populate this later when you fetch actual data
+        total_count: None
+    })
 }
 
 /// Inserts JSON data into a SQLite database table.
@@ -143,11 +197,15 @@ pub fn data_to_sqlite(
             }
         }
     }
-
+    let all_count: usize = match connect.query_row("SELECT COUNT(*) FROM rustveil", [], |row| row.get(0)) {
+        Ok(c) => c,
+        Err(_) => 0,
+    };
     DatabaseProcess::Complete(DatabaseComplete {
         response_code: 200,
         message: format!("Success: inserted {} rows", total_inserted),
         data: Some(data_json),
+        total_count: Some(all_count)
     })
 }
 
