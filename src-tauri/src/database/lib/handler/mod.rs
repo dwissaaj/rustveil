@@ -11,6 +11,33 @@ use crate::SqliteDataState;
 use crate::database::lib::state::DatabaseInsertionProgress;
 
 
+
+/// Loads and validates a SQLite database file, checking for the mandatory 'rustveil' table.
+///
+/// # Arguments
+/// * `app` - The Tauri application handle for accessing application state
+/// * `pathfile` - The file path to the SQLite database to load
+///
+/// # Returns
+/// Returns `DatabaseProcess` enum with either:
+/// - `DatabaseProcess::Complete` with success message if validation passes
+/// - `DatabaseProcess::Error` with appropriate error code and message if validation fails
+///
+/// # Validation Steps
+/// 1. Checks if the provided file path is not empty
+/// 2. Attempts to open the SQLite database connection
+/// 3. Verifies the existence of the mandatory 'rustveil' table
+/// 4. Returns success if all validations pass
+///
+/// # Errors
+/// - Returns error code 404 if:
+///   - File path is empty
+///   - Database cannot be opened
+///   - 'rustveil' table does not exist
+/// - Returns error code 404 for internal database errors
+/// 
+
+
 #[command]
 pub fn load_data_sqlite(app: AppHandle, pathfile: String) -> DatabaseProcess {
     // 1. Update the file path in state

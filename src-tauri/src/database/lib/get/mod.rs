@@ -30,9 +30,7 @@ use crate::SqliteDataState;
 /// - `message: "Data fetched successfully"`
 /// - `data`: A JSON array of objects, where each object represents a row,
 ///   with column names as keys and cell values as strings (or `null` if unavailable).
-///
-
-/// 
+/// - `total count`: A total count of records in the `rustveil` table.
 
 
 #[command]
