@@ -9,6 +9,7 @@ import {
   Alert,
   Progress,
   addToast,
+  Tooltip,
 } from "@heroui/react";
 import { useFileOpener } from "@/app/lib/workstation/data/new_data/useFileOpener";
 import SheetSelector from "@/components/workstation/data/SheetSelect";
@@ -18,6 +19,8 @@ import { useState, useEffect } from "react";
 import { useCloseModal } from "@/app/lib/workstation/data/useCloseModal";
 import { useDatabaseProgress } from "@/app/lib/workstation/data/progress/useDatabaseProgress";
 import { useLoadDatabase } from "@/app/lib/workstation/data/load_data/useLoadDatabase";
+import { useOpenDatabase } from "@/app/lib/workstation/data/load_data/useOpenDatabase";
+import { InfoIconSolid } from "@/components/icon/IconView";
 
 type DataPickerModalType = {
   isOpen: boolean;
@@ -34,16 +37,42 @@ export default function DataLoader({
   const [openButtonState, setopenButtonState] = useState(true);
   const { closeModal } = useCloseModal(onOpenChange, addToast);
   const [isLoading, setIsLoading] = useState(false);
-  const [errorInfo, setErrorInfo] = useState<{
-    isError: boolean;
-    message?: string;
-  }>({ isError: false });
   const loadDatabase = useLoadDatabase();
+  const databaseOpener = useOpenDatabase()
+  const openDatabase = async () => {
+    try {
+      const result = await databaseOpener();
+      setIsLoading(true);
+      console.log(result)
+      if (result?.response_code === 200) {
+        addToast({
+          title: "Table Opened",
+          description: `${result?.message}`,
+          color: "success",
+        });
+      }
+      if (result?.response_code !== 200) {
+        addToast({
+          title: "Operation Error",
+          description: `${result?.message}`,
+          color: "danger",
+        });
+     
+      }
+    } catch (error) {
+      console.error("Failed to open table:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleOpenFile = async () => {
     setIsLoading(true);
     try {
       const result = await loadDatabase();
-      console.log(result);
+      if (result?.isSelected === true) {
+        setopenButtonState(false);
+      }
     } catch (error) {
       console.error("Failed to load database:", error);
     } finally {
@@ -55,7 +84,14 @@ export default function DataLoader({
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           <ModalHeader className="flex flex-col gap-1">
-            Load A Sqlite Database
+            <div className="flex items-center gap-2">
+                <p className="text-2xl font-medium">
+                Load A Sqlite Database
+              </p>
+                <Tooltip content="Only Generated Sqlite database by Rust Veil is supported for now">
+                  <Button size="sm" color="warning" variant="light" isIconOnly startContent={<InfoIconSolid />}></Button>
+                </Tooltip>
+            </div>
           </ModalHeader>
           <ModalBody className="flex flex-col gap-2">
             <div>
@@ -67,7 +103,7 @@ export default function DataLoader({
                   isLoading={isLoading}
                   isDisabled={fileLoaded}
                 >
-                  Pick the file
+                  Pick the sqlite
                 </Button>
               </div>
             </div>
@@ -78,7 +114,7 @@ export default function DataLoader({
             </Button>
             <Button
               color="primary"
-              onPress={handleOpenFile}
+              onPress={openDatabase}
               isDisabled={openButtonState}
               isLoading={isLoading}
             >

@@ -28,7 +28,9 @@ pub struct DatabaseComplete {
     /// Description of the result for logging or UI display.
     pub message: String,
 
-    pub data: Option<Vec<Value>>
+    pub data: Option<Vec<Value>>,
+
+    pub total_count: Option<usize>
 }
 
 /// Failed database process payload.
@@ -57,3 +59,6 @@ pub struct DatabaseInsertionProgress {
   pub total_rows: usize,
   pub count: usize
 }
+
+
+

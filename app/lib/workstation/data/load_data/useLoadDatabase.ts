@@ -1,14 +1,12 @@
-// hooks/useLoadDatabase.ts
 import { open } from "@tauri-apps/plugin-dialog";
-import { useAtom } from "jotai";
-
 import { invoke } from "@tauri-apps/api/core";
-import { loadDatabase } from "../state";
-
+import { useAtom, } from "jotai";
+import { filePath } from "./../state";
 export function useLoadDatabase() {
-  const [fileState, setFileState] = useAtom(loadDatabase);
 
-  const loadDatabaseHandler = async () => {
+  const [fileState, setFileState] = useAtom(filePath);
+
+  const databaseOpener = async () => {
     try {
       if (fileState.isSelected === false) {
         const file = await open({
@@ -21,25 +19,23 @@ export function useLoadDatabase() {
             },
           ],
         });
-
         if (file === null) {
           const newState = { isSelected: false, url: "" };
           setFileState(newState);
           return newState;
         }
-
         if (file) {
-          const data = await invoke("load_data_sqlite", { pathfile: file });
           const newState = { isSelected: true, url: file };
           setFileState(newState);
-          return data;
+          return newState;
         }
       }
     } catch (error) {
       console.log("Error at loading file", error);
-      throw error; // Re-throw to handle in component
+      const newState = { isSelected: false, url: "" };
+      setFileState(newState);
+      return newState;
     }
   };
-
-  return loadDatabaseHandler; // Return the handler function
+  return databaseOpener;
 }
