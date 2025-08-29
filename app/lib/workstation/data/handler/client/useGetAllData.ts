@@ -1,5 +1,6 @@
-import { InvokeResponse } from "../response";
+
 import { invoke } from "@tauri-apps/api/core";
+import { InvokeResponse } from "../../response";
 export function useGetAllData() {
   const getAll = async () => {
     try {

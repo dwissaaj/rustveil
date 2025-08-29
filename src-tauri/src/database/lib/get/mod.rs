@@ -4,7 +4,13 @@ use serde_json::Value;
 use std::sync::Mutex;
 use tauri::{AppHandle, Manager, command};
 use crate::SqliteDataState;
+use serde::{Deserialize, Serialize};
 
+#[derive(Deserialize)]
+pub struct PaginationParams {
+    pub page: usize,
+    pub page_size: usize,
+}
 
 
 /// Fetches all data from the `rustveil` table in the SQLite database.
@@ -120,69 +126,118 @@ pub fn get_all_data(app: AppHandle) -> DatabaseProcess {
 }
 
 
+
+
+
+
 #[command]
-pub fn get_all_data_small(app: AppHandle, page: usize) -> DatabaseProcess {
+pub fn get_paginated_data(app: AppHandle, pagination: PaginationParams) -> DatabaseProcess {
+    
+
+    // Validate pagination parameters
+    if pagination.page == 0 || pagination.page_size == 0 {
+        println!("❌ Invalid pagination: page or page_size is 0");
+        return DatabaseProcess::Error(DatabaseError {
+            error_code: 400,
+            message: "Page and page_size must be greater than 0".to_string(),
+        });
+    }
+
+    if pagination.page_size > 1000 {
+        println!("❌ Invalid pagination: page_size exceeds 1000");
+        return DatabaseProcess::Error(DatabaseError {
+            error_code: 400,
+            message: "Page size cannot exceed 1000".to_string(),
+        });
+    }
+
     let db_state = app.state::<Mutex<SqliteDataState>>();
-    let db = db_state.lock().unwrap(); // now "db" holds the sqlite file state
-    let db_path = db.file_url.clone();  // read the path
+    let db = db_state.lock().unwrap();
+    let db_path = db.file_url.clone();
+    
+    // println!("📁 Database path: {}", db_path);
+    
     if db_path.is_empty() {
+        println!("❌ No database path found");
         return DatabaseProcess::Error(DatabaseError {
             error_code: 404,
             message: "No database found. Please import data first.".to_string(),
         });
     }
     
-    // Check if the SQLite file actually exists
     if !std::path::Path::new(&db_path).exists() {
+        println!("❌ Database file does not exist: {}", db_path);
         return DatabaseProcess::Error(DatabaseError {
             error_code: 404,
-            message: "Sqlite or Database not found. Please import data first.".to_string(),
+            message: "SQLite database not found. Please import data first.".to_string(),
         });
     }
 
     let connect = match Connection::open(&db_path) {
         Ok(conn) => conn,
-        Err(_) => {
+        Err(e) => {
+            println!("❌ Database connection failed: {}", e);
             return DatabaseProcess::Error(DatabaseError {
                 error_code: 401,
-                message: "Error at SQLite connection Get All Data".to_string(),
+                message: format!("Error at SQLite connection: {}", e),
             })
         }
     };
 
-    let rows_per_page = 100;
-    let start = (page - 1) * rows_per_page;
-    let sql = format!("SELECT * FROM rustveil LIMIT {} OFFSET {}", rows_per_page, start);
-    let all_count: usize = match connect.query_row("SELECT COUNT(*) FROM rustveil", [], |row| row.get(0)) {
+    // Get total count
+    let total_count: usize = match connect.query_row("SELECT COUNT(*) FROM rustveil", [], |row| row.get(0)) {
         Ok(c) => c,
-        Err(_) => 0,
-    };
-    let mut stmt = match connect.prepare(&sql) {
-        Ok(s) => s,
         Err(e) => {
+            println!("❌ Count query failed: {}", e);
             return DatabaseProcess::Error(DatabaseError {
                 error_code: 402,
+                message: format!("Failed to count records: {}", e),
+            })
+        }
+    };
+
+    // println!("📊 Total records: {}", total_count);
+
+    // Calculate pagination values
+    let total_pages = (total_count + pagination.page_size - 1) / pagination.page_size;
+    let current_page = pagination.page.min(total_pages.max(1));
+    let offset = (current_page - 1) * pagination.page_size;
+
+    // println!("📄 Page {}/{}, Offset: {}, Limit: {}", current_page, total_pages, offset, pagination.page_size);
+
+    // Prepare paginated query
+    let mut stmt = match connect.prepare("SELECT * FROM rustveil LIMIT ? OFFSET ?") {
+        Ok(s) => s,
+        Err(e) => {
+            println!("❌ Prepare statement failed: {}", e);
+            return DatabaseProcess::Error(DatabaseError {
+                error_code: 403,
                 message: format!("Failed to prepare statement: {}", e),
             })
         }
     };
 
-    // Collect column names once
+    // Collect column names
     let col_names: Vec<String> = (0..stmt.column_count())
         .map(|i| stmt.column_name(i).unwrap_or("unknown").to_string())
         .collect();
 
-    let mut rows = match stmt.query([]) {
+    // println!("📋 Columns: {:?}", col_names);
+
+    // Execute query with pagination parameters
+    let mut rows = match stmt.query([pagination.page_size as i64, offset as i64]) {
         Ok(r) => r,
         Err(e) => {
+            println!("❌ Query execution failed: {}", e);
             return DatabaseProcess::Error(DatabaseError {
-                error_code: 403,
-                message: format!("Error at Get All Data Sqlite query get rows: {}", e),
+                error_code: 404,
+                message: format!("Error executing query: {}", e),
             })
         }
     };
 
-    let mut all_data = Vec::new();
+    let mut page_data = Vec::new();
+    let mut row_count = 0;
 
     while let Ok(Some(row)) = rows.next() {
         let mut obj = serde_json::Map::new();
@@ -199,13 +254,16 @@ pub fn get_all_data_small(app: AppHandle, page: usize) -> DatabaseProcess {
             );
         }
 
-        all_data.push(Value::Object(obj));
+        page_data.push(Value::Object(obj));
+        row_count += 1;
     }
+
+    // println!("✅ Returned {} rows for page {}", row_count, current_page);
 
     DatabaseProcess::Complete(DatabaseComplete {
         response_code: 200,
         message: "Data fetched successfully".to_string(),
-        data: if all_data.is_empty() { None } else { Some(all_data) },
-        total_count: Some(all_count),
+        data: if page_data.is_empty() { None } else { Some(page_data) },
+        total_count: Some(total_count),
     })
 }

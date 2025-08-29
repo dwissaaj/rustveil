@@ -44,7 +44,7 @@ pub fn run() {
             social_network::user_to_vector,
             database::lib::handler::load_data_sqlite,
             database::lib::get::get_all_data,
-            database::lib::get::get_all_data_small
+            database::lib::get::get_paginated_data
             // database::lib::get::get_all_data_limit,
         ])
         .run(tauri::generate_context!())

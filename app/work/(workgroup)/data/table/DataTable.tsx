@@ -12,7 +12,7 @@ import {
   Button,
 } from "@heroui/react";
 import { RefreshIcon } from "@/components/icon/IconView";
-import { useRefresh } from "@/app/lib/workstation/data/handler/useRefresh";
+import { useRefresh } from "@/app/lib/workstation/data/handler/client/useRefresh";
 
 interface DataTableProps {
   data: Record<string, any>[];
