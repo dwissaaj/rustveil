@@ -40,17 +40,19 @@ export default function TableServer({
   
   return (
     <div className="flex flex-col gap-4">
-      {totalCount > 0 && (
-        <div className="text-sm text-default-500">
-          Showing {data.length} of {totalCount} records (Page {currentPage} of {totalPages})
-        </div>
-      )}
+      
 
       <Table
         isHeaderSticky
         isVirtualized
         isStriped
         aria-label="Dynamic data table"
+        bottomContent={totalCount > 0 && (
+        <div className="text-sm text-default-500">
+          Showing {data.length} of {totalCount} records (Page {currentPage} of {totalPages})
+        </div>
+      )}
+      bottomContentPlacement="outside"
         topContent={
                   <Button
                     isIconOnly
@@ -74,9 +76,8 @@ export default function TableServer({
           {data.map((row, index) => (
   <TableRow key={index}>
     {[
-      // Row number cell
+
       <TableCell key="row-number">{startRow + index}</TableCell>,
-      // Dynamic column cells
       ...columns.map((column) => (
         <TableCell key={`${index}-${column}`}>
           {String(row[column] || "")}
