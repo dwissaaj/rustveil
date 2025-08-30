@@ -1,9 +1,8 @@
 import { open } from "@tauri-apps/plugin-dialog";
 import { invoke } from "@tauri-apps/api/core";
-import { useAtom, } from "jotai";
+import { useAtom } from "jotai";
 import { filePath } from "./../state";
 export function useLoadDatabase() {
-
   const [fileState, setFileState] = useAtom(filePath);
 
   const databaseOpener = async () => {

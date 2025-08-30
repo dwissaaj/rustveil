@@ -29,39 +29,39 @@ export default function TableServer({
   currentPage = 1,
   pageSize = 100,
   onPageChange,
-  onRefresh
+  onRefresh,
 }: DataTableProps) {
   const totalPages = Math.ceil(totalCount / pageSize);
   const columns = data.length > 0 ? Object.keys(data[0]) : [];
   const startRow = (currentPage - 1) * pageSize + 1;
 
+  const allColumns = ["Number", ...columns];
 
-  const allColumns = ['Number', ...columns];
-  
   return (
     <div className="flex flex-col gap-4">
-      
-
       <Table
         isHeaderSticky
         isVirtualized
         isStriped
         aria-label="Dynamic data table"
-        bottomContent={totalCount > 0 && (
-        <div className="text-sm text-default-500">
-          Showing {data.length} of {totalCount} records (Page {currentPage} of {totalPages})
-        </div>
-      )}
-      bottomContentPlacement="outside"
+        bottomContent={
+          totalCount > 0 && (
+            <div className="text-sm text-default-500">
+              Showing {data.length} of {totalCount} records (Page {currentPage}{" "}
+              of {totalPages})
+            </div>
+          )
+        }
+        bottomContentPlacement="outside"
         topContent={
-                  <Button
-                    isIconOnly
-                    color="primary"
-                    variant="light"
-                    startContent={<RefreshIcon />}
-                    onPress={onRefresh}
-                  ></Button>
-                }
+          <Button
+            isIconOnly
+            color="primary"
+            variant="light"
+            startContent={<RefreshIcon />}
+            onPress={onRefresh}
+          ></Button>
+        }
       >
         <TableHeader>
           {allColumns.map((column) => (
@@ -74,18 +74,17 @@ export default function TableServer({
           emptyContent={<NoData />}
         >
           {data.map((row, index) => (
-  <TableRow key={index}>
-    {[
-
-      <TableCell key="row-number">{startRow + index}</TableCell>,
-      ...columns.map((column) => (
-        <TableCell key={`${index}-${column}`}>
-          {String(row[column] || "")}
-        </TableCell>
-      ))
-    ]}
-  </TableRow>
-))}
+            <TableRow key={index}>
+              {[
+                <TableCell key="row-number">{startRow + index}</TableCell>,
+                ...columns.map((column) => (
+                  <TableCell key={`${index}-${column}`}>
+                    {String(row[column] || "")}
+                  </TableCell>
+                )),
+              ]}
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
 

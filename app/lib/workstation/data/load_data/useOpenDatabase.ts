@@ -1,6 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 import { useAtomValue } from "jotai";
-import { filePath} from "../state";
+import { filePath } from "../state";
 import { InvokeResponse } from "../response";
 
 export function useOpenDatabase() {
@@ -16,7 +16,6 @@ export function useOpenDatabase() {
           message: response.Complete.message,
           data: response.Complete.data,
           total_count: response.Complete.total_count,
-          
         };
       } else if ("Error" in response) {
         return {
@@ -27,7 +26,7 @@ export function useOpenDatabase() {
     } catch (error: any) {
       console.error("Error loading table data:", error);
       return {
-        response_code: 500, 
+        response_code: 500,
         message: "Error loading table data",
       };
     }

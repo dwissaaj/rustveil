@@ -32,7 +32,16 @@ export const loadDatabase = atom<{
   isSelected: false, // Default: no file selected
   url: "", // Default: empty string
 });
-// export const filePath = atom<string>("")
+
+// stores current page data
+export const dataTable = atom<any[]>([]);
+// loading state
+export const loadingTable = atom(false);
+// total count for pagination
+export const totalCountTable = atom(0);
+// current page
+export const currentPageTable = atom(1);
+
 export const columnAvailable = atom<string[]>([]);
 
 export const vertex1ColumnSelected = atom<string>("");
