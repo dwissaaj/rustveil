@@ -16,7 +16,7 @@ export default function SocialNetwork() {
             <EdgesHome />
           </Tab>
           <Tab key="vertices" title="Vertices">
-            <VerticesHome />
+            {/* <VerticesHome /> */}
           </Tab>
         </Tabs>
       </div>

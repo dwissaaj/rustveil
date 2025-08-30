@@ -44,7 +44,7 @@ pub fn load_data_sqlite(app: AppHandle, pathfile: String) -> DatabaseProcess {
     let binding = app.state::<Mutex<SqliteDataState>>();
     let mut db = binding.lock().unwrap();
     db.file_url = pathfile.clone();
-    if(pathfile.is_empty()){
+    if pathfile.is_empty() {
         return DatabaseProcess::Error(DatabaseError {
             error_code: 404,
             message: "File path or database is unkown".to_string(),

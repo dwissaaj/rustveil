@@ -6,7 +6,7 @@ import { columnAvailable } from "@/app/lib/workstation/data/state";
 export default function EdgesSelection() {
 
   const [ columnPick,setColumnAvailable] = useAtom(columnAvailable);
-  console.log(columnPick)
+
   return (
     <>
       <div className="flex flex-row gap-4 ">
