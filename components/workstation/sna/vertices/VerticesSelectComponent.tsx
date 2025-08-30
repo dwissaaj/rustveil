@@ -27,6 +27,7 @@
  * - Maintains vertex1 and vertex2 selections
  */
 "use client";
+import { columnAvailable } from "@/app/lib/workstation/data/state";
 import { useGraphData } from "@/app/lib/workstation/social/useGraphData";
 import { TooltipIcon } from "@/components/icon/IconFilter";
 import {
@@ -37,18 +38,11 @@ import {
   Tooltip,
   Button,
 } from "@heroui/react";
+import { useAtom } from "jotai";
 
-export default function VerticesSelect() {
-  const {
-    headers,
-    vertex1,
-    setVertex1,
-    vertex2,
-    setVertex2,
-    graphType,
-    setGraphType,
-  } = useGraphData();
+export default function VerticesSelectComponent() {
 
+  const [column, setColumn] = useAtom(columnAvailable);
   return (
     <div className="">
       <div className="flex flex-col gap-4">
@@ -64,30 +58,10 @@ export default function VerticesSelect() {
           </Tooltip>
         </div>
         <div className="flex flex-col gap-4">
-          <Select
-            label="Select Vertex 1"
-            selectedKeys={vertex1 ? [vertex1] : []}
-            onSelectionChange={(keys) =>
-              setVertex1(Array.from(keys)[0] as string)
-            }
-          >
-            {headers.map((header) => (
-              <SelectItem key={header}>{header}</SelectItem>
-            ))}
-          </Select>
+            
 
-          {/* Vertex 2 Selector */}
-          <Select
-            label="Select Vertex 2"
-            selectedKeys={vertex2 ? [vertex2] : []}
-            onSelectionChange={(keys) =>
-              setVertex2(Array.from(keys)[0] as string)
-            }
-          >
-            {headers.map((header) => (
-              <SelectItem key={header}>{header}</SelectItem>
-            ))}
-          </Select>
+         
+          
         </div>
       </div>
       <div className="flex flex-col gap-2">
@@ -103,7 +77,7 @@ export default function VerticesSelect() {
           </Tooltip>
         </div>
         <div className="ml-2">
-          <RadioGroup
+          {/* <RadioGroup
             value={graphType}
             onValueChange={(value: string) => setGraphType(value)}
             size="md"
@@ -111,7 +85,7 @@ export default function VerticesSelect() {
           >
             <Radio value="direct">Direct</Radio>
             <Radio value="undirect">Undirect</Radio>
-          </RadioGroup>
+          </RadioGroup> */}
         </div>
       </div>
     </div>

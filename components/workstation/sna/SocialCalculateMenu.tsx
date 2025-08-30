@@ -10,6 +10,8 @@ import {
 } from "@heroui/react";
 import { VerticesIcon } from "@/components/icon/IconFilter";
 import SocialCalculateModal from "@/app/work/(workgroup)/social_network/filter/modal/CalculateModal";
+import { CalculateIcon } from "@/components/icon/IconGraph";
+import { on } from "events";
 
 export default function SocialCalculateMenu() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -17,17 +19,16 @@ export default function SocialCalculateMenu() {
     <>
       <Dropdown>
         <DropdownTrigger>
-          <Button variant="bordered">Calculate</Button>
+          <Button variant="light">Calculate</Button>
         </DropdownTrigger>
-        <DropdownMenu aria-label="Action event example">
-          <DropdownItem textValue="vertices" key="new">
-            <Button
-              className="w-full"
-              endContent={<VerticesIcon />}
-              onPress={onOpen}
-            >
-              Calculate
-            </Button>
+        <DropdownMenu aria-label="Calculate graph metrics">
+          <DropdownItem
+          onPress={onOpen}
+          startContent={<CalculateIcon />}
+          description="Compute social network metrics"
+          key="calculate">
+            
+              Calculate Metrics
           </DropdownItem>
         </DropdownMenu>
       </Dropdown>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import NoData from "@/components/workstation/data/NoData";
 import {
   Table,
@@ -12,6 +12,8 @@ import {
   Button,
 } from "@heroui/react";
 import { RefreshIcon } from "@/components/icon/IconView";
+import { useAtom } from "jotai";
+import { columnAvailable } from "@/app/lib/workstation/data/state";
 interface DataTableProps {
   data: Record<string, any>[];
   isLoading?: boolean;
@@ -36,7 +38,11 @@ export default function TableServer({
   const startRow = (currentPage - 1) * pageSize + 1;
 
   const allColumns = ["Number", ...columns];
-
+  const [ ,setColumnAvailable] = useAtom(columnAvailable);
+   useEffect(() => {
+    // only update the atom if allColumns actually changed
+    setColumnAvailable(allColumns);
+  }, [allColumns.join(","), setColumnAvailable]);
   return (
     <div className="flex flex-col gap-4">
       <Table

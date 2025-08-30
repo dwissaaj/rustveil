@@ -46,6 +46,8 @@ export const columnAvailable = atom<string[]>([]);
 
 export const vertex1ColumnSelected = atom<string>("");
 export const vertex2ColumnSelected = atom<string>("");
+
+
 export const vertex1ColumnData = atom<string[]>([]);
 export const vertex2ColumnData = atom<string[]>([]);
 export const vertexGraphTypeSelected = atom<string>("direct");
