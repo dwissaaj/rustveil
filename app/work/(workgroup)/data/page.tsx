@@ -1,13 +1,14 @@
 
 "use client";
 
-import FilterListWrapper from "@/components/workstation/data/FilterListWrapper";
-import DataTable from "./table/DataTable";
+
 import { useState } from "react";
-import { Button } from "@heroui/button";
-import { useRefTest } from "./test/useRefTest";
+
+
 import FilterWrapTest from "./test/FilterWrapTest";
-import DataTes from "./test/DataTest";
+
+import { useRefreshServer } from "@/app/lib/workstation/data/handler/server/useRefreshServer";
+import TableServer from "./table/TableServer";
 
 export default function Page() {
   const [data, setData] = useState<any[]>([]);
@@ -30,20 +31,21 @@ export default function Page() {
     setLoading(true);
     await refresh(page);
   };
-  const { refresh } = useRefTest(handleDataFetched);
+  const { refresh } = useRefreshServer(handleDataFetched);
   return (
     <div className="flex flex-col gap-4">
       <div>
         <FilterWrapTest onDataFetched={() => refresh(1)} />
       </div>
       <div>
-        <DataTes 
-          data={data} 
-          isLoading={loading}
-          totalCount={totalCount}
-          currentPage={currentPage}
-          onPageChange={handlePageChange}
-          onRefresh={() => refresh(1)}
+        <TableServer 
+           data = {data}
+        isLoading={loading}
+        totalCount={totalCount}
+        currentPage={currentPage}
+        pageSize={100}
+        onPageChange={handlePageChange}
+        onRefresh={() => refresh(1)}
         />
       </div>
     </div>

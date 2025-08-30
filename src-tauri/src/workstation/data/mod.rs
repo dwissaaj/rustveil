@@ -76,15 +76,25 @@ pub fn load_data(app: AppHandle, url: String, sheet_name: String) -> ProcessingR
     // Lock the mutex to get mutable access:
     let file_path = file_app.lock().unwrap();
 
+    if file_path.file_url.is_empty(){
+        return ProcessingResult::Error(ErrorResult {
+            error_code: 401,
+            message: "No Data or file loaded".to_string(),
+        });
+    }
 
-    // return ProcessingResult::Error(ErrorResult {
-    //         error_code: 401,
-    //         message: "FAKE ERROR - Connection failed".to_string(),
-    //     });
-
-
+    // Replace expect with proper error handling
+        let mut workbook: calamine::Xlsx<std::io::BufReader<std::fs::File>> = match open_workbook(&url) {
+        Ok(wb) => wb,
+        Err(e) => {
+            return ProcessingResult::Error(ErrorResult {
+                error_code: 401,
+                message: format!("Cannot open file: {}", e),
+            })
+        }
+    };
     
-    let mut workbook: Xlsx<_> = open_workbook(url).expect("Cannot open file");
+   
     let range = match workbook.worksheet_range(&sheet_name) {
         Ok(range) => {
             let _ = app.emit(

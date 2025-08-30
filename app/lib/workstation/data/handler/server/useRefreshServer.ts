@@ -1,24 +1,27 @@
 // useRefreshWithPagination.ts
 import { addToast } from "@heroui/react";
-import { useGetDataTest } from "./useGetTest";
+import { useGetDataServer } from "./useGetDataServer";
 
-export function useRefTest(onDataFetched?: (data: any[], totalCount?: number) => void) {
-  const getData = useGetDataTest();
+export function useRefreshServer(onDataFetched?: (data: any[], totalCount?: number) => void) {
+  const getData = useGetDataServer();
 
   const refresh = async (page: number = 1) => {
     try {
       const result = await getData(page, 100);
       
       if ("Complete" in result && result.Complete.data) {
-        onDataFetched?.(
+        
+        if(onDataFetched) {
+          onDataFetched?.(
           result.Complete.data, 
           result.Complete.total_count || 0
         );
-        // addToast({
-        //   title: "Success",
-        //   description: result.Complete.message || "Data fetched successfully",
-        //   color: "success",
-        // });
+          addToast({
+          title: "Success",
+          description: result.Complete.message || "Data fetched successfully",
+          color: "success",
+        });
+        }
       } else if ("Error" in result) {
         addToast({
           title: "Error",
