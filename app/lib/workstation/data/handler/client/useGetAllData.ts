@@ -1,4 +1,3 @@
-
 import { invoke } from "@tauri-apps/api/core";
 import { InvokeResponse } from "../../response";
 export function useGetAllData() {

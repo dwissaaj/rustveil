@@ -9,9 +9,8 @@ export function useGetDataServer() {
         pagination: {
           page: page,
           page_size: pageSize,
-        }
+        },
       });
-      console.log("Response from get_paginated_data:", response);
       return response;
     } catch (error) {
       console.log("Error:", error);

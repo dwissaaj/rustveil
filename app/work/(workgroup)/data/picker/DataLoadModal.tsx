@@ -38,12 +38,12 @@ export default function DataLoader({
   const { closeModal } = useCloseModal(onOpenChange, addToast);
   const [isLoading, setIsLoading] = useState(false);
   const loadDatabase = useLoadDatabase();
-  const databaseOpener = useOpenDatabase()
+  const databaseOpener = useOpenDatabase();
   const openDatabase = async () => {
     try {
       const result = await databaseOpener();
       setIsLoading(true);
-      console.log(result)
+      console.log(result);
       if (result?.response_code === 200) {
         addToast({
           title: "Table Opened",
@@ -57,7 +57,6 @@ export default function DataLoader({
           description: `${result?.message}`,
           color: "danger",
         });
-     
       }
     } catch (error) {
       console.error("Failed to open table:", error);
@@ -85,12 +84,16 @@ export default function DataLoader({
         <ModalContent>
           <ModalHeader className="flex flex-col gap-1">
             <div className="flex items-center gap-2">
-                <p className="text-2xl font-medium">
-                Load A Sqlite Database
-              </p>
-                <Tooltip content="Only Generated Sqlite database by Rust Veil is supported for now">
-                  <Button size="sm" color="warning" variant="light" isIconOnly startContent={<InfoIconSolid />}></Button>
-                </Tooltip>
+              <p className="text-2xl font-medium">Load A Sqlite Database</p>
+              <Tooltip content="Only Generated Sqlite database by Rust Veil is supported for now">
+                <Button
+                  size="sm"
+                  color="warning"
+                  variant="light"
+                  isIconOnly
+                  startContent={<InfoIconSolid />}
+                ></Button>
+              </Tooltip>
             </div>
           </ModalHeader>
           <ModalBody className="flex flex-col gap-2">

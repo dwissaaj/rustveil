@@ -3,7 +3,7 @@ import { useGetDataServer } from "./useGetDataServer";
 import { useRef } from "react";
 
 export function useRefreshServer(
-  onDataFetched?: (data: any[], totalCount?: number) => void
+  onDataFetched?: (data: any[], totalCount?: number) => void,
 ) {
   const getData = useGetDataServer();
   const lastToastRef = useRef(false);
