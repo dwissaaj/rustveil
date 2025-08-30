@@ -12,8 +12,6 @@ import {
   Button,
 } from "@heroui/react";
 import { RefreshIcon } from "@/components/icon/IconView";
-import { useRefTest } from "./useRefTest";
-import { ViewTestProps } from "./ViewTest";
 interface DataTableProps {
   data: Record<string, any>[];
   isLoading?: boolean;
@@ -24,7 +22,7 @@ interface DataTableProps {
   onRefresh?: () => void;
 }
 
-export default function DataTes({
+export default function TableServer({
   data,
   isLoading = false,
   totalCount = 0,

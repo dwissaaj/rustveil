@@ -2,8 +2,8 @@
 import { invoke } from "@tauri-apps/api/core";
 import { InvokeResponse } from "@/app/lib/workstation/data/response";
 
-export function useGetDataTest() {
-  const getData = async (page: number = 1, pageSize: number = 100) => {
+export function useGetDataServer() {
+  const getDataServer = async (page: number = 1, pageSize: number = 100) => {
     try {
       const response = await invoke<InvokeResponse>("get_paginated_data", {
         pagination: {
@@ -19,5 +19,5 @@ export function useGetDataTest() {
     }
   };
 
-  return getData;
+  return getDataServer;
 }

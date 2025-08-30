@@ -7,14 +7,14 @@ import {
   Button,
 } from "@heroui/react";
 import { RefreshIcon } from "@/components/icon/IconView";
-import { useRefTest } from "./useRefTest";
+import { useRefreshServer } from "@/app/lib/workstation/data/handler/server/useRefreshServer";
 
 export interface ViewTestProps {
   onDataFetched?: (data: any[], totalCount?: number) => void;
 }
 
 export function ViewTest({ onDataFetched }: ViewTestProps) {
-  const { refresh } = useRefTest(onDataFetched);
+  const { refresh } = useRefreshServer(onDataFetched);
 
   return (
     <Dropdown>
