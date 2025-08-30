@@ -1,7 +1,6 @@
 mod workstation;
 mod database;
 mod global;
-use workstation::data;
 use workstation::social_network;
 use tauri_plugin_fs::FsExt;
 use global::app_path;
@@ -39,8 +38,8 @@ pub fn run() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
-            data::load_data,
-            data::get_sheet,
+            workstation::data::excel::load_data,
+             workstation::data::excel::get_sheet,
             social_network::user_to_vector,
             database::lib::handler::load_data_sqlite,
             database::lib::get::get_all_data,

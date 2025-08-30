@@ -32,7 +32,7 @@
  * - ColumnSelect child component
  */
 "use client";
-import VerticesSelect from "@/components/workstation/sna/vertices/VerticesSelect";
+import VerticesSelect from "@/components/workstation/sna/vertices/VerticesSelectComponent";
 import {
   Modal,
   ModalContent,
