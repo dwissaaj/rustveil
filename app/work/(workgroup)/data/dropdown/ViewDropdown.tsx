@@ -5,17 +5,16 @@ import {
   DropdownMenu,
   DropdownItem,
   Button,
-  addToast,
 } from "@heroui/react";
 import { RefreshIcon } from "@/components/icon/IconView";
-import { useRefresh } from "@/app/lib/workstation/data/handler/client/useRefresh";
+import { useRefreshServer } from "@/app/lib/workstation/data/handler/server/useRefreshServer";
 
-export function ViewDropdown({
-  onDataFetched,
-}: {
-  onDataFetched: (data: any[]) => void;
-}) {
-  const { refresh } = useRefresh(onDataFetched);
+export interface ViewDropdownProps {
+  onDataFetched?: (data: any[], totalCount?: number) => void;
+}
+
+export function ViewDropdown({ onDataFetched }: ViewDropdownProps) {
+  const { refresh } = useRefreshServer(onDataFetched);
 
   return (
     <Dropdown>
@@ -24,7 +23,7 @@ export function ViewDropdown({
       </DropdownTrigger>
       <DropdownMenu aria-label="File actions">
         <DropdownItem
-          onPress={refresh}
+          onPress={() => refresh(1)} // 👈 WRAP IN ARROW FUNCTION
           shortcut="⌘R"
           description="Check new data"
           key="refresh"
