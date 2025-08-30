@@ -1,21 +1,13 @@
 "use client";
-
-
 import { useState } from "react";
-
-
-import FilterWrapTest from "./test/FilterWrapTest";
-
 import { useRefreshServer } from "@/app/lib/workstation/data/handler/server/useRefreshServer";
 import TableServer from "./table/TableServer";
-
+import FilterListWrapper from "@/components/workstation/data/FilterListWrapper";
 export default function Page() {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  
-
 
   const handleDataFetched = (newData: any[], total?: number) => {
     setLoading(false);
@@ -34,7 +26,7 @@ export default function Page() {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <FilterWrapTest onDataFetched={() => refresh(1)} />
+        <FilterListWrapper onDataFetched={() => refresh(1)} />
       </div>
       <div>
         <TableServer 
@@ -50,33 +42,3 @@ export default function Page() {
     </div>
   );
 }
-// "use client";
-
-// import FilterListWrapper from "@/components/workstation/data/FilterListWrapper";
-// import DataTable from "./table/DataTable";
-// import { useState } from "react";
-
-// export default function Page() {
-//   const [data, setData] = useState<any[]>([]);
-//   const [loading, setLoading] = useState(false);
-
-//   const handleDataFetched = (newData: any[]) => {
-//     setLoading(false);
-//     setData(newData);
-//   };
-
-//   return (
-//     <div className="flex flex-col gap-4">
-//       <div>
-//         <FilterListWrapper onDataFetched={handleDataFetched} />
-//       </div>
-//       <div>
-//         <DataTable
-//           data={data}
-//           isLoading={loading}
-//           onDataFetched={handleDataFetched}
-//         />
-//       </div>
-//     </div>
-//   );
-// }
