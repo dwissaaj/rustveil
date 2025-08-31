@@ -1,12 +1,11 @@
 import { invoke } from "@tauri-apps/api/core";
-import { useAtom, useAtomValue } from "jotai";
-import { vertex1ColumnData, vertex1ColumnSelected, vertex2ColumnData, vertex2ColumnSelected } from "../../data/state";
+import { useAtomValue } from "jotai";
+import { vertex1ColumnSelected, vertex2ColumnSelected } from "../../data/state";
 import { SetVerticesResponse } from "./response";
 
 export function useSetVertices() {
     const vertex1 = useAtomValue(vertex1ColumnSelected);
     const vertex2 = useAtomValue(vertex2ColumnSelected);
-
   const setVertices = async () => {
     try {
       const response = await invoke<SetVerticesResponse>("set_vertices" ,{

@@ -4,7 +4,8 @@ use serde_json::Value;
 use std::sync::Mutex;
 use tauri::{AppHandle, Manager, command};
 use crate::SqliteDataState;
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize};
+
 
 #[derive(Deserialize)]
 pub struct PaginationParams {
@@ -133,7 +134,6 @@ pub fn get_all_data(app: AppHandle) -> DatabaseProcess {
 #[command]
 pub fn get_paginated_data(app: AppHandle, pagination: PaginationParams) -> DatabaseProcess {
     
-
     // Validate pagination parameters
     if pagination.page == 0 || pagination.page_size == 0 {
         println!("❌ Invalid pagination: page or page_size is 0");
@@ -267,3 +267,4 @@ pub fn get_paginated_data(app: AppHandle, pagination: PaginationParams) -> Datab
         total_count: Some(total_count),
     })
 }
+

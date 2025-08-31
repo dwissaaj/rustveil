@@ -64,7 +64,7 @@ export default function EdgesModal({
       if (response?.response_code === 200) {
         addToast({
           title: "Setting Vertices Success",
-          description: `${response?.message} ${vertex1} and. ${vertex2}`,
+          description: `${response?.message} ${vertex1} and ${vertex2}`,
           color: "success",
         });
       }

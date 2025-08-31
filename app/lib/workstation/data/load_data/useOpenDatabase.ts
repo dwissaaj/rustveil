@@ -24,10 +24,9 @@ export function useOpenDatabase() {
         };
       }
     } catch (error: any) {
-      console.error("Error loading table data:", error);
       return {
         response_code: 500,
-        message: "Error loading table data",
+        message: `Error loading table data ${error}`,
       };
     }
   };

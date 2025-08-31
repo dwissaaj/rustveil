@@ -22,20 +22,13 @@ pub enum DatabaseProcess {
 /// Contains a response code and a human-readable message describing the result.
 #[derive(Serialize)]
 pub struct DatabaseComplete {
-    /// Numeric code representing the result (e.g., HTTP-like status code or custom code).
     pub response_code: u32,
-
-    /// Description of the result for logging or UI display.
     pub message: String,
 
     pub data: Option<Vec<Value>>,
 
     pub total_count: Option<usize>
 }
-
-/// Failed database process payload.
-///
-/// Contains an error code and a human-readable message describing the problem.
 #[derive(Serialize)]
 pub struct DatabaseError {
     /// Numeric code representing the error type.
@@ -44,11 +37,6 @@ pub struct DatabaseError {
     /// Description of the error for logging or UI display.
     pub message: String,
 }
-
-/// Sqlite Database File Path
-///
-/// Url for app to determine the sqlite used
-/// 
 pub struct SqliteDataState {
     pub file_url: String,
 }
@@ -59,6 +47,5 @@ pub struct DatabaseInsertionProgress {
   pub total_rows: usize,
   pub count: usize
 }
-
 
 
