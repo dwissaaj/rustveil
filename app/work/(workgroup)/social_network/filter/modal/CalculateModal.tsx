@@ -103,7 +103,7 @@ export default function SocialCalculateModal({
                   color={"primary"}
                   aria-label="Loading..."
                   size="sm"
-                 
+                  
                 />
               </ModalHeader>
               <ModalBody>
