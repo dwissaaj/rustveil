@@ -12,8 +12,15 @@ import {
   Code,
   Tooltip,
   Progress,
+  addToast,
 } from "@heroui/react";
 import { useEffect, useState } from "react";
+import { useAtomValue } from "jotai";
+import { vertex1ColumnSelected, vertex2ColumnSelected, vertexGraphTypeSelected } from "@/app/lib/workstation/data/state";
+import { InfoIcon } from "@/components/icon/IconFilter";
+import { CloseActionIcon } from "@/components/icon/IconAction";
+import { useCalcCentrality } from "@/app/lib/workstation/social/calculate/useCalcCentrality";
+import { CalculateIcon } from "@/components/icon/IconGraph";
 
 type CalculateModal = {
   isOpen: boolean;
@@ -23,106 +30,80 @@ export default function SocialCalculateModal({
   isOpen,
   onOpenChange,
 }: CalculateModal) {
-  const { vertex1, vertex2, graphType } = useGraphData();
-  const useCalculate = useMapId();
-  const mapProgress = useMapProgress();
-  const [buttonState, setButtonState] = useState<{
-    isLoading: boolean;
-    message: string;
-    isDone: boolean;
-    color: "primary" | "danger" | "secondary";
-    isDisabled: boolean;
-  }>({
-    isLoading: false,
-    message: "Calculate",
-    isDone: false,
-    color: "primary",
-    isDisabled: false,
-  });
-  const delay = (ms: number) =>
-    new Promise((resolve) => setTimeout(resolve, ms));
-  const calculate = async () => {
+  const vertex1 = useAtomValue(vertex1ColumnSelected)
+  const vertex2 = useAtomValue(vertex2ColumnSelected)
+  const graphType = useAtomValue(vertexGraphTypeSelected)
+  // const { vertex1, vertex2, graphType } = useGraphData();
+  // const useCalculate = useMapId();
+  // const mapProgress = useMapProgress();
+  // const [buttonState, setButtonState] = useState<{
+  //   isLoading: boolean;
+  //   message: string;
+  //   isDone: boolean;
+  //   color: "primary" | "danger" | "secondary";
+  //   isDisabled: boolean;
+  // }>({
+  //   isLoading: false,
+  //   message: "Calculate",
+  //   isDone: false,
+  //   color: "primary",
+  //   isDisabled: false,
+  // });
+  // const delay = (ms: number) =>
+  //   new Promise((resolve) => setTimeout(resolve, ms));
+  // const calculate = async () => {
+  //   try {
+  //     setButtonState({
+  //       isLoading: true,
+  //       message: "Initializing...",
+  //       isDone: false,
+  //       color: "primary",
+  //       isDisabled: true,
+  //     });
+  //     await delay(1000);
+  //     await useCalculate();
+  //     await delay(1000);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  const calculate = useCalcCentrality()
+  const handleCalculate = async () => {
     try {
-      setButtonState({
-        isLoading: true,
-        message: "Initializing...",
-        isDone: false,
-        color: "primary",
-        isDisabled: true,
-      });
-      await delay(1000);
-      await useCalculate();
-      await delay(1000);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  useEffect(() => {
-    if (!mapProgress) return;
-    const updateButton = async () => {
-      if (mapProgress.isError) {
-        await delay(2000);
-        setButtonState({
-          isLoading: false,
-          message: "Error! Try Again",
-          isDone: false,
-          color: "danger",
-          isDisabled: false,
-        });
-      } else if (mapProgress.progress === 15) {
-        await delay(2000);
-        setButtonState({
-          isLoading: true,
-          message: "Calculate.....",
-          isDone: false,
-          color: "primary",
-          isDisabled: true,
-        });
-      } else if (mapProgress.progress === 50) {
-        await delay(1000);
-        setButtonState({
-          isLoading: true,
-          message: "Hold on",
-          isDone: false,
-          color: "primary",
-          isDisabled: true,
-        });
-      } else if (mapProgress.progress === 100) {
-        await delay(1000);
-        setButtonState({
-          isLoading: false,
-          message: "Done - Close Now",
-          isDone: true,
-          color: "secondary",
-          isDisabled: true,
-        });
-      } else {
-        await delay(1000);
-        setButtonState({
-          isLoading: true,
-          message: mapProgress.message,
-          isDone: false,
-          color: "primary",
-          isDisabled: false,
+      const result = await calculate()
+      if (result?.response_code === 200) {
+        addToast({
+          title: "Operation Success",
+          description: `${result}`,
+          color: "success",
         });
       }
-    };
-    updateButton();
-  }, [mapProgress]);
+      if (result?.response_code !== 200) {
+        addToast({
+          title: "Operation Error",
+          description: `${result?.message}`,
+          color: "danger",
+        });
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   return (
     <>
       <Modal backdrop="blur" isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
-          {(onClose) => (
-            <>
+         
+
               <ModalHeader className="flex flex-col gap-1 text-4xl text-primary-500">
                 Calculate Centrality
                 <Progress
                   color={"primary"}
                   aria-label="Loading..."
                   size="sm"
-                  value={mapProgress?.progress}
+                 
                 />
               </ModalHeader>
               <ModalBody>
@@ -130,7 +111,7 @@ export default function SocialCalculateModal({
                   <div className="flex flex-col gap-2 items-start">
                     <div>
                       <Tooltip content="If there is mistake re-choose the graph type and column data">
-                        <Button>Metadata</Button>
+                        <Button variant="light"  startContent={<InfoIcon />}>Information</Button>
                       </Tooltip>
                     </div>
                   </div>
@@ -143,18 +124,20 @@ export default function SocialCalculateModal({
                   </div>
                 </div>
               </ModalBody>
-              <ModalFooter>
+              <ModalFooter className="w-full">
+
                 <Button
-                  isDisabled={buttonState.isDisabled}
-                  color={`${buttonState.color}`}
-                  onPress={calculate}
-                  isLoading={buttonState.isLoading}
+                color="primary"
+                startContent={<CalculateIcon />}
+                className="w-full"
+                onPress={handleCalculate}
                 >
-                  {buttonState.message}
+                Calculate
                 </Button>
+                
               </ModalFooter>
-            </>
-          )}
+            
+          
         </ModalContent>
       </Modal>
     </>
