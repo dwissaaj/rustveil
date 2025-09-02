@@ -3,7 +3,6 @@ import { useMemo } from "react";
 import { dataTable } from "../../data/state";
 
 export function useDataColumn(targetColumn: string) {
-  // memoize the derived atom so it's stable across renders
   const columnAtom = useMemo(
     () =>
       atom((get) => {

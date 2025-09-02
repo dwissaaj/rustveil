@@ -6,8 +6,8 @@ import { useGraphData } from "@/app/lib/workstation/social/useGraphData";
 import { useNetworkData } from "@/app/lib/workstation/nivo/NivoNetworkFormat";
 import { EdgesGraphNetwork } from "@/components/workstation/sna/edges/EdgesGraphNetwork";
 import EdgesEmptyNetwork from "@/components/workstation/sna/edges/EdgesEmptyNetwork";
-import EdgesSelection from "@/components/workstation/sna/edges/EdgesSelection";
 import { useTheme } from "next-themes";
+import EdgesGraph from "./EdgesGraph";
 export default function EdgesHome() {
   const { theme } = useTheme();
   const barColor = theme === "dark" ? "bg-secondary" : "bg-primary";
@@ -42,7 +42,7 @@ export default function EdgesHome() {
     if (networkData.nodes.length === 0) {
       return <EdgesEmptyNetwork />;
     }
-    return <EdgesGraphNetwork data={networkData} />;
+    return <EdgesGraph />;
   };
 
   return (
@@ -51,7 +51,6 @@ export default function EdgesHome() {
       <div className="" style={{ width: `${width}px` }}>
         <EdgesTable />
       </div>
-
       <div
         className={`w-2 cursor-grab ${barColor} rounded-lg`}
         onMouseDown={handleMouseDown}
@@ -59,7 +58,7 @@ export default function EdgesHome() {
       />
       
       <div className="flex-1 ">
-        <div>{renderNetworkGraph()}</div>
+        < EdgesGraph />
       </div>
     </div>
   );
