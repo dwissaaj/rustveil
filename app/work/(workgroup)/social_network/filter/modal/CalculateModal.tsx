@@ -74,7 +74,7 @@ export default function SocialCalculateModal({
   const handleCalculate = async () => {
     try {
       const result = await calculate()
-      console.log(result)
+      console.log('result of calculate:', result);
       if (result?.response_code === 200) {
         addToast({
           title: "Operation Success",

@@ -1,7 +1,7 @@
 use tauri::{AppHandle, Manager, command};
 use std::sync::Mutex;
 use crate::social_network::state::{VerticesSelected,VerticesSetError,VerticesSetComplete,VerticesSelectedResult};
-use crate::social_network::state::{CalculateProcess,CalculateProcessError,CalculateProcessComplete,IdUserNodes};
+use crate::social_network::state::{CalculateProcess,CalculateProcessError,CalculateProcessComplete,UserNode};
 use rusqlite::Connection;
 use crate::SqliteDataState;
 use std::collections::HashMap;
@@ -149,11 +149,11 @@ pub fn get_data_vertex(app: AppHandle, graph_type: String ) -> CalculateProcess 
     for (index, vertex) in unique_vertices.iter().enumerate() {
         let id = index as u32;
         id_to_username.insert(id, vertex.clone());
-        username_to_id.insert(vertex.clone(), IdUserNodes { id, username: vertex.clone() });
+        username_to_id.insert(vertex.clone(), UserNode { id, username: vertex.clone() });
     }
 
     // Use your existing function to convert string edges to numeric edges
-    let numeric_edges = mapping(edges, &username_to_id);
+    let numeric_edges = map_edges_to_ids(edges, &username_to_id);
     
     if numeric_edges.is_empty() {
         return CalculateProcess::Error(CalculateProcessError {
@@ -179,11 +179,48 @@ pub fn get_data_vertex(app: AppHandle, graph_type: String ) -> CalculateProcess 
         }
     };
 
+    
+        match conn.execute(
+        "CREATE TABLE IF NOT EXISTS rustveil_centrality (
+            node_id INTEGER PRIMARY KEY,
+            username TEXT NOT NULL,
+            centrality_score REAL NOT NULL
+        )",
+        [],
+    ) {
+        Ok(_) => {},
+        Err(e) => {
+            return CalculateProcess::Error(CalculateProcessError {
+                response_code: 500,
+                message: format!("Failed to create table: {}", e),
+            });
+        }
+    };
+
+    // Insert data using existing connection
+    for (node_id, username) in &id_to_username {
+        if let Some(score) = centrality_process.get(*node_id as usize) {
+            match conn.execute(
+                "INSERT OR REPLACE INTO rustveil_centrality (node_id, username, centrality_score) 
+                VALUES (?1, ?2, ?3)",
+                [&node_id.to_string(), username, &score.to_string()],
+            ) {
+                Ok(_) => {},
+                Err(e) => {
+                    return CalculateProcess::Error(CalculateProcessError {
+                        response_code: 500,
+                        message: format!("Failed to insert data: {}", e),
+                    });
+                }
+            }
+        }
+    }
+
     // Return complete result with both raw data and centrality analysis
     CalculateProcess::Success(CalculateProcessComplete {
         response_code: 200,
         message: format!(
-            "Fetched {} rows and calculated centrality for {} nodes", 
+            "Success Calculating Centrality, total edges: {}, total unique vertices: {}", 
             results.len(), 
             unique_vertices.len()
         ),
