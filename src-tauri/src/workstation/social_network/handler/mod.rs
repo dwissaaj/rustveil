@@ -1,11 +1,12 @@
 use tauri::{AppHandle, Manager, command};
 use std::sync::Mutex;
 use crate::social_network::state::{VerticesSelected,VerticesSetError,VerticesSetComplete,VerticesSelectedResult};
-use crate::social_network::state::{CalculateProcess,CalculateProcessError,CalculateProcessComplete};
+use crate::social_network::state::{CalculateProcess,CalculateProcessError,CalculateProcessComplete,IdUserNodes};
 use rusqlite::Connection;
 use crate::SqliteDataState;
-
-
+use std::collections::HashMap;
+use std::collections::HashSet;
+use crate::social_network::calculate::{calculate_centrality_direct,calculate_centrality_undirect,map_edges_to_ids};
 #[command]
 pub fn set_vertices(app: AppHandle, vertices_selected: VerticesSelected) -> VerticesSelectedResult {
     // 1. Update the file path in state
@@ -29,28 +30,34 @@ pub fn set_vertices(app: AppHandle, vertices_selected: VerticesSelected) -> Vert
 
 
 #[command]
-pub fn get_data_vertex(app: AppHandle ) -> CalculateProcess {
+pub fn get_data_vertex(app: AppHandle, graph_type: String ) -> CalculateProcess {
+ // Step 1: Get data from database (your original get_data_vertex logic)
     let vertex_binding = app.state::<Mutex<VerticesSelected>>();
     let vertex_choosed = vertex_binding.lock().unwrap();
     let vertex_1 = vertex_choosed.vertex_1.clone();
     let vertex_2 = vertex_choosed.vertex_2.clone();
+    
     let pathfile_binding = app.state::<Mutex<SqliteDataState>>();
     let db = pathfile_binding.lock().unwrap();
     let pathfile = db.file_url.clone();
+    
+    // Validation checks
     if pathfile.is_empty() {
         return CalculateProcess::Error(CalculateProcessError {
             response_code: 404,
             message: "Database loaded is empty!".to_string(),
         });
     }
+    
     if vertex_1.is_empty() || vertex_2.is_empty() {
-       return CalculateProcess::Error(CalculateProcessError {
-                response_code: 404,
-                message: "No column target".to_string(),
-        })
+        return CalculateProcess::Error(CalculateProcessError {
+            response_code: 404,
+            message: "No column target".to_string(),
+        });
     }
 
-        let conn = match Connection::open(&pathfile) {
+    // Open database connection
+    let conn = match Connection::open(&pathfile) {
         Ok(conn) => conn,
         Err(e) => {
             return CalculateProcess::Error(CalculateProcessError {
@@ -60,9 +67,8 @@ pub fn get_data_vertex(app: AppHandle ) -> CalculateProcess {
         }
     };
 
-    // 2. Build SQL query dynamically
+    // Build and execute query
     let query = format!("SELECT {}, {} FROM rustveil", vertex_1, vertex_2);
-
     let mut stmt = match conn.prepare(&query) {
         Ok(stmt) => stmt,
         Err(e) => {
@@ -102,13 +108,90 @@ pub fn get_data_vertex(app: AppHandle ) -> CalculateProcess {
         }
     }
 
-    println!("Fetched {:#?}", results);
-   return CalculateProcess::Success(CalculateProcessComplete {
+
+    // Step 2: Process for centrality calculation
+    if results.is_empty() {
+        return CalculateProcess::Error(CalculateProcessError {
+            response_code: 404,
+            message: "No data found for centrality calculation".to_string(),
+        });
+    }
+
+    // Extract vertices for centrality calculation
+    let vertices_one: Vec<String> = results.iter().map(|(v1, _)| v1.clone()).collect();
+    let vertices_two: Vec<String> = results.iter().map(|(_, v2)| v2.clone()).collect();
+
+    let edges: Vec<(String, String)> = vertices_one
+        .clone()
+        .into_iter()
+        .zip(vertices_two.clone().into_iter())
+        .collect();
+
+    let unique_vertices: Vec<String> = vertices_one
+        .clone()
+        .into_iter()
+        .chain(vertices_two.clone())
+        .collect::<HashSet<_>>()
+        .into_iter()
+        .collect();
+
+    if unique_vertices.is_empty() {
+        return CalculateProcess::Error(CalculateProcessError {
+            response_code: 401,
+            message: "Vertices is Empty".to_string(),
+        });
+    }
+
+    // Create mapping between usernames and numeric IDs
+    let mut id_to_username = HashMap::new();
+    let mut username_to_id = HashMap::new();
+    
+    for (index, vertex) in unique_vertices.iter().enumerate() {
+        let id = index as u32;
+        id_to_username.insert(id, vertex.clone());
+        username_to_id.insert(vertex.clone(), IdUserNodes { id, username: vertex.clone() });
+    }
+
+    // Use your existing function to convert string edges to numeric edges
+    let numeric_edges = mapping(edges, &username_to_id);
+    
+    if numeric_edges.is_empty() {
+        return CalculateProcess::Error(CalculateProcessError {
+            response_code: 401,
+            message: "Error at merging edges".to_string(),
+        });
+    }
+
+    // Use your existing functions to calculate centrality
+    let centrality_result = if graph_type == "direct" {
+        calculate_centrality_direct(numeric_edges.clone())
+    } else {
+        calculate_centrality_undirect(numeric_edges.clone())
+    };
+
+    let centrality_process: Vec<f64> = match centrality_result {
+        Ok(vec_opt) => vec_opt.into_iter().map(|v| v.unwrap_or(0.0)).collect(),
+        Err(e) => {
+            return CalculateProcess::Error(CalculateProcessError {
+                response_code: 500,
+                message: format!("Error calculating centrality: {}", e),
+            });
+        }
+    };
+
+    // Return complete result with both raw data and centrality analysis
+    CalculateProcess::Success(CalculateProcessComplete {
         response_code: 200,
-        message: format!("Fetched {} rows from {} and {}", results.len(), vertex_1, vertex_2),
-        edges  : None,
-        centrality_result: None,
-        node_map: None,
-        vertices: Some(results)
-    });
+        message: format!(
+            "Fetched {} rows and calculated centrality for {} nodes", 
+            results.len(), 
+            unique_vertices.len()
+        ),
+        node_map: Some(id_to_username),
+        edges: Some(numeric_edges),
+        centrality_result: Some(centrality_process),
+        vertices: Some(results),
+    })
 }
+
+

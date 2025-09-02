@@ -75,32 +75,7 @@ pub async fn user_to_vector(
         .into_iter()
         .collect();
 
-    app.emit(
-        "mapping-progress",
-        ProcessProgress {
-            progress: 15,
-            message: "Mapping process".to_string(),
-        },
-    )
-    .unwrap();
-  
 
-
-  
-    if unique_vertices.is_empty() {
-        app.emit(
-            "mapping-progress",
-            ProcessProgress {
-                progress: 0,
-                message: "Error at process vertices nowhere to found".to_string(),
-            },
-        )
-        .unwrap();
-        return ProcessingResult::Error(ErrorResult {
-            error_code: (401),
-            message: ("Verticess is Empty".to_string()),
-        });
-    }
 
     let mut id_to_username = HashMap::new();
     let mut username_to_id = HashMap::new();
@@ -114,47 +89,10 @@ pub async fn user_to_vector(
                 username: vertex.clone(),
             },
         );
-        app.emit(
-            "mapping-progress",
-            ProcessProgress {
-                progress: 30,
-                message: "Convert user to id".to_string(),
-            },
-        )
-        .unwrap();
+       
     }
     let to_edges = map_edges_to_ids(edges, &username_to_id);
-    app.emit(
-        "mapping-progress",
-        ProcessProgress {
-            progress: 50,
-            message: "Processing Edges".to_string(),
-        },
-    )
-    .unwrap();
-    if to_edges.is_empty() {
-        app.emit(
-            "mapping-progress",
-            ProcessProgress {
-                progress: 0,
-                message: "Error at merging edges".to_string(),
-            },
-        )
-        .unwrap();
-        return ProcessingResult::Error(ErrorResult {
-            error_code: (401),
-            message: ("Error at merging edges".to_string()),
-        });
-    }
 
-    app.emit(
-        "mapping-progress",
-        ProcessProgress {
-            progress: 75,
-            message: "Processing centrality".to_string(),
-        },
-    )
-    .unwrap();
 
     let centrality_process: Vec<f64>;
 
@@ -176,14 +114,6 @@ pub async fn user_to_vector(
         }
     }
 
-    app.emit(
-        "mapping-progress",
-        ProcessProgress {
-            progress: 100,
-            message: "Processing Completed".to_string(),
-        },
-    )
-    .unwrap();
 
     ProcessingResult::Complete(VerticesCentralityTable {
         columns: unique_vertices,

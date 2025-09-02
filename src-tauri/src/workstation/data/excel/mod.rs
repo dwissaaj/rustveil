@@ -7,8 +7,7 @@ use serde_json::{json, Value};
 use tauri::{command, Manager, AppHandle, Emitter};
 use crate::app_path::{AppFolderPath};
 use std::sync::Mutex;
-use crate::workstation::state_response::{ProcessingResult,ErrorResult,DataTable, ProcessData};
-
+use crate::workstation::data::state::{ProcessingResult,ErrorResult,DataTable, ProcessData};
 
 
 

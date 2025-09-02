@@ -52,7 +52,7 @@ export default function TableServer({
         aria-label="Dynamic data table"
         bottomContent={
           totalCount > 0 && (
-            <div className="text-sm text-default-500">
+            <div className="text-sm">
               Showing {data.length} of {totalCount} records (Page {currentPage}{" "}
               of {totalPages})
             </div>

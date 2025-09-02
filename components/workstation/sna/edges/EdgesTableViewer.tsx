@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+
 import NoData from "@/components/workstation/data/NoData";
 import {
   Table,
@@ -12,7 +12,7 @@ import {
   Button,
 } from "@heroui/react";
 import { RefreshIcon } from "@/components/icon/IconView";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtomValue } from "jotai";
 import { vertex1ColumnSelected, vertex2ColumnSelected } from "@/app/lib/workstation/data/state";
 import NoVerticesSelected from "./NoVertices";
 

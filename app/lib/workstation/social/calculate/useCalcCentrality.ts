@@ -1,10 +1,15 @@
 import { invoke } from "@tauri-apps/api/core";
 import { CalculateCentralityResponse } from "../vertex/response";
+import { useAtomValue } from "jotai";
+import { vertexGraphTypeSelected } from "../../data/state";
 
 export function useCalcCentrality() {
+    const graphType = useAtomValue(vertexGraphTypeSelected)
     const getCentrality = async () => {
         try {
-            const response = await invoke<CalculateCentralityResponse>('get_data_vertex')
+            const response = await invoke<CalculateCentralityResponse>('get_data_vertex', {
+                graphType: graphType
+            })
             console.log(response)
             if ("Success" in response) {
                 return {

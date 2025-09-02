@@ -61,3 +61,9 @@ pub struct CalculateProcessError {
     pub response_code: u32,
     pub message: String,
 }
+
+#[derive(Serialize)]
+pub struct IdUserNodes {
+    pub id: u32,
+    pub username: String,
+}
