@@ -67,7 +67,9 @@ export default function EdgesModal({
           description: `${response?.message} ${vertex1} and ${vertex2}`,
           color: "success",
         });
+        onOpenChange();
       }
+      
       if (response?.response_code !== 200) {
         addToast({
           title: "Operation Error",
@@ -75,7 +77,7 @@ export default function EdgesModal({
           color: "danger",
         });
       }
-      onOpenChange();
+
     } catch (error) {
         console.log(error)
     }

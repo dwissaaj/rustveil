@@ -40,7 +40,7 @@ pub fn get_data_vertex(app: AppHandle ) -> CalculateProcess {
     if pathfile.is_empty() {
         return CalculateProcess::Error(CalculateProcessError {
             response_code: 404,
-            message: "Database loaded is empty!!!".to_string(),
+            message: "Database loaded is empty!".to_string(),
         });
     }
     if vertex_1.is_empty() || vertex_2.is_empty() {
@@ -49,19 +49,66 @@ pub fn get_data_vertex(app: AppHandle ) -> CalculateProcess {
                 message: "No column target".to_string(),
         })
     }
-    // 2. Check if rustveil table exists
-    let conn = match Connection::open(&pathfile) {
+
+        let conn = match Connection::open(&pathfile) {
         Ok(conn) => conn,
         Err(e) => {
             return CalculateProcess::Error(CalculateProcessError {
-                response_code: 404,
+                response_code: 500,
                 message: format!("Failed to open database: {}", e),
             });
         }
     };
 
-    return CalculateProcess::Complete(CalculateProcessComplete {
-            response_code: 200,
-            message: "Calculate is completed you can refresh".to_string(),
-        });
+    // 2. Build SQL query dynamically
+    let query = format!("SELECT {}, {} FROM rustveil", vertex_1, vertex_2);
+
+    let mut stmt = match conn.prepare(&query) {
+        Ok(stmt) => stmt,
+        Err(e) => {
+            return CalculateProcess::Error(CalculateProcessError {
+                response_code: 500,
+                message: format!("Failed to prepare statement: {}", e),
+            });
+        }
+    };
+
+    let rows_iter = stmt.query_map([], |row| {
+        let v1: String = row.get(0)?;
+        let v2: String = row.get(1)?;
+        Ok((v1, v2))
+    });
+
+    let mut results: Vec<(String, String)> = Vec::new();
+    match rows_iter {
+        Ok(iter) => {
+            for r in iter {
+                match r {
+                    Ok(pair) => results.push(pair),
+                    Err(e) => {
+                        return CalculateProcess::Error(CalculateProcessError {
+                            response_code: 500,
+                            message: format!("Error reading row: {}", e),
+                        });
+                    }
+                }
+            }
+        }
+        Err(e) => {
+            return CalculateProcess::Error(CalculateProcessError {
+                response_code: 500,
+                message: format!("Query failed: {}", e),
+            });
+        }
+    }
+
+    println!("Fetched {:#?}", results);
+   return CalculateProcess::Success(CalculateProcessComplete {
+        response_code: 200,
+        message: format!("Fetched {} rows from {} and {}", results.len(), vertex_1, vertex_2),
+        edges  : None,
+        centrality_result: None,
+        node_map: None,
+        vertices: Some(results)
+    });
 }

@@ -83,7 +83,10 @@ pub async fn user_to_vector(
         },
     )
     .unwrap();
+  
 
+
+  
     if unique_vertices.is_empty() {
         app.emit(
             "mapping-progress",
