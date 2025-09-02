@@ -33,8 +33,8 @@ export default function SocialCalculateModal({
   const vertex1 = useAtomValue(vertex1ColumnSelected)
   const vertex2 = useAtomValue(vertex2ColumnSelected)
   const graphType = useAtomValue(vertexGraphTypeSelected)
-  const data = useAtomValue(dataTable)
-  console.log('data', data)
+
+
   // const { vertex1, vertex2, graphType } = useGraphData();
   // const useCalculate = useMapId();
   // const mapProgress = useMapProgress();
@@ -74,7 +74,7 @@ export default function SocialCalculateModal({
   const handleCalculate = async () => {
     try {
       const result = await calculate()
-
+      console.log(result)
       if (result?.response_code === 200) {
         addToast({
           title: "Operation Success",
