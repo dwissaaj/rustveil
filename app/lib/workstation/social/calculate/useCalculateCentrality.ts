@@ -3,8 +3,11 @@ import { CalculateCentralityResponse } from "../vertex/response";
 import { useAtomValue } from "jotai";
 import { vertexGraphTypeSelected } from "../../data/state";
 
+
 export function useCalculateCentrality() {
     const graphType = useAtomValue(vertexGraphTypeSelected) 
+
+    
     const getCentrality = async () => {
         try {
             const response = await invoke<CalculateCentralityResponse>('calculate_centrality', {
