@@ -6,7 +6,7 @@ use rusqlite::Connection;
 use crate::SqliteDataState;
 use std::collections::HashMap;
 use std::collections::HashSet;
-use crate::social_network::calculate::{calculate_centrality_direct,calculate_centrality_undirect,map_edges_to_ids};
+use crate::social_network::calculate::{betweenness_centrality_calculate_direct,betweenness_centrality_calculate_undirect,map_edges_to_ids};
 #[command]
 pub fn set_vertices(app: AppHandle, vertices_selected: VerticesSelected) -> VerticesSelectedResult {
     // 1. Update the file path in state
@@ -164,9 +164,9 @@ pub fn get_data_vertex(app: AppHandle, graph_type: String ) -> CalculateProcess 
 
     // Use your existing functions to calculate centrality
     let centrality_result = if graph_type == "direct" {
-        calculate_centrality_direct(numeric_edges.clone())
+        betweenness_centrality_calculate_direct(numeric_edges.clone())
     } else {
-        calculate_centrality_undirect(numeric_edges.clone())
+        betweenness_centrality_calculate_undirect(numeric_edges.clone())
     };
 
     let centrality_process: Vec<f64> = match centrality_result {
