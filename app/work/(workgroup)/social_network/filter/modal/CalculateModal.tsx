@@ -33,8 +33,18 @@ export default function SocialCalculateModal({
   const vertex1 = useAtomValue(vertex1ColumnSelected)
   const vertex2 = useAtomValue(vertex2ColumnSelected)
   const graphType = useAtomValue(vertexGraphTypeSelected)
+  // const [isProgess, setisProgess] = useState({
+  //   isLoading: false,
+  //   isShowed: false,
+  // })
 
-
+  const [isProgess, setisProgess] = useState<{
+    isLoading: boolean;
+    isShowed: boolean;
+  }>({
+    isLoading: false,
+    isShowed: false,
+  });
   // const { vertex1, vertex2, graphType } = useGraphData();
   // const useCalculate = useMapId();
   // const mapProgress = useMapProgress();
@@ -71,8 +81,14 @@ export default function SocialCalculateModal({
   // };
 
   const calculate = useCalcCentrality()
+  
   const handleCalculate = async () => {
+    setisProgess({
+        isLoading: true,
+        isShowed: true,
+      })
     try {
+      
       const result = await calculate()
       console.log('result of calculate:', result);
       if (result?.response_code === 200) {
@@ -90,11 +106,21 @@ export default function SocialCalculateModal({
         });
       }
     } catch (error) {
+      setisProgess({
+        isLoading: false,
+        isShowed: false,
+      })
       addToast({
           title: "Operation Error",
           description: `Error at Modal Function${error}`,
           color: "danger",
         });
+    }
+    finally {
+        setisProgess({
+        isLoading: false,
+        isShowed: false,
+      })
     }
   }
 
@@ -102,16 +128,17 @@ export default function SocialCalculateModal({
     <>
       <Modal backdrop="blur" isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
-         
-
               <ModalHeader className="flex flex-col gap-1 text-4xl text-primary-500">
                 Calculate Centrality
-                <Progress
-                  color={"primary"}
-                  aria-label="Loading..."
-                  size="sm"
-                  
-                />
+                {isProgess.isShowed && (
+                  <Progress
+                    className="w-full"
+                    isIndeterminate={isProgess.isLoading}
+                    color="primary"
+                    size="sm"
+                  />
+                )}
+            
               </ModalHeader>
               <ModalBody>
                 <div className="flex flex-col gap-4">

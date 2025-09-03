@@ -43,7 +43,7 @@ pub fn run() {
             workstation::data::excel::load_data,
              workstation::data::excel::get_sheet,
             social_network::handler::set_vertices,
-             social_network::handler::get_data_vertex,
+             social_network::handler::calculate_centrality,
             database::lib::handler::load_data_sqlite,
             database::lib::get::get_all_data,
             database::lib::get::get_paginated_data,

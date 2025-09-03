@@ -53,8 +53,13 @@ pub struct CalculateProcessComplete {
     pub message: String,
     pub node_map: Option<HashMap<u32, String>>,
     pub edges: Option<Vec<(u32, u32)>>, 
-    pub centrality_result: Option<Vec<f64>>,
     pub vertices: Option<Vec<(String, String)>>, 
+    pub betweenness_centrality: Option<Vec<f64>>,
+    pub degree_centrality :Option<Vec<f64>>,
+    pub eigenvector_centrality : Option<Vec<f64>>,
+    pub katz_centrality: Option<Vec<f64>>,
+    pub closeness_centrality: Option<Vec<f64>>,
+    
 }
 #[derive(Serialize)]
 pub struct CalculateProcessError {

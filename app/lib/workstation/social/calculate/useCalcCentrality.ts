@@ -1,10 +1,15 @@
 import { invoke } from "@tauri-apps/api/core";
 import { CalculateCentralityResponse } from "../vertex/response";
+import { useAtomValue } from "jotai";
+import { vertexGraphTypeSelected } from "../../data/state";
 
 export function useCalcCentrality() {
+    const graphType = useAtomValue(vertexGraphTypeSelected) // temporarily hardcode undirected graph
     const getCentrality = async () => {
         try {
-            const response = await invoke<CalculateCentralityResponse>('get_data_vertex')
+            const response = await invoke<CalculateCentralityResponse>('get_data_vertex', {
+                graphType: graphType,
+            })
             console.log(response)
             if ("Success" in response) {
                 return {
@@ -12,8 +17,12 @@ export function useCalcCentrality() {
                 message: response.Success.message,
                 node_map: response.Success.node_map,
                 edges: response.Success.edges,
-                centrality_result: response.Success.centrality_result,
-                vertices: response.Success.vertices 
+                vertices: response.Success.vertices ,
+                betweenness_centrality: response.Success.betweenness_centrality,
+                degree_centrality: response.Success.degree_centrality,
+                eigenvector_centrality: response.Success.eigenvector_centrality,
+                katz_centrality: response.Success.katz_centrality,
+                closeness_centrality: response.Success.closeness_centrality,
                 };
             } else if ("Error" in response) {
                 return {

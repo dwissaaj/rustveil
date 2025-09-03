@@ -21,8 +21,12 @@ export interface CalculateCentralitySuccess {
   message: string;
   node_map?: Record<number, string>;
   edges ?: Array<[number, number]>;
-  centrality_result ?: Array<number>;
   vertices ?: Array<[string, string]>;
+  betweenness_centrality ?: Array<number>;
+  degree_centrality ?: Array<number>;
+  eigenvector_centrality ?: Array<number>;
+  katz_centrality ?: Array<number>;
+  closeness_centrality ?: Array<number>;
 }
 
 export interface CalculateCentralityError {
