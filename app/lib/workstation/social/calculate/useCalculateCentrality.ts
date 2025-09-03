@@ -3,11 +3,11 @@ import { CalculateCentralityResponse } from "../vertex/response";
 import { useAtomValue } from "jotai";
 import { vertexGraphTypeSelected } from "../../data/state";
 
-export function useCalcCentrality() {
-    const graphType = useAtomValue(vertexGraphTypeSelected) // temporarily hardcode undirected graph
+export function useCalculateCentrality() {
+    const graphType = useAtomValue(vertexGraphTypeSelected) 
     const getCentrality = async () => {
         try {
-            const response = await invoke<CalculateCentralityResponse>('get_data_vertex', {
+            const response = await invoke<CalculateCentralityResponse>('calculate_centrality', {
                 graphType: graphType,
             })
             console.log(response)
@@ -32,6 +32,7 @@ export function useCalcCentrality() {
                 };
             }
         } catch (error: any) {
+            console.log(error)
           return {
                 response_code: 500,
                 message: "Error hook calculate to back end",
