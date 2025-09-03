@@ -126,8 +126,8 @@ pub fn eigenvector_centrality_calculate(edges: Vec<(u32, u32)>) -> Result<Option
 pub fn katz_centrality_calculate(edges: Vec<(u32, u32)>) -> Result<Option<Vec<f64>>, CalculateProcessError> {
     let graph = petgraph::graph::UnGraph::<(), ()>::from_edges(&edges);
     
-   let output = katz_centrality(&graph, |_| Ok::<f64, ()>(1.0), None, None,
-None,None,None,); // Add ::<f64, ()>
+   let output = katz_centrality(&graph, |_| Ok::<f64, ()>(1.0), None,
+None,None,None,None); // Add ::<f64, ()>
 
     match output {
         Ok(Some(vec)) => Ok(Some(vec)),
