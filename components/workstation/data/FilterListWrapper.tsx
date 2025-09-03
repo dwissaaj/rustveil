@@ -1,28 +1,22 @@
-// DataFilter.tsx
 "use client";
-import DataExport from "@/app/work/(workgroup)/data/DataExport";
-import DataFilterList from "@/app/work/(workgroup)/data/DataFilterList";
 
-import { addToast, Button, Toast } from "@heroui/react";
+import DataFileDropdown from "@/app/work/(workgroup)/data/dropdown/DataFileDropdown";
+import { ViewDropdown } from "@/app/work/(workgroup)/data/dropdown/ViewDropdown";
 
-export default function FilterListWrapper() {
+interface FilterListWrapperProps {
+  onDataFetched?: (data: any[], totalCount?: number) => void; // 👈 ADD TOTAL COUNT PARAM
+}
+
+export default function FilterListWrapper({
+  onDataFetched,
+}: FilterListWrapperProps) {
   return (
     <div className="flex flex-row gap-4 border-b py-2 items-center">
       <div>
-        <DataFilterList />
+        <DataFileDropdown />
       </div>
       <div>
-        <Button
-          variant="flat"
-          onPress={() => {
-            addToast({
-              title: "Toast Title",
-              color: "danger",
-            });
-          }}
-        >
-          Default
-        </Button>
+        <ViewDropdown onDataFetched={onDataFetched} />
       </div>
     </div>
   );

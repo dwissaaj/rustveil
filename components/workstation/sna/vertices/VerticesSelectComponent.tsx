@@ -27,8 +27,9 @@
  * - Maintains vertex1 and vertex2 selections
  */
 "use client";
+import { columnAvailable, vertex1ColumnSelected, vertex2ColumnSelected, vertexGraphTypeSelected } from "@/app/lib/workstation/data/state";
 import { useGraphData } from "@/app/lib/workstation/social/useGraphData";
-import { TooltipIcon } from "@/components/icon/IconFilter";
+import { TooltipIcon, VerticesIcon } from "@/components/icon/IconFilter";
 import {
   Select,
   SelectItem,
@@ -37,17 +38,14 @@ import {
   Tooltip,
   Button,
 } from "@heroui/react";
+import { useAtom } from "jotai";
 
-export default function VerticesSelect() {
-  const {
-    headers,
-    vertex1,
-    setVertex1,
-    vertex2,
-    setVertex2,
-    graphType,
-    setGraphType,
-  } = useGraphData();
+export default function VerticesSelectComponent() {
+
+  const [column] = useAtom(columnAvailable);
+  const [ vertex1, setVertex1] = useAtom(vertex1ColumnSelected);
+  const [ vertex2, setVertex2] = useAtom(vertex2ColumnSelected);
+  const [graphType, setGraphType] = useAtom(vertexGraphTypeSelected);
 
   return (
     <div className="">
@@ -64,30 +62,48 @@ export default function VerticesSelect() {
           </Tooltip>
         </div>
         <div className="flex flex-col gap-4">
-          <Select
-            label="Select Vertex 1"
-            selectedKeys={vertex1 ? [vertex1] : []}
-            onSelectionChange={(keys) =>
-              setVertex1(Array.from(keys)[0] as string)
-            }
-          >
-            {headers.map((header) => (
-              <SelectItem key={header}>{header}</SelectItem>
-            ))}
-          </Select>
-
-          {/* Vertex 2 Selector */}
-          <Select
-            label="Select Vertex 2"
-            selectedKeys={vertex2 ? [vertex2] : []}
-            onSelectionChange={(keys) =>
-              setVertex2(Array.from(keys)[0] as string)
-            }
-          >
-            {headers.map((header) => (
-              <SelectItem key={header}>{header}</SelectItem>
-            ))}
-          </Select>
+            
+    <Select
+          className="max-w-lg"
+          label="Select 1st Vertices"
+          placeholder="Choose a column"
+          variant="underlined"
+          color="primary"
+          labelPlacement="outside"
+          startContent={<VerticesIcon />}
+            value={vertex1} // controlled
+        onChange={(event) => {
+          const value = event.target.value;
+            setVertex1(value);
+        }}
+        >
+          {column.map((col) => (
+        <SelectItem key={col} >
+          {col}
+        </SelectItem>
+      ))}
+        </Select>
+            <Select
+          className="max-w-lg"
+          label="Select 2nd Vertices"
+          placeholder="Choose a column"
+          variant="underlined"
+          color="primary"
+          labelPlacement="outside"
+          startContent={<VerticesIcon />}
+        value={vertex2} // controlled
+        onChange={(event) => {
+          const value = event.target.value;
+          setVertex2(value);
+        }}
+        >
+          {column.map((col) => (
+        <SelectItem key={col} >
+          {col}
+        </SelectItem>
+      ))}
+        </Select>
+          
         </div>
       </div>
       <div className="flex flex-col gap-2">

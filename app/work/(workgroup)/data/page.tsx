@@ -1,22 +1,47 @@
 "use client";
-
+import { useRefreshServer } from "@/app/lib/workstation/data/handler/server/useRefreshServer";
+import TableServer from "./table/TableServer";
+import FilterListWrapper from "@/components/workstation/data/FilterListWrapper";
 import { useAtom } from "jotai";
-import DataTable from "./table/DataTable";
-import NoData from "@/components/workstation/data/NoData";
-import { tableData } from "@/app/lib/workstation/data/state";
-import DataPicker from "./picker/DataPickerModal";
-import FilterList from "@/components/workstation/data/FilterListWrapper";
-
+import {
+  currentPageTable,
+  dataTable,
+  loadingTable,
+  totalCountTable,
+} from "@/app/lib/workstation/data/state";
 export default function Page() {
-  const [data] = useAtom(tableData);
+  const [data, setData] = useAtom(dataTable);
+  const [loading, setLoading] = useAtom(loadingTable);
+  const [totalCount, setTotalCount] = useAtom(totalCountTable);
+  const [currentPage, setCurrentPage] = useAtom(currentPageTable);
+
+  const { refresh } = useRefreshServer((newData, total) => {
+    setData(newData);
+    setTotalCount(total || 0);
+    setLoading(false);
+  });
+
+  const handlePageChange = async (page: number) => {
+    setCurrentPage(page);
+    setLoading(true);
+    await refresh(page);
+  };
 
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <FilterList />
+        <FilterListWrapper onDataFetched={() => refresh(1)} />
       </div>
       <div>
-        <div>{data ? <DataTable data={data} /> : <NoData />}</div>
+        <TableServer
+          data={data}
+          isLoading={loading}
+          totalCount={totalCount}
+          currentPage={currentPage}
+          pageSize={100}
+          onPageChange={handlePageChange}
+          onRefresh={() => refresh(1)}
+        />
       </div>
     </div>
   );

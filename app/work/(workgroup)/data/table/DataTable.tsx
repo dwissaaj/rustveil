@@ -1,63 +1,97 @@
-import { TableDataType } from "@/app/lib/workstation/data/dto";
+import React from "react";
+import NoData from "@/components/workstation/data/NoData";
 import {
   Table,
   TableHeader,
-  TableBody,
   TableColumn,
-  TableCell,
+  TableBody,
   TableRow,
+  TableCell,
+  CircularProgress,
+  Pagination,
+  Button,
 } from "@heroui/react";
-import React from "react";
+import { RefreshIcon } from "@/components/icon/IconView";
+import { useRefresh } from "@/app/lib/workstation/data/handler/client/useRefresh";
 
-/**
- * Displays tabular data from Excel files in a styled table format
- *
- * @component
- * @param {Object} props - Component props
- * @param {TableDataType} props.data - The table data to display
- *
- * @example
- * // Basic usage with sample data
- * const sampleData = {
- *   headers: ['Name', 'Age'],
- *   rows: [{ Name: 'Alice', Age: 30 }, { Name: 'Bob', Age: 25 }]
- * };
- *
- * <DataTable data={sampleData} />
- *
- * @description
- * Features:
- * - Automatically renders headers in uppercase
- * - Converts all cell values to strings
- * - Uses Hero UI's striped table styling
- * - Handles dynamic column counts
- *
- * @ui
- * - Striped rows for better readability
- * - Responsive design
- * - Accessible (ARIA-labeled)
- */
-type DataTableProps = {
-  data: TableDataType;
-};
+interface DataTableProps {
+  data: Record<string, any>[];
+  isLoading?: boolean;
+  rowsPerPage?: number;
+  onDataFetched?: (data: any[]) => void; // 👈 add this
+}
 
-export default function DataTable({ data }: DataTableProps) {
+export default function DataTable({
+  data,
+  isLoading = false,
+  rowsPerPage = 100,
+  onDataFetched,
+}: DataTableProps) {
+  const [page, setPage] = React.useState(1);
+
+  // calculate total pages
+  const totalPages = Math.ceil(data.length / rowsPerPage);
+
+  // slice the data based on page
+  const paginatedData = React.useMemo(() => {
+    const start = (page - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+    return data.slice(start, end);
+  }, [page, data, rowsPerPage]);
+
+  const columns = data.length > 0 ? Object.keys(data[0]) : [];
+  const { refresh } = useRefresh(onDataFetched);
   return (
-    <Table isVirtualized isStriped aria-label="Dynamic Table">
-      <TableHeader>
-        {data.headers.map((header) => (
-          <TableColumn key={header}>{header.toUpperCase()}</TableColumn>
-        ))}
-      </TableHeader>
-      <TableBody>
-        {data.rows.map((row, i) => (
-          <TableRow key={i}>
-            {data.headers.map((header) => (
-              <TableCell key={header}>{String(row[header])}</TableCell>
-            ))}
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+    <div className="flex flex-col gap-4">
+      <Table
+        topContent={
+          <Button
+            isIconOnly
+            color="primary"
+            variant="light"
+            startContent={<RefreshIcon />}
+            onPress={refresh}
+          ></Button>
+        }
+        isHeaderSticky
+        isVirtualized
+        isStriped
+        aria-label="Dynamic data table"
+      >
+        <TableHeader>
+          {columns.map((column) => (
+            <TableColumn key={column}>{column}</TableColumn>
+          ))}
+        </TableHeader>
+        <TableBody
+          isLoading={isLoading}
+          loadingContent={<CircularProgress size="lg" color="secondary" />}
+          emptyContent={<NoData />}
+        >
+          {paginatedData.map((row, index) => (
+            <TableRow key={index}>
+              {columns.map((column) => (
+                <TableCell key={`${index}-${column}`}>
+                  {row[column]?.toString() || ""}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+
+      {/* Pagination controls */}
+      {totalPages > 1 && (
+        <div className="flex justify-center">
+          <Pagination
+            total={totalPages}
+            page={page}
+            onChange={setPage}
+            color="secondary"
+            showControls
+          />
+        </div>
+      )}
+    </div>
   );
 }

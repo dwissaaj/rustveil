@@ -1,13 +1,27 @@
 "use client";
-import { useNetworkData } from "@/app/lib/workstation/nivo/NivoNetworkFormat";
-import { useGraphData } from "@/app/lib/workstation/social/useGraphData";
+import { useAtomValue } from "jotai";
+
 import { EdgesGraphNetwork } from "@/components/workstation/sna/edges/EdgesGraphNetwork";
+import { graphDataAtom } from "@/app/lib/workstation/social/edges/dto";
+
 export default function EdgesGraph() {
-  const { centralityValueData, vertex1Data, vertex2Data } = useGraphData();
-  const networkData = useNetworkData(
-    centralityValueData,
-    vertex1Data,
-    vertex2Data,
-  );
+  // Get the complete graph data from Jotai
+  const graphData = useAtomValue(graphDataAtom);
+
+  // Show loading or error states
+  if (!graphData) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <div className="text-gray-500">No graph data available. Please calculate centrality first.</div>
+      </div>
+    );
+  }
+
+  // Prepare data for the graph component
+  const networkData = {
+    nodes: graphData.nodes,
+    links: graphData.links
+  };
+
   return <EdgesGraphNetwork data={networkData} />;
 }

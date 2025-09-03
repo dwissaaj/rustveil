@@ -44,7 +44,7 @@ import {
   DropdownItem,
   Button,
 } from "@heroui/react";
-import { ReportIcon, VerticesIcon } from "@/components/icon/IconFilter";
+import { ReportIcon } from "@/components/icon/IconFilter";
 import InfoModal from "@/app/work/(workgroup)/social_network/filter/modal/InfoModal";
 
 export default function SocialInfoMenu() {
@@ -53,17 +53,17 @@ export default function SocialInfoMenu() {
     <>
       <Dropdown>
         <DropdownTrigger>
-          <Button variant="bordered">Info</Button>
+          <Button variant="light">Info</Button>
         </DropdownTrigger>
-        <DropdownMenu aria-label="Action event example">
-          <DropdownItem textValue="vertices" key="new">
-            <Button
-              className="w-full"
-              endContent={<ReportIcon />}
-              onPress={onOpen}
-            >
+        <DropdownMenu aria-label="Info about social network analysis">
+          <DropdownItem 
+          onPress={onOpen}
+          description="Information about social network data"
+          startContent={<ReportIcon />}
+          key="info">
+          
               Info
-            </Button>
+            
           </DropdownItem>
         </DropdownMenu>
       </Dropdown>
