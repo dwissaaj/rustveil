@@ -6,7 +6,16 @@ use rusqlite::Connection;
 use crate::SqliteDataState;
 use std::collections::HashMap;
 use std::collections::HashSet;
-use crate::social_network::calculate::{betweenness_centrality_calculate_direct,betweenness_centrality_calculate_undirect,map_edges_to_ids};
+use crate::social_network::calculate::{betweenness_centrality_calculate_direct,
+    betweenness_centrality_calculate_undirect,
+    map_edges_to_ids,
+    degree_centrality_calculate,
+    eigenvector_centrality_calculate,
+    katz_centrality_calculate,
+    closeness_centrality_calculate
+    };
+
+
 #[command]
 pub fn set_vertices(app: AppHandle, vertices_selected: VerticesSelected) -> VerticesSelectedResult {
     // 1. Update the file path in state
@@ -30,7 +39,7 @@ pub fn set_vertices(app: AppHandle, vertices_selected: VerticesSelected) -> Vert
 
 
 #[command]
-pub fn get_data_vertex(app: AppHandle, graph_type: String ) -> CalculateProcess {
+pub fn calculate_centrality(app: AppHandle, graph_type: String ) -> CalculateProcess {
  // Step 1: Get data from database (your original get_data_vertex logic)
     let vertex_binding = app.state::<Mutex<VerticesSelected>>();
     let vertex_choosed = vertex_binding.lock().unwrap();
@@ -153,39 +162,86 @@ pub fn get_data_vertex(app: AppHandle, graph_type: String ) -> CalculateProcess 
     }
 
     // Use your existing function to convert string edges to numeric edges
-    let numeric_edges = map_edges_to_ids(edges, &username_to_id);
-    
+        let numeric_edges = match map_edges_to_ids(edges, &username_to_id) {
+        Ok(edges) => edges,
+        Err(e) => {
+            return CalculateProcess::Error(e); // Return the error directly
+        }
+    };
+
+    // Check if edges are empty (optional - you might want to handle this differently)
     if numeric_edges.is_empty() {
         return CalculateProcess::Error(CalculateProcessError {
             response_code: 401,
-            message: "Error at merging edges".to_string(),
+            message: "No edges found after mapping".to_string(),
         });
     }
 
     // Use your existing functions to calculate centrality
-    let centrality_result = if graph_type == "direct" {
+    let betweeness_centrality_result = if graph_type == "direct" {
         betweenness_centrality_calculate_direct(numeric_edges.clone())
     } else {
         betweenness_centrality_calculate_undirect(numeric_edges.clone())
     };
 
-    let centrality_process: Vec<f64> = match centrality_result {
+    let betweenness_centrality: Vec<f64> = match betweeness_centrality_result {
         Ok(vec_opt) => vec_opt.into_iter().map(|v| v.unwrap_or(0.0)).collect(),
-        Err(e) => {
+        Err(_) => {
             return CalculateProcess::Error(CalculateProcessError {
                 response_code: 500,
-                message: format!("Error calculating centrality: {}", e),
+                message: format!("Error calculating centrality"),
             });
         }
     };
 
-    
-        match conn.execute(
-        "CREATE TABLE IF NOT EXISTS rustveil_centrality (
-            node_id INTEGER PRIMARY KEY,
-            username TEXT NOT NULL,
-            centrality_score REAL NOT NULL
-        )",
+    let degree_centrality = match degree_centrality_calculate(numeric_edges.clone(), graph_type.clone()) {
+        Ok(degree_centrality) => degree_centrality,
+        Err(_) => {
+            return CalculateProcess::Error(CalculateProcessError {
+                response_code: 500,
+                message: format!("Error calculating degree centrality"),
+            });
+        }
+    };
+    let eigenvector_centrality = match eigenvector_centrality_calculate(numeric_edges.clone()) {
+        Ok(Some(eigenvector_centrality)) => eigenvector_centrality,
+        Ok(None) => vec![0.0; id_to_username.len()], // Handle None case
+        Err(_) => {
+            return CalculateProcess::Error(CalculateProcessError {
+                response_code: 500,
+                message: format!("Error calculating eigenvector centrality"),
+            });
+        }
+    };
+    let katz_centrality = match katz_centrality_calculate(numeric_edges.clone()) {
+        Ok(Some(katz_centrality)) => katz_centrality,
+        Ok(None) => vec![0.0; id_to_username.len()], // Handle None case
+        Err(_) => {
+            return CalculateProcess::Error(CalculateProcessError {
+                response_code: 500,
+                message: format!("Error calculating katz centrality"),
+            });
+        }
+    };
+    let closeness_centrality = match closeness_centrality_calculate(numeric_edges.clone()) {
+            Ok(closeness_centrality) => closeness_centrality.into_iter().map(|v| v.unwrap_or(0.0)).collect::<Vec<f64>>(),
+            Err(_) => {
+                return CalculateProcess::Error(CalculateProcessError {
+                    response_code: 500,
+                    message: format!("Error calculating closeness centrality"),
+                });
+            }
+        };
+    match conn.execute(
+                "CREATE TABLE IF NOT EXISTS rustveil_centrality (
+                node_id INTEGER PRIMARY KEY,
+                username TEXT NOT NULL,
+                betweenness_centrality REAL NOT NULL,
+                degree_centrality REAL NOT NULL,      
+                eigenvector_centrality REAL NOT NULL, 
+                katz_centrality REAL NOT NULL,        
+                closeness_centrality REAL NOT NULL    
+            )",
         [],
     ) {
         Ok(_) => {},
@@ -196,26 +252,44 @@ pub fn get_data_vertex(app: AppHandle, graph_type: String ) -> CalculateProcess 
             });
         }
     };
-
+    match conn.execute("DELETE FROM rustveil_centrality", []) {
+            Ok(_) => {},
+            Err(e) => {
+                return CalculateProcess::Error(CalculateProcessError {
+                    response_code: 500,
+                    message: format!("Failed to clear table: {}", e),
+                });
+            }
+        };
     // Insert data using existing connection
     for (node_id, username) in &id_to_username {
-        if let Some(score) = centrality_process.get(*node_id as usize) {
-            match conn.execute(
-                "INSERT OR REPLACE INTO rustveil_centrality (node_id, username, centrality_score) 
-                VALUES (?1, ?2, ?3)",
-                [&node_id.to_string(), username, &score.to_string()],
-            ) {
-                Ok(_) => {},
-                Err(e) => {
-                    return CalculateProcess::Error(CalculateProcessError {
-                        response_code: 500,
-                        message: format!("Failed to insert data: {}", e),
-                    });
-                }
+        let idx = *node_id as usize;
+        
+        match conn.execute(
+            "INSERT INTO rustveil_centrality (
+                node_id, username, betweenness_centrality, 
+                degree_centrality, eigenvector_centrality, 
+                katz_centrality, closeness_centrality
+            ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)",
+            rusqlite::params![
+                node_id,
+                username,
+                betweenness_centrality.get(idx).unwrap_or(&0.0),
+                degree_centrality.get(idx).unwrap_or(&0.0),
+                eigenvector_centrality.get(idx).unwrap_or(&0.0),
+                katz_centrality.get(idx).unwrap_or(&0.0),
+                closeness_centrality.get(idx).unwrap_or(&0.0)
+            ],
+        ) {
+            Ok(_) => {},
+            Err(e) => {
+                return CalculateProcess::Error(CalculateProcessError {
+                    response_code: 500,
+                    message: format!("Failed to insert data for node {}: {}", node_id, e),
+                });
             }
         }
     }
-
     // Return complete result with both raw data and centrality analysis
     CalculateProcess::Success(CalculateProcessComplete {
         response_code: 200,
@@ -226,8 +300,12 @@ pub fn get_data_vertex(app: AppHandle, graph_type: String ) -> CalculateProcess 
         ),
         node_map: Some(id_to_username),
         edges: Some(numeric_edges),
-        centrality_result: Some(centrality_process),
         vertices: Some(results),
+        betweenness_centrality: Some(betweenness_centrality),
+        degree_centrality : Some(degree_centrality),
+        eigenvector_centrality :  Some(eigenvector_centrality),
+        katz_centrality:  Some(katz_centrality),
+        closeness_centrality:  Some(closeness_centrality),
     })
 }
 

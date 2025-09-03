@@ -21,6 +21,7 @@ import { useDatabaseProgress } from "@/app/lib/workstation/data/progress/useData
 import { useLoadDatabase } from "@/app/lib/workstation/data/load_data/useLoadDatabase";
 import { useOpenDatabase } from "@/app/lib/workstation/data/load_data/useOpenDatabase";
 import { InfoIconSolid } from "@/components/icon/IconView";
+import { CloseActionIconOutline } from "@/components/icon/IconAction";
 
 type DataPickerModalType = {
   isOpen: boolean;
@@ -80,7 +81,15 @@ export default function DataLoader({
   };
   return (
     <>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}  
+      closeButton={<Button className="bg-red-500" 
+              startContent={<CloseActionIconOutline  />} 
+              isIconOnly 
+              onPress={closeModal} 
+              color="danger" 
+              variant="light">
+                    
+                  </Button>}>
         <ModalContent>
           <ModalHeader className="flex flex-col gap-1">
             <div className="flex items-center gap-2">
