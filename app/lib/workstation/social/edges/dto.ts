@@ -28,3 +28,30 @@ export interface NetworkNodeLinkType {
   target: string;
   distance: number;
 }
+
+
+
+// Store the complete RAW graph data from backend
+// Store the complete RAW graph data from backend
+export const rawGraphDataAtom = atom<{
+  node_map?: Record<number, string>;
+  edges?: Array<[number, number]>;
+  centrality_result?: Array<number>;
+  vertices?: Array<[string, string]>;
+  message: string;
+  response_code: number;
+} | null>(null);
+
+export const nivoGraphDataAtom = atom<{
+  nodes: {
+    id: string;
+    size: number;
+    color: string;
+    centrality: number;
+  }[];
+  links: {
+    source: string;
+    target: string;
+    distance: number;
+  }[];
+} | null>(null);
