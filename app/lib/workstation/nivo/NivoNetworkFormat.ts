@@ -16,11 +16,12 @@ export const useNetworkData = (
     color: `hsl(${200 + node.centrality * 10}, 70%, 50%)`,
     centrality: node.centrality,
   }));
-
-  const links = vertex1Data.map((source, index) => ({
+  const datafalke = ["12", 12]
+  const links = datafalke?.map((source, index) => ({
     source: String(source),
     target: String(vertex2Data[index]),
     distance: Math.floor(Math.random() * 90 + 10),
   }));
+  
   return { nodes, links };
 };

@@ -1,13 +1,11 @@
 import { open } from "@tauri-apps/plugin-dialog";
 import { invoke } from "@tauri-apps/api/core";
-import { useAtom, useSetAtom } from "jotai";
-import { filePath, sheetAvailable, sheetSelected } from "./state";
-
-export const useFileOpener = () => {
-  const setSheets = useSetAtom(sheetAvailable);
-  const setSelectedSheet = useSetAtom(sheetSelected);
+import { useAtom } from "jotai";
+import { filePath } from "./../state";
+export function useLoadDatabase() {
   const [fileState, setFileState] = useAtom(filePath);
-  return async () => {
+
+  const databaseOpener = async () => {
     try {
       if (fileState.isSelected === false) {
         const file = await open({
@@ -15,8 +13,8 @@ export const useFileOpener = () => {
           directory: false,
           filters: [
             {
-              name: "Excel",
-              extensions: ["xlsx"],
+              name: "Sqlite",
+              extensions: ["sqlite"],
             },
           ],
         });
@@ -26,9 +24,6 @@ export const useFileOpener = () => {
           return newState;
         }
         if (file) {
-          const sheets: string[] = await invoke("get_sheet", { url: file });
-          setSheets(sheets);
-          setSelectedSheet(sheets[0] || "");
           const newState = { isSelected: true, url: file };
           setFileState(newState);
           return newState;
@@ -41,4 +36,5 @@ export const useFileOpener = () => {
       return newState;
     }
   };
-};
+  return databaseOpener;
+}

@@ -32,7 +32,9 @@
  * - ColumnSelect child component
  */
 "use client";
-import VerticesSelect from "@/components/workstation/sna/vertices/VerticesSelect";
+import { vertex1ColumnSelected, vertex2ColumnSelected } from "@/app/lib/workstation/data/state";
+import { useSetVertices } from "@/app/lib/workstation/social/vertex/useSetVertices";
+import VerticesSelect from "@/components/workstation/sna/vertices/VerticesSelectComponent";
 import {
   Modal,
   ModalContent,
@@ -40,7 +42,9 @@ import {
   ModalBody,
   ModalFooter,
   Button,
+  addToast,
 } from "@heroui/react";
+import { useAtomValue } from "jotai";
 
 type VerticesModalProps = {
   isOpen: boolean;
@@ -50,8 +54,33 @@ export default function EdgesModal({
   isOpen,
   onOpenChange,
 }: VerticesModalProps) {
-  const closeModal = () => {
-    onOpenChange();
+  const setvertices = useSetVertices();
+    const vertex1 = useAtomValue(vertex1ColumnSelected);
+    const vertex2 = useAtomValue(vertex2ColumnSelected);
+  const closeModal = async () => {
+    try {
+      const response = await setvertices();
+      console.log('setvertices response:', response);
+      if (response?.response_code === 200) {
+        addToast({
+          title: "Setting Vertices Success",
+          description: `${response?.message} ${vertex1} and ${vertex2}`,
+          color: "success",
+        });
+        onOpenChange();
+      }
+      
+      if (response?.response_code !== 200) {
+        addToast({
+          title: "Operation Error",
+          description: `${response?.message}`,
+          color: "danger",
+        });
+      }
+
+    } catch (error) {
+        console.log(error)
+    }
   };
 
   return (

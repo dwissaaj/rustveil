@@ -4,7 +4,9 @@ import React from "react";
 import { Tabs, Tab } from "@heroui/react";
 import EdgesHome from "./edges/EdgesHome";
 import VerticesHome from "./vertices/VerticesHome";
+
 export default function SocialNetwork() {
+
   return (
     <div className="">
       <div>

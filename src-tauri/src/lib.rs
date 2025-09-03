@@ -1,14 +1,13 @@
 mod workstation;
 mod database;
 mod global;
-use workstation::data;
 use workstation::social_network;
-use database::state;
 use tauri_plugin_fs::FsExt;
 use global::app_path;
 use app_path::AppFolderPath;
 use std::sync::Mutex;
-use database::state::SqliteDataState;
+use database::lib::state::SqliteDataState;
+use social_network::state::VerticesSelected;
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -34,15 +33,22 @@ pub fn run() {
             file_url: String::new(),
         }))
         .manage(Mutex::new(SqliteDataState { file_url: String::new() }))
+        .manage(Mutex::new(VerticesSelected { vertex_1: String::new(), vertex_2: String::new() }))
         .setup(|app| {
             app.fs_scope();
             app_path::create_folder_main_app(app);
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
-            data::load_data,
-            data::get_sheet,
-            social_network::user_to_vector,
+            workstation::data::excel::load_data,
+             workstation::data::excel::get_sheet,
+            social_network::handler::set_vertices,
+             social_network::handler::calculate_centrality,
+            database::lib::handler::load_data_sqlite,
+            database::lib::get::get_all_data,
+            database::lib::get::get_paginated_data,
+            
+            // database::lib::get::get_all_data_limit,
         ])
         .run(tauri::generate_context!())
         

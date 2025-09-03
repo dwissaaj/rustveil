@@ -22,7 +22,7 @@ import React from "react";
 export default function NoData() {
   return (
     <div className="mt-20 flex flex-row items-center justify-center">
-      <Code color="warning">No Data - try to upload a .xlsx file</Code>
+      <Code color="warning">No Data - try to upload a file</Code>
     </div>
   );
 }
