@@ -7,7 +7,7 @@ import { VerticesGraphViewerBar } from "@/components/workstation/sna/vertices/Ve
 
 import { useEffect } from "react";
 import { useAtom } from "jotai";
-import { centralityData } from "@/app/lib/workstation/social/edges/dto";
+import { centralityData } from "@/app/lib/workstation/social/edges/state";
 
 
 

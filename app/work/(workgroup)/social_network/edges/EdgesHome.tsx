@@ -31,20 +31,6 @@ export default function EdgesHome() {
     document.addEventListener("mouseup", onMouseUp);
   };
 
-
-  const { centralityValueData, vertex1Data, vertex2Data } = useGraphData();
-  const networkData = useNetworkData(
-    centralityValueData,
-    vertex1Data,
-    vertex2Data,
-  );
-  const renderNetworkGraph = () => {
-    if (networkData.nodes.length === 0) {
-      return <EdgesEmptyNetwork />;
-    }
-    return <EdgesGraph />;
-  };
-
   return (
 
     <div className="flex max-h-screen w-full ">

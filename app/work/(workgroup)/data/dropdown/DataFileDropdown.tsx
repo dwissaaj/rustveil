@@ -35,7 +35,7 @@ export default function DataFileDropdown() {
         <DropdownMenu aria-label="File actions">
           <DropdownItem
             description="Start with new data"
-            startContent={<UploadNewData />}
+            startContent={<UploadNewData className="w-6" />}
             key="pick-file"
             onPress={onPickerOpen}
           >
@@ -43,7 +43,7 @@ export default function DataFileDropdown() {
           </DropdownItem>
           <DropdownItem
             description="Load existed sqlite file"
-            startContent={<LoadNewData />}
+            startContent={<LoadNewData className="w-6" />}
             key="load-file"
             onPress={onLoaderOpen}
           >

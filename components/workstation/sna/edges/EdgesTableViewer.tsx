@@ -1,4 +1,4 @@
-import { centralityData } from "@/app/lib/workstation/social/edges/dto";
+import { centralityData } from "@/app/lib/workstation/social/edges/state";
 import { RefreshIcon } from "@/components/icon/IconView";
 import {
   Table,
@@ -16,7 +16,7 @@ import { useAtomValue } from "jotai";
 import { useEffect, useState } from "react";
 import { useAsyncList } from "@react-stately/data";
 import NoVerticesSelected from "./NoCentralityTable";
-import { useGetCentrality } from "@/app/lib/workstation/social/vertex/useGetCentrality";
+import { useGetCentrality } from "@/app/lib/workstation/social/calculate/useGetCentrality";
 
 export default function CentralityTable() {
   const getCentrality = useGetCentrality();
@@ -118,11 +118,11 @@ export default function CentralityTable() {
         bottomContentPlacement="outside"
         topContent={
           <Button
+            variant="light"
             onPress={loadData}
             className="m-2"
-            color="primary"
             isIconOnly
-            startContent={<RefreshIcon />}
+            startContent={<RefreshIcon className="w-4" />}
           />
         }
       >

@@ -27,7 +27,7 @@ export function ViewDropdown({ onDataFetched }: ViewDropdownProps) {
           shortcut="⌘R"
           description="Check new data"
           key="refresh"
-          startContent={<RefreshIcon />}
+          startContent={<RefreshIcon className="w-6" />}
         >
           Refresh
         </DropdownItem>
