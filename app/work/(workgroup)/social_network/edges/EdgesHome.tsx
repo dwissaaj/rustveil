@@ -1,11 +1,6 @@
 'use client'
 import React, { useState } from "react";
 import EdgesTable from "./EdgesTable";
-
-import { useGraphData } from "@/app/lib/workstation/social/useGraphData";
-import { useNetworkData } from "@/app/lib/workstation/nivo/NivoNetworkFormat";
-import { EdgesGraphNetwork } from "@/components/workstation/sna/edges/EdgesGraphNetwork";
-import EdgesEmptyNetwork from "@/components/workstation/sna/edges/EdgesEmptyNetwork";
 import { useTheme } from "next-themes";
 import EdgesGraph from "./EdgesGraph";
 export default function EdgesHome() {
