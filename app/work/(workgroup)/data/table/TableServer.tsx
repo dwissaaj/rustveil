@@ -61,6 +61,7 @@ export default function TableServer({
         bottomContentPlacement="outside"
         topContent={
           <Button
+           className="m-2"
             isIconOnly
             color="primary"
             variant="light"

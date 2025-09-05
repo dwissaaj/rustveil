@@ -46,6 +46,7 @@ export default function DataTable({
       <Table
         topContent={
           <Button
+          className="m-2"
             isIconOnly
             color="primary"
             variant="light"

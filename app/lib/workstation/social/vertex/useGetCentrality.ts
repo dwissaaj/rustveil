@@ -1,22 +1,17 @@
+
 import { invoke } from "@tauri-apps/api/core";
-import { CalculateCentralityResponse } from "../vertex/response";
-import { useAtom, useAtomValue } from "jotai";
-import { vertexGraphTypeSelected } from "../../data/state";
 import { centralityData } from "../edges/dto";
+import { useAtom } from "jotai";
+import { CalculateCentralityResponse } from "./response";
 
+export function useGetCentrality() {
+  const [,setGraphData] = useAtom(centralityData)
+  const getCentrality = async () => {
+    try {
+      const response = await invoke<CalculateCentralityResponse>("load_centrality_table");
 
-export function useCalculateCentrality() {
-    const graphType = useAtomValue(vertexGraphTypeSelected) 
-    const [graphData, setGraphData] = useAtom(centralityData)
-    
-    const getCentrality = async () => {
-        try {
-            const response = await invoke<CalculateCentralityResponse>('calculate_centrality', {
-                graphType: graphType,
-            })
-            console.log(response)
-            if ("Success" in response) {
-                setGraphData({
+      if ("Success" in response) {
+        setGraphData({
                     graphData: {
                         node_map: response.Success.node_map,
                         betweenness_centrality: response.Success.betweenness_centrality,
@@ -26,7 +21,6 @@ export function useCalculateCentrality() {
                         closeness_centrality: response.Success.closeness_centrality,
                     }
                 })
-                console.log(graphData)
                 return {
                 response_code: response.Success.response_code,
                 message: response.Success.message,
@@ -46,13 +40,11 @@ export function useCalculateCentrality() {
 
                 };
             }
-        } catch (error: any) {
-            console.log(error)
-          return {
-                response_code: 500,
-                message: "Error hook calculate to back end",
-            };
-        }
+    } catch (error) {
+      console.log("Error:", error);
+      throw error;
     }
-    return getCentrality
+  };
+
+  return getCentrality;
 }
