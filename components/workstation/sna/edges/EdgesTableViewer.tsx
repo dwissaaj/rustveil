@@ -156,11 +156,11 @@ export default function CentralityTable() {
             <TableRow key={row.id}>
               <TableCell>{startRow + list.items.indexOf(row) + 1}</TableCell>
               <TableCell>{row.label}</TableCell>
-              <TableCell>{row.degree.toFixed(6)}</TableCell>
-              <TableCell>{row.betweenness.toFixed(6)}</TableCell>
-              <TableCell>{row.closeness.toFixed(6)}</TableCell>
-              <TableCell>{row.eigenvector.toFixed(6)}</TableCell>
-              <TableCell>{row.katz.toFixed(6)}</TableCell>
+              <TableCell>{row.degree}</TableCell>
+              <TableCell>{row.betweenness}</TableCell>
+              <TableCell>{row.closeness}</TableCell>
+              <TableCell>{row.eigenvector}</TableCell>
+              <TableCell>{row.katz}</TableCell>
             </TableRow>
           )}
         </TableBody>

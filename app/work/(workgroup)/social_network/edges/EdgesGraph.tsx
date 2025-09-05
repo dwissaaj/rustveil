@@ -5,22 +5,24 @@ import { EdgesGraphNetwork } from "@/components/workstation/sna/edges/EdgesGraph
 import { centralityData, edgesData } from "@/app/lib/workstation/social/edges/state";
 import { useGetCentrality } from "@/app/lib/workstation/social/calculate/useGetCentrality";
 import { Button } from "@heroui/button";
-import { useTransformNivo } from "@/app/lib/workstation/social/edges/useTransformNivo";
+
 import { addToast } from "@heroui/react";
+import { useGetEdges } from "@/app/lib/workstation/social/edges/useGetNetwork";
 
 
 
 export default function EdgesGraph() {
-  const transformNivo = useTransformNivo()
+  const transformNivo = useGetEdges()
   const data = useAtomValue(edgesData);
   console.log(data);
   const handle = async () => {
   try {
     const result = await transformNivo();
+
     if (result?.response_code === 200) {
       addToast({
         title: "Success",
-        description: `${result?.message}`,
+        description: result.message,
         color: "success",
       });
     } else {
@@ -33,20 +35,16 @@ export default function EdgesGraph() {
   } catch (error) {
     addToast({
       title: "Error",
-      description: `${error}`,
+      description: String(error),
       color: "danger",
     });
   }
 };
-  const getNivoData = useNivoGraphData();
-  const nivoData = getNivoData();
+
   return (
     <div>
-     
+      where is your data
       <Button onPress={handle}>click</Button>
-      <div>
-        
-      </div>
     </div>
   )
 }

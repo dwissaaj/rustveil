@@ -1,5 +1,6 @@
 import { atom } from "jotai";
 import { InputNode, InputLink } from "@nivo/network";
+import { NetworkData } from "./response";
 
 export interface CalculateCentralityType {
   node_map?: Record<number, string>;
@@ -15,20 +16,10 @@ export const centralityData = atom<{
 } | null>(null);
 
 
-interface NivoNode extends InputNode {
-    id: string;
-    size: number;
-    color: string;
-}
-
-interface NivoLink extends InputLink {
-    source: string;
-    target: string;
-    distance: number;
-}
-
-// In your hook
-const nodes: NivoNode[] = [];
-const links: NivoLink[] = [];
 
 export const edgesData = atom<any[]>([]);
+
+export const networkData = atom<NetworkData>({
+  nodes: [],
+  links: [],
+});
