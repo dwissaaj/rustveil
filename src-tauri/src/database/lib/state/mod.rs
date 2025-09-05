@@ -6,12 +6,12 @@ use serde_json::{ Value};
 /// This enum is serialized so it can be sent to the Tauri frontend (or any other consumer)
 /// in a structured format. It has two possible variants:
 ///
-/// - [`DatabaseProcess::Complete`] — Indicates the process finished successfully.
+/// - [`DatabaseProcess::Success`] — Indicates the process finished successfully.
 /// - [`DatabaseProcess::Error`] — Indicates the process encountered an error.
 #[derive(Serialize)]
 pub enum DatabaseProcess {
     /// Successful database process result.
-    Complete(DatabaseComplete),
+    Success(DatabaseComplete),
 
     /// Failed database process result.
     Error(DatabaseError),

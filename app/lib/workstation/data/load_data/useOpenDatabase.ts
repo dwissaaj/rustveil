@@ -10,12 +10,12 @@ export function useOpenDatabase() {
       const response = await invoke<InvokeResponse>("load_data_sqlite", {
         pathfile: pathfile.url,
       });
-      if ("Complete" in response) {
+      if ("Success" in response) {
         return {
-          response_code: response.Complete.response_code,
-          message: response.Complete.message,
-          data: response.Complete.data,
-          total_count: response.Complete.total_count,
+          response_code: response.Success.response_code,
+          message: response.Success.message,
+          data: response.Success.data,
+          total_count: response.Success.total_count,
         };
       } else if ("Error" in response) {
         return {

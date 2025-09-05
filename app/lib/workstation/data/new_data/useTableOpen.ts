@@ -14,11 +14,11 @@ export function useTableOpen() {
         sheetName: sheet,
       });
 
-      if ("Complete" in response) {
+      if ("Success" in response) {
         return {
-          response_code: response.Complete.response_code,
-          message: response.Complete.message,
-          data: response.Complete.data,
+          response_code: response.Success.response_code,
+          message: response.Success.message,
+          data: response.Success.data,
         };
       } else if ("Error" in response) {
         return {

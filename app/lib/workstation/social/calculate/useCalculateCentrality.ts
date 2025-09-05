@@ -2,7 +2,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { CalculateCentralityResponse } from "../vertex/response";
 import { useAtom, useAtomValue } from "jotai";
 import { vertexGraphTypeSelected } from "../../data/state";
-import { centralityData } from "../edges/dto";
+import { centralityData } from "../edges/state";
 
 
 export function useCalculateCentrality() {
@@ -26,7 +26,6 @@ export function useCalculateCentrality() {
                         closeness_centrality: response.Success.closeness_centrality,
                     }
                 })
-                console.log(graphData)
                 return {
                 response_code: response.Success.response_code,
                 message: response.Success.message,
@@ -47,7 +46,7 @@ export function useCalculateCentrality() {
                 };
             }
         } catch (error: any) {
-            console.log(error)
+           
           return {
                 response_code: 500,
                 message: "Error hook calculate to back end",

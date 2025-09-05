@@ -1,8 +1,8 @@
 
 import { invoke } from "@tauri-apps/api/core";
-import { centralityData } from "../edges/dto";
+import { centralityData } from "../edges/state";
 import { useAtom } from "jotai";
-import { CalculateCentralityResponse } from "./response";
+import { CalculateCentralityResponse } from "../vertex/response";
 
 export function useGetCentrality() {
   const [,setGraphData] = useAtom(centralityData)
@@ -41,8 +41,10 @@ export function useGetCentrality() {
                 };
             }
     } catch (error) {
-      console.log("Error:", error);
-      throw error;
+      return {
+         response_code: 500,
+         message: "Error at hook get centrality data",
+      }
     }
   };
 

@@ -4,11 +4,11 @@ export function useGetAllData() {
   const getAll = async () => {
     try {
       const response = await invoke<InvokeResponse>("get_all_data");
-      if ("Complete" in response) {
+      if ("Success" in response) {
         return {
-          response_code: response.Complete.response_code,
-          message: response.Complete.message,
-          data: response.Complete.data,
+          response_code: response.Success.response_code,
+          message: response.Success.message,
+          data: response.Success.data,
         };
       } else if ("Error" in response) {
         return {

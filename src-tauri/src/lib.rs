@@ -41,15 +41,15 @@ pub fn run() {
         })
         .invoke_handler(tauri::generate_handler![
             workstation::data::excel::load_data,
-             workstation::data::excel::get_sheet,
+            workstation::data::excel::get_sheet,
             social_network::handler::set_vertices,
-             social_network::handler::calculate_centrality,
-             social_network::handler::load_centrality_table,
+            social_network::handler::calculate_centrality,
+            social_network::handler::load_centrality_table,
             database::lib::handler::load_data_sqlite,
             database::lib::get::get_all_data,
             database::lib::get::get_paginated_data,
+            database::lib::get::get_all_vertices,
             
-            // database::lib::get::get_all_data_limit,
         ])
         .run(tauri::generate_context!())
         

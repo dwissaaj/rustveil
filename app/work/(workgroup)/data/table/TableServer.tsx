@@ -61,11 +61,11 @@ export default function TableServer({
         bottomContentPlacement="outside"
         topContent={
           <Button
-           className="m-2"
+            className="m-2"
             isIconOnly
             color="primary"
             variant="light"
-            startContent={<RefreshIcon />}
+            startContent={<RefreshIcon className="w-6" />}
             onPress={onRefresh}
           ></Button>
         }
