@@ -60,7 +60,6 @@ export default function EdgesModal({
   const closeModal = async () => {
     try {
       const response = await setvertices();
-      console.log('setvertices response:', response);
       if (response?.response_code === 200) {
         addToast({
           title: "Setting Vertices Success",

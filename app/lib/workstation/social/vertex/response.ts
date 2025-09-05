@@ -1,3 +1,5 @@
+import { atom } from "jotai";
+
 export interface SetVerticesSuccess {
   response_code: number;
   message: string;
@@ -14,8 +16,6 @@ export type SetVerticesResponse =
   | { Error: SetVerticesError };
 
   
-
-
 export interface CalculateCentralitySuccess {
   response_code: number;
   message: string;
@@ -38,4 +38,3 @@ export type CalculateCentralityResponse =
   | { Success: CalculateCentralitySuccess }
   | { Error: CalculateCentralityError };
 
-  

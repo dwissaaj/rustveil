@@ -2,11 +2,11 @@
 import { useAtomValue, useAtom } from "jotai";
 import {
   edgesGraphValue,
-  centralityData,
   tableData,
   vertex1ColumnSelected,
   vertex2ColumnSelected,
   vertexGraphTypeSelected,
+  centralityData,
 } from "../data/state";
 
 export const useGraphData = () => {
