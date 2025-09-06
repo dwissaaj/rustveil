@@ -1,5 +1,6 @@
 "use client";
 import { useAtomValue, useAtom } from "jotai";
+
 import {
   edgesGraphValue,
   tableData,
@@ -18,6 +19,7 @@ export const useGraphData = () => {
   const [centralityValueData, setcentralityValueData] = useAtom(centralityData);
   const getColumnData = (columnName: string) => {
     if (!columnName || !data) return [];
+
     return data.rows.map((row) => row[columnName]);
   };
 

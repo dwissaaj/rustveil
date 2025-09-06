@@ -1,6 +1,8 @@
 import { invoke } from "@tauri-apps/api/core";
 import { useAtomValue } from "jotai";
+
 import { vertex1ColumnSelected, vertex2ColumnSelected } from "../../data/state";
+
 import { SetVerticesResponse } from "./response";
 
 export function useSetVertices() {
@@ -14,6 +16,7 @@ export function useSetVertices() {
           vertex_2: vertex2,
         },
       });
+
       if ("Success" in response) {
         return {
           response_code: response.Success.response_code,
@@ -28,9 +31,10 @@ export function useSetVertices() {
     } catch (error) {
       return {
         response_code: 500,
-        message: "Error hook set vertices to back end",
+        message: `Error hook set vertices to back end ${error}`,
       };
     }
   };
+
   return setVertices;
 }

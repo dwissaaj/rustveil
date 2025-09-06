@@ -1,4 +1,5 @@
 import { atom } from "jotai";
+
 import { TableDataType } from "./dto";
 
 // need to deleted since we not ising jotai atom

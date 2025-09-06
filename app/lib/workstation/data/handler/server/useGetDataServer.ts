@@ -1,4 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
+
 import { InvokeResponse } from "@/app/lib/workstation/data/response";
 
 export function useGetDataServer() {
@@ -10,6 +11,7 @@ export function useGetDataServer() {
           page_size: pageSize,
         },
       });
+
       return response;
     } catch (error) {
       throw error;

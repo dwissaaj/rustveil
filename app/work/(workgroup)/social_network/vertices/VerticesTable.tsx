@@ -3,7 +3,6 @@ import { VerticesTableViewer } from "@/components/workstation/sna/vertices/Verti
 
 export default function VerticesTable() {
   const { centralityValueData } = useGraphData();
-  return (
-    <VerticesTableViewer vertices={centralityValueData} />
-  );
-};
+
+  return <VerticesTableViewer vertices={centralityValueData} />;
+}

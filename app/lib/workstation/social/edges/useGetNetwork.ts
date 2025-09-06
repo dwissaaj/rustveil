@@ -1,12 +1,12 @@
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useAtom } from "jotai";
 import { invoke } from "@tauri-apps/api/core";
+
 import { GetEdgesResponse } from "./response";
-import { centralityData, NetworkGraphData } from "./state";
+import { NetworkGraphData } from "./state";
 import { transformEdgesToGraph } from "./useTransform";
 
 export function useGetEdges() {
   const [, setGraphAtom] = useAtom(NetworkGraphData);
-  const centrality = useAtomValue(centralityData);
   const getEdges = async () => {
     try {
       const response = await invoke<GetEdgesResponse>("get_all_vertices");
@@ -15,7 +15,9 @@ export function useGetEdges() {
         const transformData = transformEdgesToGraph(
           response.Success.data || [],
         );
+
         setGraphAtom(transformData);
+
         return {
           response_code: response.Success.response_code,
           message: response.Success.message,
@@ -29,10 +31,9 @@ export function useGetEdges() {
         };
       }
     } catch (error) {
-      console.log(error);
       return {
         response_code: 500,
-        message: "Error invoking get all edges",
+        message: `Error at get all edges ${error}`,
       };
     }
   };

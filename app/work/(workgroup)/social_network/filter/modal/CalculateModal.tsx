@@ -14,6 +14,7 @@ import {
 } from "@heroui/react";
 import { useState } from "react";
 import { useAtomValue } from "jotai";
+
 import {
   vertex1ColumnSelected,
   vertex2ColumnSelected,
@@ -95,16 +96,16 @@ export default function SocialCalculateModal({
     <>
       <Modal
         backdrop="blur"
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
         closeButton={
           <Button
-            variant="light"
-            color="warning"
             isIconOnly
+            color="warning"
             startContent={<CloseActionIcon className="w-6 h-6 " />}
-          ></Button>
+            variant="light"
+          />
         }
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
       >
         <ModalContent>
           <ModalHeader className="flex flex-col gap-1 text-4xl text-primary-500">
@@ -112,12 +113,12 @@ export default function SocialCalculateModal({
             {isProgess.isShowed && (
               <Progress
                 className="w-full"
-                isIndeterminate={isProgess.isLoading}
                 color="primary"
-                size="sm"
+                isIndeterminate={isProgess.isLoading}
                 label={
                   <p className="text-lg ">Larger data have longer process</p>
                 }
+                size="sm"
               />
             )}
           </ModalHeader>
@@ -128,8 +129,8 @@ export default function SocialCalculateModal({
                   <Tooltip content="If there is mistake re-choose the graph type and column data">
                     <Button
                       className="text-lg"
-                      variant="light"
                       startContent={<InfoIcon />}
+                      variant="light"
                     >
                       Information
                     </Button>
@@ -147,11 +148,11 @@ export default function SocialCalculateModal({
           </ModalBody>
           <ModalFooter className="w-full">
             <Button
-              color="primary"
-              startContent={<CalculateIcon />}
               className="w-full"
-              onPress={handleCalculate}
+              color="primary"
               isDisabled={isProgess.isButtonDisabled}
+              startContent={<CalculateIcon />}
+              onPress={handleCalculate}
             >
               Calculate
             </Button>

@@ -1,8 +1,10 @@
 "use client";
-import { useRefreshServer } from "@/app/lib/workstation/data/handler/server/useRefreshServer";
-import TableServer from "./table/TableServer";
-import FilterListWrapper from "@/components/workstation/data/FilterListWrapper";
 import { useAtom } from "jotai";
+
+import TableServer from "./table/TableServer";
+
+import { useRefreshServer } from "@/app/lib/workstation/data/handler/server/useRefreshServer";
+import FilterListWrapper from "@/components/workstation/data/FilterListWrapper";
 import {
   currentPageTable,
   dataTable,
@@ -34,11 +36,11 @@ export default function Page() {
       </div>
       <div>
         <TableServer
+          currentPage={currentPage}
           data={data}
           isLoading={loading}
-          totalCount={totalCount}
-          currentPage={currentPage}
           pageSize={100}
+          totalCount={totalCount}
           onPageChange={handlePageChange}
           onRefresh={() => refresh(1)}
         />

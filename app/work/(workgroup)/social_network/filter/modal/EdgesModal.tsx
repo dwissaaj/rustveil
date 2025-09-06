@@ -1,43 +1,6 @@
-/**
- * Modal dialog for vertex selection in social network analysis
- *
- * @component
- * @example
- * <VerticesModal isOpen={isOpen} onOpenChange={toggleOpen} />
- *
- * @description
- * Provides a controlled modal interface containing:
- * - Column selection UI (ColumnSelect component)
- * - Confirm/cancel actions
- * - Blurred backdrop effect
- *
- * @props {
- *   isOpen: boolean - Controls modal visibility
- *   onOpenChange: () => void - Toggle handler
- * }
- *
- * @ui
- * - Hero UI Modal components
- * - Blurred backdrop
- * - Fixed header/footer layout
- * - Danger (close) and primary (confirm) action buttons
- *
- * @behavior
- * - Closes on both button actions
- * - State managed by parent component
- * - Embeds ColumnSelect for vertex picking
- *
- * @dependencies
- * - @hero-ui/react Modal system
- * - ColumnSelect child component
- */
 "use client";
-import {
-  vertex1ColumnSelected,
-  vertex2ColumnSelected,
-} from "@/app/lib/workstation/data/state";
-import { useSetVertices } from "@/app/lib/workstation/social/vertex/useSetVertices";
-import VerticesSelect from "@/components/workstation/sna/vertices/VerticesSelectComponent";
+
+import { useAtomValue } from "jotai";
 import {
   Modal,
   ModalContent,
@@ -47,7 +10,13 @@ import {
   Button,
   addToast,
 } from "@heroui/react";
-import { useAtomValue } from "jotai";
+
+import {
+  vertex1ColumnSelected,
+  vertex2ColumnSelected,
+} from "@/app/lib/workstation/data/state";
+import { useSetVertices } from "@/app/lib/workstation/social/vertex/useSetVertices";
+import VerticesSelect from "@/components/workstation/sna/vertices/VerticesSelectComponent";
 
 type VerticesModalProps = {
   isOpen: boolean;
@@ -63,6 +32,7 @@ export default function EdgesModal({
   const closeModal = async () => {
     try {
       const response = await setvertices();
+
       if (response?.response_code === 200) {
         addToast({
           title: "Setting Vertices Success",
@@ -80,7 +50,11 @@ export default function EdgesModal({
         });
       }
     } catch (error) {
-      console.log(error);
+      addToast({
+        title: "Operation Error",
+        description: `${error}`,
+        color: "danger",
+      });
     }
   };
 

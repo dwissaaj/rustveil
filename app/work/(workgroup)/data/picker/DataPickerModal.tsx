@@ -9,16 +9,14 @@ import {
   Progress,
   addToast,
 } from "@heroui/react";
+import { useState } from "react";
+
 import { useFileOpener } from "@/app/lib/workstation/data/new_data/useFileOpener";
 import SheetSelector from "@/components/workstation/data/SheetSelect";
 import { useTableOpen } from "@/app/lib/workstation/data/new_data/useTableOpen";
-import { useState } from "react";
 import { useCloseModal } from "@/app/lib/workstation/data/useCloseModal";
 import { useDatabaseProgress } from "@/app/lib/workstation/data/progress/useDatabaseProgress";
-import {
-  CloseActionIcon,
-  CloseActionIconOutline,
-} from "@/components/icon/IconAction";
+import { CloseActionIconOutline } from "@/components/icon/IconAction";
 
 type DataPickerModalType = {
   isOpen: boolean;
@@ -45,10 +43,16 @@ export default function DataPicker({
     try {
       setIsLoading(true);
       const file = await fileOpener();
+
       if (file?.isSelected === true) {
         setopenButtonState(false);
       }
     } catch (error) {
+      addToast({
+        title: "Operation Error",
+        description: `${error}`,
+        color: "danger",
+      });
       setFileLoaded(false);
     } finally {
       setIsLoading(false);
@@ -58,6 +62,7 @@ export default function DataPicker({
   const openTable = async () => {
     try {
       const result = await tableOpener();
+
       setIsLoading(true);
       setopenProgress(true);
       if (result?.response_code === 200) {
@@ -76,6 +81,11 @@ export default function DataPicker({
         setopenProgress(false);
       }
     } catch (error) {
+      addToast({
+        title: "Operation Error",
+        description: `${error}`,
+        color: "danger",
+      });
       setopenProgress(false);
     } finally {
       setIsLoading(false);
@@ -85,18 +95,18 @@ export default function DataPicker({
   return (
     <>
       <Modal
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
         closeButton={
           <Button
-            className="bg-red-500"
-            startContent={<CloseActionIconOutline />}
             isIconOnly
-            onPress={closeModal}
+            className="bg-red-500"
             color="danger"
+            startContent={<CloseActionIconOutline />}
             variant="light"
-          ></Button>
+            onPress={closeModal}
+          />
         }
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
       >
         <ModalContent>
           <ModalHeader className="flex flex-col gap-1">
@@ -108,10 +118,10 @@ export default function DataPicker({
                 <p>Pick a .xlsx file</p>
                 <Button
                   color="secondary"
+                  isDisabled={fileLoaded}
+                  isLoading={isLoading}
                   variant="light"
                   onPress={openFile}
-                  isLoading={isLoading}
-                  isDisabled={fileLoaded}
                 >
                   {isLoading
                     ? "Loading..."
@@ -130,24 +140,24 @@ export default function DataPicker({
                   <Progress
                     className="max-w-md"
                     color="primary"
-                    value={progress?.count}
+                    label={`Process ${progress?.count}/${progress?.total_rows}`}
                     maxValue={progress?.total_rows}
                     showValueLabel={true}
-                    label={`Process ${progress?.count}/${progress?.total_rows}`}
+                    value={progress?.count}
                   />
                 </div>
               )}
             </div>
           </ModalBody>
           <ModalFooter>
-            <Button onPress={closeModal} color="danger" variant="light">
+            <Button color="danger" variant="light" onPress={closeModal}>
               Close
             </Button>
             <Button
               color="primary"
-              onPress={openTable}
               isDisabled={openButtonState}
               isLoading={isLoading}
+              onPress={openTable}
             >
               Open Table
             </Button>
