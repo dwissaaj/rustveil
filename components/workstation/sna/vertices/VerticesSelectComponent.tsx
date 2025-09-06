@@ -57,9 +57,10 @@ export default function VerticesSelectComponent() {
         <div>
           <Tooltip color="primary" content="Minimal 2 data for edges">
             <Button
+            className="text-black dark:text-white"
               variant="light"
-              color="default"
-              endContent={<TooltipIcon />}
+              color="primary"
+              endContent={<TooltipIcon className="w-6" />}
             >
               Available Nodes
             </Button>

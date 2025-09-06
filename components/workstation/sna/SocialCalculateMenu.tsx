@@ -11,7 +11,7 @@ import {
 import { VerticesIcon } from "@/components/icon/IconFilter";
 import SocialCalculateModal from "@/app/work/(workgroup)/social_network/filter/modal/CalculateModal";
 import { CalculateIcon } from "@/components/icon/IconGraph";
-import { on } from "events";
+
 
 export default function SocialCalculateMenu() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -19,12 +19,12 @@ export default function SocialCalculateMenu() {
     <>
       <Dropdown>
         <DropdownTrigger>
-          <Button variant="light">Calculate</Button>
+          <Button className="text-black dark:text-white" color="primary" variant="light" >Calculate</Button>
         </DropdownTrigger>
-        <DropdownMenu aria-label="Calculate graph metrics">
+        <DropdownMenu color="primary" variant="flat" aria-label="Calculate graph metrics">
           <DropdownItem
             onPress={onOpen}
-            startContent={<CalculateIcon />}
+            startContent={<CalculateIcon className="w-6" />}
             description="Compute social network metrics"
             key="calculate"
           >

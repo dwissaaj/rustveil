@@ -117,11 +117,13 @@ export default function CentralityTable() {
         bottomContentPlacement="outside"
         topContent={
           <Button
-            variant="light"
+
             onPress={loadData}
-            className="m-2"
             isIconOnly
-            startContent={<RefreshIcon className="w-4" />}
+            className="m-2"
+            color="primary"
+            startContent={<RefreshIcon className="w-6" />}
+            variant="light"
           />
         }
       >
