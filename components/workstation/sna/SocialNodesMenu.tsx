@@ -55,14 +55,13 @@ export default function SocialNodesMenu() {
           <Button variant="light">Edit</Button>
         </DropdownTrigger>
         <DropdownMenu aria-label="locate vertices">
-          <DropdownItem 
-              key="vertices"
-              description="Select vertices for analysis"
-              startContent={<VerticesIcon />}
-              onPress={onOpen}
-              
-              >
-              Locate Vertices
+          <DropdownItem
+            key="vertices"
+            description="Select vertices for analysis"
+            startContent={<VerticesIcon />}
+            onPress={onOpen}
+          >
+            Locate Vertices
           </DropdownItem>
         </DropdownMenu>
       </Dropdown>

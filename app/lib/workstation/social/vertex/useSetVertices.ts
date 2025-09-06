@@ -4,16 +4,15 @@ import { vertex1ColumnSelected, vertex2ColumnSelected } from "../../data/state";
 import { SetVerticesResponse } from "./response";
 
 export function useSetVertices() {
-    const vertex1 = useAtomValue(vertex1ColumnSelected);
-    const vertex2 = useAtomValue(vertex2ColumnSelected);
+  const vertex1 = useAtomValue(vertex1ColumnSelected);
+  const vertex2 = useAtomValue(vertex2ColumnSelected);
   const setVertices = async () => {
     try {
-      const response = await invoke<SetVerticesResponse>("set_vertices" ,{
-        verticesSelected : {
-            vertex_1: vertex1,
-            vertex_2: vertex2
-        }
-       
+      const response = await invoke<SetVerticesResponse>("set_vertices", {
+        verticesSelected: {
+          vertex_1: vertex1,
+          vertex_2: vertex2,
+        },
       });
       if ("Success" in response) {
         return {
@@ -26,11 +25,11 @@ export function useSetVertices() {
           message: response.Error.message,
         };
       }
-     
     } catch (error) {
       return {
         response_code: 500,
-        message: "Error hook set vertices to back end",}
+        message: "Error hook set vertices to back end",
+      };
     }
   };
   return setVertices;

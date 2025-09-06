@@ -10,7 +10,7 @@ export function useDataColumn(targetColumn: string) {
         const data = get(dataTable);
         return data.map((row) => row[targetColumn]);
       }),
-    [targetColumn]
+    [targetColumn],
   );
 
   return useAtomValue(columnAtom);

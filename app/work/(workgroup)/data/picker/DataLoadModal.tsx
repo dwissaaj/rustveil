@@ -52,7 +52,6 @@ export default function DataLoader({
         });
       }
     } catch (error) {
-     
     } finally {
       setIsLoading(false);
     }
@@ -73,15 +72,20 @@ export default function DataLoader({
   };
   return (
     <>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}  
-      closeButton={<Button className="bg-red-500" 
-              startContent={<CloseActionIconOutline  />} 
-              isIconOnly 
-              onPress={closeModal} 
-              color="danger" 
-              variant="light">
-                    
-                  </Button>}>
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        closeButton={
+          <Button
+            className="bg-red-500"
+            startContent={<CloseActionIconOutline />}
+            isIconOnly
+            onPress={closeModal}
+            color="danger"
+            variant="light"
+          ></Button>
+        }
+      >
         <ModalContent>
           <ModalHeader className="flex flex-col gap-1">
             <div className="flex items-center gap-2">

@@ -1,7 +1,5 @@
 import { atom } from "jotai";
-import {
-  TableDataType,
-} from "./dto";
+import { TableDataType } from "./dto";
 
 // need to deleted since we not ising jotai atom
 export const tableData = atom<TableDataType | null>(null);
@@ -45,5 +43,3 @@ export const vertexGraphTypeSelected = atom<string>("direct");
 
 export const vertex1ColumnData = atom<string[]>([]);
 export const vertex2ColumnData = atom<string[]>([]);
-
-

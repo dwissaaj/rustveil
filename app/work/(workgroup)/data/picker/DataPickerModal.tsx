@@ -15,7 +15,10 @@ import { useTableOpen } from "@/app/lib/workstation/data/new_data/useTableOpen";
 import { useState } from "react";
 import { useCloseModal } from "@/app/lib/workstation/data/useCloseModal";
 import { useDatabaseProgress } from "@/app/lib/workstation/data/progress/useDatabaseProgress";
-import { CloseActionIcon, CloseActionIconOutline } from "@/components/icon/IconAction";
+import {
+  CloseActionIcon,
+  CloseActionIconOutline,
+} from "@/components/icon/IconAction";
 
 type DataPickerModalType = {
   isOpen: boolean;
@@ -81,15 +84,20 @@ export default function DataPicker({
 
   return (
     <>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} 
-        closeButton={<Button className="bg-red-500" 
-        startContent={<CloseActionIconOutline  />} 
-        isIconOnly 
-        onPress={closeModal} 
-        color="danger" 
-        variant="light">
-              
-            </Button>}>
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        closeButton={
+          <Button
+            className="bg-red-500"
+            startContent={<CloseActionIconOutline />}
+            isIconOnly
+            onPress={closeModal}
+            color="danger"
+            variant="light"
+          ></Button>
+        }
+      >
         <ModalContent>
           <ModalHeader className="flex flex-col gap-1">
             Data & Sheet

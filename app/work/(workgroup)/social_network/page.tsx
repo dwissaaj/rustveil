@@ -6,7 +6,6 @@ import EdgesHome from "./edges/EdgesHome";
 import VerticesHome from "./vertices/VerticesHome";
 
 export default function SocialNetwork() {
-
   return (
     <div className="">
       <div>

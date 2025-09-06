@@ -13,7 +13,7 @@ export function useTableOpen() {
         url,
         sheetName: sheet,
       });
-      console.log(response)
+      console.log(response);
       if ("Success" in response) {
         return {
           response_code: response.Success.response_code,
@@ -28,7 +28,7 @@ export function useTableOpen() {
       }
     } catch (error: any) {
       return {
-        response_code: 500, 
+        response_code: 500,
         message: "Error loading table data",
       };
     }

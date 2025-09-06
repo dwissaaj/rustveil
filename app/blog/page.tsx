@@ -1,5 +1,6 @@
 "use client";
 import { title, subtitle } from "@/components/primitives";
+
 import {
   Card,
   CardHeader,
@@ -9,6 +10,7 @@ import {
   Link,
   Image,
 } from "@heroui/react";
+
 export default function BlogPage() {
   return (
     <div>

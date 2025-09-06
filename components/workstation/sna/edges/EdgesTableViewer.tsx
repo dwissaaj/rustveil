@@ -64,10 +64,9 @@ export default function CentralityTable() {
     },
   });
 
-
   useEffect(() => {
-    list.setSelectedKeys(new Set()); 
-    list.reload(); 
+    list.setSelectedKeys(new Set());
+    list.reload();
   }, [graphDataState]);
 
   const totalPages = Math.ceil(list.items.length / pageSize);
@@ -110,8 +109,8 @@ export default function CentralityTable() {
         bottomContent={
           rows.length > 0 && (
             <div className="text-sm text-default-500">
-              Showing {pagedRows.length} of {rows.length} records (Page {currentPage} of{" "}
-              {totalPages})
+              Showing {pagedRows.length} of {rows.length} records (Page{" "}
+              {currentPage} of {totalPages})
             </div>
           )
         }
@@ -129,19 +128,39 @@ export default function CentralityTable() {
         <TableHeader>
           <TableColumn className="bg-primary text-white">Number</TableColumn>
           <TableColumn className="bg-primary text-white">Node</TableColumn>
-          <TableColumn key="degree" allowsSorting className="bg-primary text-white">
+          <TableColumn
+            key="degree"
+            allowsSorting
+            className="bg-primary text-white"
+          >
             Degree
           </TableColumn>
-          <TableColumn key="betweenness" allowsSorting className="bg-primary text-white">
+          <TableColumn
+            key="betweenness"
+            allowsSorting
+            className="bg-primary text-white"
+          >
             Betweenness
           </TableColumn>
-          <TableColumn key="closeness" allowsSorting className="bg-primary text-white">
+          <TableColumn
+            key="closeness"
+            allowsSorting
+            className="bg-primary text-white"
+          >
             Closeness
           </TableColumn>
-          <TableColumn key="eigenvector" allowsSorting className="bg-primary text-white">
+          <TableColumn
+            key="eigenvector"
+            allowsSorting
+            className="bg-primary text-white"
+          >
             Eigenvector
           </TableColumn>
-          <TableColumn key="katz" allowsSorting className="bg-primary text-white">
+          <TableColumn
+            key="katz"
+            allowsSorting
+            className="bg-primary text-white"
+          >
             Katz
           </TableColumn>
         </TableHeader>

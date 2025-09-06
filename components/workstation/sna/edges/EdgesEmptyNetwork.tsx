@@ -1,11 +1,52 @@
-import { InfoIconSolid } from "@/components/icon/IconView";
-import { Chip } from "@heroui/react";
-import React from "react";
+"use client";
+
+import { useGetEdges } from "@/app/lib/workstation/social/edges/useGetNetwork";
+import { InfoIconSolid, RefreshIcon } from "@/components/icon/IconView";
+import { addToast, Button } from "@heroui/react";
 
 export default function EdgesEmptyNetwork() {
+  const transformNivo = useGetEdges();
+
+  const handleRefresh = async () => {
+    try {
+      const result = await transformNivo();
+      if (result?.response_code === 200) {
+        addToast({
+          title: "Success",
+          description: result.message,
+          color: "success",
+        });
+      } else {
+        addToast({
+          title: "Error at Fetch",
+          description: `${result?.message}`,
+          color: "danger",
+        });
+      }
+    } catch (error) {
+      addToast({
+        title: "Error",
+        description: `${error}`,
+        color: "danger",
+      });
+    }
+  };
+
   return (
-    <div className="w-full h-full flex items-center justify-center">
-      <Chip startContent={<InfoIconSolid />} color="warning">Calculate Centrality First to show Graph</Chip>
+    <div className="flex flex-1 items-center justify-center">
+      <div className="flex items-center gap-2">
+        <Button startContent={<InfoIconSolid />} color="warning">
+          Calculate Centrality First to show Graph
+        </Button>
+
+        <Button
+          onPress={handleRefresh}
+          variant="light"
+          startContent={<RefreshIcon className="w-6" />}
+          isIconOnly
+          color="warning"
+        />
+      </div>
     </div>
   );
 }

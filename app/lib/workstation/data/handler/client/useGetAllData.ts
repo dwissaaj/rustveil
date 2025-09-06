@@ -1,5 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 import { InvokeResponse } from "../../response";
+
 export function useGetAllData() {
   const getAll = async () => {
     try {
@@ -17,7 +18,10 @@ export function useGetAllData() {
         };
       }
     } catch (error) {
-      console.log("Console at get all", error);
+      return {
+          response_code:500,
+          message: 'Error at hook get all data client',
+        };
     }
   };
   return getAll;
