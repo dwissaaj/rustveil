@@ -38,8 +38,8 @@ export default function TableServer({
   const startRow = (currentPage - 1) * pageSize + 1;
 
   const allColumns = ["Number", ...columns];
-  const [ ,setColumnAvailable] = useAtom(columnAvailable);
-   useEffect(() => {
+  const [, setColumnAvailable] = useAtom(columnAvailable);
+  useEffect(() => {
     // only update the atom if allColumns actually changed
     setColumnAvailable(allColumns);
   }, [allColumns.join(","), setColumnAvailable]);

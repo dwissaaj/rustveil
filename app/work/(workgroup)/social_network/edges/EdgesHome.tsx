@@ -1,20 +1,19 @@
-'use client'
+"use client";
 import React, { useState } from "react";
 import EdgesTable from "./EdgesTable";
 import { useTheme } from "next-themes";
 import EdgesGraph from "./EdgesGraph";
+
 export default function EdgesHome() {
   const { theme } = useTheme();
-  const barColor = theme === "dark" ? "bg-secondary" : "bg-primary";
-  const [width, setWidth] = useState(500); // start with 300px
-
+  const [width, setWidth] = useState(500);
   const handleMouseDown = (e: React.MouseEvent) => {
     const startX = e.clientX;
     const startWidth = width;
 
     const onMouseMove = (moveEvent: MouseEvent) => {
       const newWidth = startWidth + (moveEvent.clientX - startX);
-      setWidth(newWidth > 100 ? newWidth : 100); 
+      setWidth(newWidth > 100 ? newWidth : 100);
     };
 
     const onMouseUp = () => {
@@ -27,19 +26,35 @@ export default function EdgesHome() {
   };
 
   return (
-
-    <div className="flex max-h-screen w-full ">
-      <div className="" style={{ width: `${width}px` }}>
+    <div className="flex w-full items-stretch">
+      <div style={{ width: `${width}px` }} className="flex-shrink-0">
         <EdgesTable />
       </div>
+
       <div
-        className={`w-2 cursor-grab ${barColor} rounded-lg`}
-        onMouseDown={handleMouseDown}
-        style={{marginLeft: '7px', marginRight: '7px'}}
-      />
-      
-      <div className="flex-1 ">
-        < EdgesGraph />
+        className="flex items-center justify-center"
+        style={{ marginLeft: "7px", marginRight: "7px" }}
+      >
+        <div
+          className="w-2 cursor-grab rounded-lg transition-colors duration-200"
+          onMouseDown={handleMouseDown}
+          style={{
+            height: "75%",
+            backgroundColor: theme === "dark" ? "#444" : "#e5e7eb",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor =
+              theme === "dark" ? "#888" : "#9ca3af";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor =
+              theme === "dark" ? "#444" : "#e5e7eb";
+          }}
+        />
+      </div>
+
+      <div className="flex-1">
+        <EdgesGraph />
       </div>
     </div>
   );

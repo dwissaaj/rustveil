@@ -56,14 +56,13 @@ export default function SocialInfoMenu() {
           <Button variant="light">Info</Button>
         </DropdownTrigger>
         <DropdownMenu aria-label="Info about social network analysis">
-          <DropdownItem 
-          onPress={onOpen}
-          description="Information about social network data"
-          startContent={<ReportIcon />}
-          key="info">
-          
-              Info
-            
+          <DropdownItem
+            onPress={onOpen}
+            description="Information about social network data"
+            startContent={<ReportIcon />}
+            key="info"
+          >
+            Info
           </DropdownItem>
         </DropdownMenu>
       </Dropdown>

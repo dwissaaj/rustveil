@@ -23,12 +23,12 @@ export default function SocialCalculateMenu() {
         </DropdownTrigger>
         <DropdownMenu aria-label="Calculate graph metrics">
           <DropdownItem
-          onPress={onOpen}
-          startContent={<CalculateIcon />}
-          description="Compute social network metrics"
-          key="calculate">
-            
-              Calculate Metrics
+            onPress={onOpen}
+            startContent={<CalculateIcon />}
+            description="Compute social network metrics"
+            key="calculate"
+          >
+            Calculate Metrics
           </DropdownItem>
         </DropdownMenu>
       </Dropdown>

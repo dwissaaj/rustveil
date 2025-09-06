@@ -1,21 +1,11 @@
-'use client';
-import { VerticesGraphViewerPie } from "@/components/workstation/sna/vertices/VerticesGraphViewerPie";
-import VerticesTable from "./VerticesTable";
-import { useGraphData } from "@/app/lib/workstation/social/useGraphData";
-import { Select, SelectItem, SharedSelection } from "@heroui/react";
-import { VerticesGraphViewerBar } from "@/components/workstation/sna/vertices/VerticesGraphViewerBar";
-
+"use client";
 import { useEffect } from "react";
 import { useAtom } from "jotai";
 import { centralityData } from "@/app/lib/workstation/social/edges/state";
 
-
-
 export default function VerticesHome() {
+  const [graphData] = useAtom(centralityData);
 
-
-    const [graphData] = useAtom(centralityData);
-  
   useEffect(() => {
     console.log("Graph data updated:", graphData);
   }, [graphData]);
@@ -35,10 +25,7 @@ export default function VerticesHome() {
           </Select> */}
         </div>
         <div className="grid grid-cols-2 gap-2 mt-10">
-          <div>
-          asdsas
-          </div>
-        
+          <div>asdsas</div>
         </div>
       </div>
     </div>

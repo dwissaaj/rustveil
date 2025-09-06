@@ -32,7 +32,10 @@
  * - ColumnSelect child component
  */
 "use client";
-import { vertex1ColumnSelected, vertex2ColumnSelected } from "@/app/lib/workstation/data/state";
+import {
+  vertex1ColumnSelected,
+  vertex2ColumnSelected,
+} from "@/app/lib/workstation/data/state";
 import { useSetVertices } from "@/app/lib/workstation/social/vertex/useSetVertices";
 import VerticesSelect from "@/components/workstation/sna/vertices/VerticesSelectComponent";
 import {
@@ -55,8 +58,8 @@ export default function EdgesModal({
   onOpenChange,
 }: VerticesModalProps) {
   const setvertices = useSetVertices();
-    const vertex1 = useAtomValue(vertex1ColumnSelected);
-    const vertex2 = useAtomValue(vertex2ColumnSelected);
+  const vertex1 = useAtomValue(vertex1ColumnSelected);
+  const vertex2 = useAtomValue(vertex2ColumnSelected);
   const closeModal = async () => {
     try {
       const response = await setvertices();
@@ -68,7 +71,7 @@ export default function EdgesModal({
         });
         onOpenChange();
       }
-      
+
       if (response?.response_code !== 200) {
         addToast({
           title: "Operation Error",
@@ -76,9 +79,8 @@ export default function EdgesModal({
           color: "danger",
         });
       }
-
     } catch (error) {
-        console.log(error)
+      console.log(error);
     }
   };
 

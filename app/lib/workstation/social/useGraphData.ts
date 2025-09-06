@@ -23,7 +23,7 @@ export const useGraphData = () => {
 
   return {
     data,
-    headers:  [],
+    headers: [],
     vertex1,
     setVertex1,
     vertex1Data: getColumnData(vertex1),

@@ -13,26 +13,25 @@ export const centralityData = atom<{
   graphData: CalculateCentralityType;
 } | null>(null);
 
-
 export type NetworkNodeType = {
-  id: string
-  height: number
-  size: number
-  color: string
-}
+  id: string;
+  height: number;
+  size: number;
+  color: string;
+};
 
 export type NetworkLinkType = {
-  source: string
-  target: string
-  distance: number
-}
+  source: string;
+  target: string;
+  distance: number;
+};
 
 export type NetworkGraphType = {
-  nodes: NetworkNodeType[]
-  links: NetworkLinkType[]
-}
+  nodes: NetworkNodeType[];
+  links: NetworkLinkType[];
+};
 
 export const NetworkGraphData = atom<NetworkGraphType>({
   nodes: [],
   links: [],
-})
+});
