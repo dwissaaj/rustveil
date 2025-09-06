@@ -5,13 +5,13 @@ import { useAtom } from "jotai";
 import { CalculateCentralityResponse } from "../vertex/response";
 
 export function useGetCentrality() {
-  const [,setGraphData] = useAtom(centralityData)
+  const [,setCentralityData] = useAtom(centralityData)
   const getCentrality = async () => {
     try {
       const response = await invoke<CalculateCentralityResponse>("load_centrality_table");
 
       if ("Success" in response) {
-        setGraphData({
+        setCentralityData({
                     graphData: {
                         node_map: response.Success.node_map,
                         betweenness_centrality: response.Success.betweenness_centrality,

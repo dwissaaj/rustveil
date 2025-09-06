@@ -1,39 +1,27 @@
 // useTransform.ts
-import { useAtomValue } from "jotai";
-import { edgesData } from "./state"; // edges atom [{source, target}]
+import { NetworkGraphType, NetworkNodeType, NetworkLinkType } from "./state"
 
-export function useTransform() {
-  const edges = useAtomValue(edgesData);
+export interface Edge {
+  source: string;
+  target: string;
+}
 
-  const getNivoData = () => {
-    // 1️⃣ Build nodes map and degree centrality
-    const nodesMap: Record<string, { id: string; size: number; color: string }> = {};
-    const degreeMap: Record<string, number> = {};
+export function transformEdgesToGraph(data?: Edge[]): NetworkGraphType {
+  if (!data || data.length === 0) return { nodes: [], links: [] }
 
-    edges.forEach((edge) => {
-      degreeMap[edge.source] = (degreeMap[edge.source] || 0) + 1;
-      degreeMap[edge.target] = (degreeMap[edge.target] || 0) + 1;
+  const nodesMap = new Map<string, NetworkNodeType>()
+  const links: NetworkLinkType[] = []
 
-      if (!nodesMap[edge.source]) nodesMap[edge.source] = { id: edge.source, size: 10, color: "rgb(97,205,187)" };
-      if (!nodesMap[edge.target]) nodesMap[edge.target] = { id: edge.target, size: 10, color: "rgb(97,205,187)" };
-    });
-
-    // 2️⃣ Scale node size based on degree centrality
-    Object.keys(nodesMap).forEach((key) => {
-      nodesMap[key].size = 10 + (degreeMap[key] || 1) * 2; // scaling factor
-    });
-
-    // 3️⃣ Build links
-    const links = edges.map((edge) => ({
-      source: edge.source,
-      target: edge.target,
-      distance: 50, // optional
-    }));
-
-    const nodes = Object.values(nodesMap);
-
-    return { nodes, links };
-  };
-
-  return getNivoData;
+  for (const { source, target } of data) {
+    if (!nodesMap.has(source)) {
+      nodesMap.set(source, { id: source, height: 1, size: 24, color: 'rgb(97, 205, 187)' })
+    }
+    if (!nodesMap.has(target)) {
+      nodesMap.set(target, { id: target, height: 1, size: 24, color: 'rgb(97, 205, 187)' })
+    }
+    links.push({ source, target, distance: 80 })
+  }
+  console.log(nodesMap)
+  console.log(links)
+  return { nodes: Array.from(nodesMap.values()), links }
 }

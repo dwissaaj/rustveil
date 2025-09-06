@@ -48,7 +48,7 @@ pub fn get_all_data(app: AppHandle) -> DatabaseProcess {
     if db_path.is_empty() {
         return DatabaseProcess::Error(DatabaseError {
             error_code: 404,
-            message: "No database found. Please import data first.".to_string(),
+            message: "File path or database is unknown. Try to load Data > File > Load or Upload".to_string(),
         });
     }
     
@@ -56,7 +56,7 @@ pub fn get_all_data(app: AppHandle) -> DatabaseProcess {
     if !std::path::Path::new(&db_path).exists() {
         return DatabaseProcess::Error(DatabaseError {
             error_code: 404,
-            message: "Sqlite or Database not found. Please import data first.".to_string(),
+            message: "Sqlite or Database not found. Try to load Data > File > Load or Upload".to_string(),
         });
     }
 
@@ -161,7 +161,7 @@ pub fn get_paginated_data(app: AppHandle, pagination: PaginationParams) -> Datab
         println!("❌ No database path found");
         return DatabaseProcess::Error(DatabaseError {
             error_code: 404,
-            message: "No database found. Please import data first.".to_string(),
+            message: "File path or database is unknown. Try to load Data > File > Load or Upload".to_string(),
         });
     }
     
@@ -169,7 +169,7 @@ pub fn get_paginated_data(app: AppHandle, pagination: PaginationParams) -> Datab
         println!("❌ Database file does not exist: {}", db_path);
         return DatabaseProcess::Error(DatabaseError {
             error_code: 404,
-            message: "SQLite database not found. Please import data first.".to_string(),
+            message: "SQLite database not found. Import Data > File > Load or Upload".to_string(),
         });
     }
 
@@ -237,7 +237,7 @@ pub fn get_paginated_data(app: AppHandle, pagination: PaginationParams) -> Datab
     };
 
     let mut page_data = Vec::new();
-    let mut row_count = 0;
+    let mut row_count  =0;
 
     while let Ok(Some(row)) = rows.next() {
         let mut obj = serde_json::Map::new();
@@ -284,19 +284,19 @@ pub fn get_all_vertices(app: AppHandle) -> DatabaseProcess {
     if pathfile.is_empty() {
         return DatabaseProcess::Error(DatabaseError {
             error_code: 404,
-            message: "No database found. Please import data first.".to_string(),
+            message: "File path or database is unknown. Try to load Data > File > Load or Upload".to_string(),
         });
     }
     if vertex_1.is_empty() || vertex_2.is_empty() {
         return DatabaseProcess::Error(DatabaseError {
             error_code: 400,
-            message: "Please select vertices columns first File > Locate Vertices".to_string(),
+            message: "Please select vertices columns first at File > Locate Vertices".to_string(),
         });
     }   
     if !std::path::Path::new(&pathfile).exists() {
         return DatabaseProcess::Error(DatabaseError {
             error_code: 404,
-            message: "Sqlite or Database not found. Please import data first.".to_string(),
+            message: "Sqlite or Database not found. Please import data first at Data > File > Load or Upload".to_string(),
         });
     }
 

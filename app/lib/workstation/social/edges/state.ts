@@ -1,6 +1,4 @@
 import { atom } from "jotai";
-import { InputNode, InputLink } from "@nivo/network";
-import { NetworkData } from "./response";
 
 export interface CalculateCentralityType {
   node_map?: Record<number, string>;
@@ -16,10 +14,25 @@ export const centralityData = atom<{
 } | null>(null);
 
 
+export type NetworkNodeType = {
+  id: string
+  height: number
+  size: number
+  color: string
+}
 
-export const edgesData = atom<any[]>([]);
+export type NetworkLinkType = {
+  source: string
+  target: string
+  distance: number
+}
 
-export const networkData = atom<NetworkData>({
+export type NetworkGraphType = {
+  nodes: NetworkNodeType[]
+  links: NetworkLinkType[]
+}
+
+export const NetworkGraphData = atom<NetworkGraphType>({
   nodes: [],
   links: [],
-});
+})
