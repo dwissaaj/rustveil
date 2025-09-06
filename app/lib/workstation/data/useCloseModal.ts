@@ -1,4 +1,5 @@
 import { useAtom, useSetAtom } from "jotai";
+
 import { filePath, sheetAvailable } from "./state";
 
 export const useCloseModal = (
@@ -19,6 +20,7 @@ export const useCloseModal = (
     }
 
     const newState = { isSelected: false, url: "" };
+
     setFileState(newState);
     setSelectedSheet([]);
     onOpenChange(false);

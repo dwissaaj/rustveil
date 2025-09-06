@@ -1,6 +1,4 @@
 "use client";
-import { title, subtitle } from "@/components/primitives";
-
 import {
   Card,
   CardHeader,
@@ -10,6 +8,8 @@ import {
   Link,
   Image,
 } from "@heroui/react";
+
+import { title, subtitle } from "@/components/primitives";
 
 export default function BlogPage() {
   return (

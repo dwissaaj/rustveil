@@ -1,14 +1,15 @@
 "use client";
+
 import { useEffect } from "react";
 import { useAtom } from "jotai";
+
 import { centralityData } from "@/app/lib/workstation/social/edges/state";
 
 export default function VerticesHome() {
   const [graphData] = useAtom(centralityData);
 
-  useEffect(() => {
-    console.log("Graph data updated:", graphData);
-  }, [graphData]);
+  useEffect(() => {}, [graphData]);
+
   return (
     <div className="max-h-screen">
       <div className="w-full flex flex-col gap-2">

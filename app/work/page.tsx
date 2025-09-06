@@ -5,4 +5,4 @@ export default function BlogPage() {
       <p>Hey this is blog page</p>
     </div>
   );
-};
+}

@@ -238,7 +238,7 @@ pub fn get_paginated_data(app: AppHandle, pagination: PaginationParams) -> Datab
 
     let mut page_data = Vec::new();
     let mut row_count  =0;
-
+    println!("Returned {}", row_count);
     while let Ok(Some(row)) = rows.next() {
         let mut obj = serde_json::Map::new();
 

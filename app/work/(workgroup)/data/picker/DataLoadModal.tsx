@@ -10,6 +10,7 @@ import {
   Tooltip,
 } from "@heroui/react";
 import { useState } from "react";
+
 import { useCloseModal } from "@/app/lib/workstation/data/useCloseModal";
 import { useLoadDatabase } from "@/app/lib/workstation/data/load_data/useLoadDatabase";
 import { useOpenDatabase } from "@/app/lib/workstation/data/load_data/useOpenDatabase";
@@ -36,6 +37,7 @@ export default function DataLoader({
   const openDatabase = async () => {
     try {
       const result = await databaseOpener();
+
       setIsLoading(true);
       if (result?.response_code === 200) {
         addToast({
@@ -52,6 +54,11 @@ export default function DataLoader({
         });
       }
     } catch (error) {
+      addToast({
+        title: "Operation Error",
+        description: `${error}`,
+        color: "danger",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -61,30 +68,36 @@ export default function DataLoader({
     setIsLoading(true);
     try {
       const result = await loadDatabase();
+
       if (result?.isSelected === true) {
         setopenButtonState(false);
       }
     } catch (error) {
-      console.error("Failed to load database:", error);
+      addToast({
+        title: "Operation Error",
+        description: `${error}`,
+        color: "danger",
+      });
     } finally {
       setIsLoading(false);
     }
   };
+
   return (
     <>
       <Modal
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
         closeButton={
           <Button
-            className="bg-red-500"
-            startContent={<CloseActionIconOutline />}
             isIconOnly
-            onPress={closeModal}
+            className="bg-red-500"
             color="danger"
+            startContent={<CloseActionIconOutline />}
             variant="light"
-          ></Button>
+            onPress={closeModal}
+          />
         }
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
       >
         <ModalContent>
           <ModalHeader className="flex flex-col gap-1">
@@ -92,12 +105,12 @@ export default function DataLoader({
               <p className="text-2xl font-medium">Load A Sqlite Database</p>
               <Tooltip content="Only Generated Sqlite database by Rust Veil is supported for now">
                 <Button
-                  size="sm"
-                  color="warning"
-                  variant="light"
                   isIconOnly
+                  color="warning"
+                  size="sm"
                   startContent={<InfoIconSolid />}
-                ></Button>
+                  variant="light"
+                />
               </Tooltip>
             </div>
           </ModalHeader>
@@ -106,10 +119,10 @@ export default function DataLoader({
               <div className="flex flex-col gap-2">
                 <Button
                   color="secondary"
+                  isDisabled={fileLoaded}
+                  isLoading={isLoading}
                   variant="light"
                   onPress={handleOpenFile}
-                  isLoading={isLoading}
-                  isDisabled={fileLoaded}
                 >
                   Pick the sqlite
                 </Button>
@@ -117,14 +130,14 @@ export default function DataLoader({
             </div>
           </ModalBody>
           <ModalFooter>
-            <Button onPress={closeModal} color="danger" variant="light">
+            <Button color="danger" variant="light" onPress={closeModal}>
               Close
             </Button>
             <Button
               color="primary"
-              onPress={openDatabase}
               isDisabled={openButtonState}
               isLoading={isLoading}
+              onPress={openDatabase}
             >
               Open Database
             </Button>

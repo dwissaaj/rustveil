@@ -1,5 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 import { useAtomValue } from "jotai";
+
 import { filePath, sheetSelected } from "../state";
 import { InvokeResponse } from "../response";
 
@@ -13,7 +14,7 @@ export function useTableOpen() {
         url,
         sheetName: sheet,
       });
-      console.log(response);
+
       if ("Success" in response) {
         return {
           response_code: response.Success.response_code,
@@ -26,12 +27,13 @@ export function useTableOpen() {
           message: response.Error.message,
         };
       }
-    } catch (error: any) {
+    } catch (error) {
       return {
         response_code: 500,
-        message: "Error loading table data",
+        message: `Error loading table data ${error}`,
       };
     }
   };
+
   return loadTable;
 }

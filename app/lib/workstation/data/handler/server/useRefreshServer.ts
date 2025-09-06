@@ -1,6 +1,7 @@
 import { addToast } from "@heroui/react";
-import { useGetDataServer } from "./useGetDataServer";
 import { useRef } from "react";
+
+import { useGetDataServer } from "./useGetDataServer";
 
 export function useRefreshServer(
   onDataFetched?: (data: any[], totalCount?: number) => void,
@@ -33,7 +34,6 @@ export function useRefreshServer(
         });
       }
     } catch (error) {
-      console.error(error);
       addToast({
         title: "Error",
         description: `Refresh Failed ${error}`,

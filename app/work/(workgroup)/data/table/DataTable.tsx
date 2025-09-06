@@ -1,5 +1,4 @@
 import React from "react";
-import NoData from "@/components/workstation/data/NoData";
 import {
   Table,
   TableHeader,
@@ -11,6 +10,8 @@ import {
   Pagination,
   Button,
 } from "@heroui/react";
+
+import NoData from "@/components/workstation/data/NoData";
 import { RefreshIcon } from "@/components/icon/IconView";
 import { useRefresh } from "@/app/lib/workstation/data/handler/client/useRefresh";
 
@@ -36,28 +37,30 @@ export default function DataTable({
   const paginatedData = React.useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
+
     return data.slice(start, end);
   }, [page, data, rowsPerPage]);
 
   const columns = data.length > 0 ? Object.keys(data[0]) : [];
   const { refresh } = useRefresh(onDataFetched);
+
   return (
     <div className="flex flex-col gap-4">
       <Table
+        isHeaderSticky
+        isStriped
+        isVirtualized
+        aria-label="Dynamic data table"
         topContent={
           <Button
-            className="m-2"
             isIconOnly
+            className="m-2"
             color="primary"
-            variant="light"
             startContent={<RefreshIcon />}
+            variant="light"
             onPress={refresh}
-          ></Button>
+          />
         }
-        isHeaderSticky
-        isVirtualized
-        isStriped
-        aria-label="Dynamic data table"
       >
         <TableHeader>
           {columns.map((column) => (
@@ -65,9 +68,9 @@ export default function DataTable({
           ))}
         </TableHeader>
         <TableBody
-          isLoading={isLoading}
-          loadingContent={<CircularProgress size="lg" color="secondary" />}
           emptyContent={<NoData />}
+          isLoading={isLoading}
+          loadingContent={<CircularProgress color="secondary" size="lg" />}
         >
           {paginatedData.map((row, index) => (
             <TableRow key={index}>
@@ -85,11 +88,11 @@ export default function DataTable({
       {totalPages > 1 && (
         <div className="flex justify-center">
           <Pagination
-            total={totalPages}
-            page={page}
-            onChange={setPage}
-            color="secondary"
             showControls
+            color="secondary"
+            page={page}
+            total={totalPages}
+            onChange={setPage}
           />
         </div>
       )}

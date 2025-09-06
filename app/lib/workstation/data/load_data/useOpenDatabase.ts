@@ -1,5 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 import { useAtomValue } from "jotai";
+
 import { filePath } from "../state";
 import { InvokeResponse } from "../response";
 
@@ -10,6 +11,7 @@ export function useOpenDatabase() {
       const response = await invoke<InvokeResponse>("load_data_sqlite", {
         pathfile: pathfile.url,
       });
+
       if ("Success" in response) {
         return {
           response_code: response.Success.response_code,
@@ -30,5 +32,6 @@ export function useOpenDatabase() {
       };
     }
   };
+
   return loadTable;
 }

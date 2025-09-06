@@ -1,9 +1,9 @@
-import SocialFilterListWrapper from "@/components/workstation/sna/SocialFilterListWrapper";
-import React from "react";
-
 import { Tabs, Tab } from "@heroui/react";
+
 import EdgesHome from "./edges/EdgesHome";
 import VerticesHome from "./vertices/VerticesHome";
+
+import SocialFilterListWrapper from "@/components/workstation/sna/SocialFilterListWrapper";
 
 export default function SocialNetwork() {
   return (
@@ -12,7 +12,7 @@ export default function SocialNetwork() {
         <SocialFilterListWrapper />
       </div>
       <div className="mt-4">
-        <Tabs variant="underlined" color="primary" aria-label="Options">
+        <Tabs aria-label="Social Tab" color="primary" variant="underlined">
           <Tab key="edges" title="Edges">
             <EdgesHome />
           </Tab>

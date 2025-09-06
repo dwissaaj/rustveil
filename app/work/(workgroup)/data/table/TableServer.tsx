@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import NoData from "@/components/workstation/data/NoData";
 import {
   Table,
   TableHeader,
@@ -11,8 +10,10 @@ import {
   Pagination,
   Button,
 } from "@heroui/react";
-import { RefreshIcon } from "@/components/icon/IconView";
 import { useAtom } from "jotai";
+
+import NoData from "@/components/workstation/data/NoData";
+import { RefreshIcon } from "@/components/icon/IconView";
 import { columnAvailable } from "@/app/lib/workstation/data/state";
 interface DataTableProps {
   data: Record<string, any>[];
@@ -39,16 +40,18 @@ export default function TableServer({
 
   const allColumns = ["Number", ...columns];
   const [, setColumnAvailable] = useAtom(columnAvailable);
+
   useEffect(() => {
     // only update the atom if allColumns actually changed
     setColumnAvailable(allColumns);
   }, [allColumns.join(","), setColumnAvailable]);
+
   return (
     <div className="flex flex-col gap-4">
       <Table
         isHeaderSticky
-        isVirtualized
         isStriped
+        isVirtualized
         aria-label="Dynamic data table"
         bottomContent={
           totalCount > 0 && (
@@ -61,13 +64,13 @@ export default function TableServer({
         bottomContentPlacement="outside"
         topContent={
           <Button
-            className="m-2"
             isIconOnly
+            className="m-2"
             color="primary"
-            variant="light"
             startContent={<RefreshIcon className="w-6" />}
+            variant="light"
             onPress={onRefresh}
-          ></Button>
+          />
         }
       >
         <TableHeader>
@@ -76,9 +79,9 @@ export default function TableServer({
           ))}
         </TableHeader>
         <TableBody
-          isLoading={isLoading}
-          loadingContent={<CircularProgress size="lg" color="secondary" />}
           emptyContent={<NoData />}
+          isLoading={isLoading}
+          loadingContent={<CircularProgress color="secondary" size="lg" />}
         >
           {data.map((row, index) => (
             <TableRow key={index}>
@@ -98,11 +101,11 @@ export default function TableServer({
       {totalPages > 1 && (
         <div className="flex justify-center">
           <Pagination
-            total={totalPages}
-            page={currentPage}
-            onChange={onPageChange}
-            color="secondary"
             showControls
+            color="secondary"
+            page={currentPage}
+            total={totalPages}
+            onChange={onPageChange}
           />
         </div>
       )}

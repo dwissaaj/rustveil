@@ -1,4 +1,5 @@
 import { getDefaultStore } from "jotai";
+
 import {
   NetworkGraphType,
   NetworkNodeType,
@@ -24,6 +25,7 @@ export function transformEdgesToGraph(data?: Edge[]): NetworkGraphType {
   Object.entries(nodeMap).forEach(([index, id]) => {
     const idx = Number(index);
     const value = betweennessArr[idx] ?? 0;
+
     betweenness[id] = isFinite(value) ? value : 0; // ✅ guard against NaN/Infinity
   });
 
@@ -41,12 +43,14 @@ export function transformEdgesToGraph(data?: Edge[]): NetworkGraphType {
     if (!isFinite(val)) return minSize; // ✅ guard
     if (max === min) return (minSize + maxSize) / 2;
     const norm = (val - min) / (max - min);
+
     return Math.max(minSize, minSize + norm * (maxSize - minSize)); // ✅ clamp ≥ minSize
   }
 
   function color(val: number): string {
     if (!isFinite(val) || max === min) return `hsl(200, 70%, 50%)`;
     const norm = (val - min) / (max - min);
+
     return `hsl(${200 + norm * 120}, 70%, 50%)`;
   }
 
@@ -56,6 +60,7 @@ export function transformEdgesToGraph(data?: Edge[]): NetworkGraphType {
   for (const { source, target } of data) {
     if (!nodesMap.has(source)) {
       const value = betweenness[source] ?? 0;
+
       nodesMap.set(source, {
         id: source,
         height: 1,
@@ -65,6 +70,7 @@ export function transformEdgesToGraph(data?: Edge[]): NetworkGraphType {
     }
     if (!nodesMap.has(target)) {
       const value = betweenness[target] ?? 0;
+
       nodesMap.set(target, {
         id: target,
         height: 1,
