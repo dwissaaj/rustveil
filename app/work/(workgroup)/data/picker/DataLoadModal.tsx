@@ -6,18 +6,11 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-  Alert,
-  Progress,
   addToast,
   Tooltip,
 } from "@heroui/react";
-import { useFileOpener } from "@/app/lib/workstation/data/new_data/useFileOpener";
-import SheetSelector from "@/components/workstation/data/SheetSelect";
-import { useTableOpen } from "@/app/lib/workstation/data/new_data/useTableOpen";
-import { ErrorIcon } from "@/components/icon/IconFilter";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useCloseModal } from "@/app/lib/workstation/data/useCloseModal";
-import { useDatabaseProgress } from "@/app/lib/workstation/data/progress/useDatabaseProgress";
 import { useLoadDatabase } from "@/app/lib/workstation/data/load_data/useLoadDatabase";
 import { useOpenDatabase } from "@/app/lib/workstation/data/load_data/useOpenDatabase";
 import { InfoIconSolid } from "@/components/icon/IconView";
@@ -44,7 +37,6 @@ export default function DataLoader({
     try {
       const result = await databaseOpener();
       setIsLoading(true);
-      console.log(result);
       if (result?.response_code === 200) {
         addToast({
           title: "Table Opened",
@@ -60,7 +52,7 @@ export default function DataLoader({
         });
       }
     } catch (error) {
-      console.error("Failed to open table:", error);
+     
     } finally {
       setIsLoading(false);
     }

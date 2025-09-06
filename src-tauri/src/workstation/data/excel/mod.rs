@@ -78,7 +78,7 @@ pub fn load_data(app: AppHandle, url: String, sheet_name: String) -> ProcessingR
     if file_path.file_url.is_empty(){
         return ProcessingResult::Error(ErrorResult {
             error_code: 401,
-            message: "No Data or file loaded".to_string(),
+            message: "No Data or file loaded. Go to Data > File > Load or Upload ".to_string(),
         });
     }
 
@@ -165,13 +165,12 @@ pub fn load_data(app: AppHandle, url: String, sheet_name: String) -> ProcessingR
 
     // SQLite file path inside the app's folder.
     let db_path = file_path.file_url.as_str().to_owned();
-    let full_db_path = format!("{}/database.sqlite", db_path); 
-    let connect = match open_or_create_sqlite(&app, &full_db_path) {
+    let connect = match open_or_create_sqlite(&app, &db_path) {
         Ok(conn) => conn,
         Err(_) => {
             return ProcessingResult::Error(ErrorResult {
                 error_code: 401,
-                message: "When Load Data Sqlite Error Connection".to_string(),
+                message: "Load Data Sqlite Error Connection".to_string(),
             })
         }
     };
@@ -196,9 +195,9 @@ pub fn load_data(app: AppHandle, url: String, sheet_name: String) -> ProcessingR
         );
 
       
-        ProcessingResult::Complete(DataTable {
+        ProcessingResult::Success(DataTable {
             response_code: 200,
-            message: "Data successfully imported to database. Please refresh to view.".to_string(),
+            message: "Data success imported to database. Refresh Data  > View > Refresh.".to_string(),
             data: vec![], 
         })
     }

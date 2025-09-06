@@ -15,10 +15,10 @@ export function useSetVertices() {
         }
        
       });
-      if ("Complete" in response) {
+      if ("Success" in response) {
         return {
-          response_code: response.Complete.response_code,
-          message: response.Complete.message,
+          response_code: response.Success.response_code,
+          message: response.Success.message,
         };
       } else if ("Error" in response) {
         return {
@@ -28,7 +28,9 @@ export function useSetVertices() {
       }
      
     } catch (error) {
-      console.log("Console at get all", error);
+      return {
+        response_code: 500,
+        message: "Error hook set vertices to back end",}
     }
   };
   return setVertices;

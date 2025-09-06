@@ -1,7 +1,11 @@
+export interface Edge {
+  source: string
+  target: string
+}
 export interface GetEdgesSuccess {
   response_code: number;
   message: string;
-  data ?: Array<[string, string]>;
+  data ?: Edge[];
   total_count?: number;  
 }
 
@@ -14,20 +18,4 @@ export type GetEdgesResponse =
   | { Success: GetEdgesSuccess }
   | { Error: GetEdgesError };
 
-export interface NetworkNode {
-  id: string;
-  height: number;
-  size: number;
-  color: string;
-}
 
-export interface NetworkLink {
-  source: string;
-  target: string;
-  distance: number;
-}
-
-export interface NetworkData {
-  nodes: NetworkNode[];
-  links: NetworkLink[];
-}

@@ -1,4 +1,3 @@
-import { atom } from "jotai";
 
 export interface SetVerticesSuccess {
   response_code: number;
@@ -12,7 +11,7 @@ export interface SetVerticesError {
 }
 
 export type SetVerticesResponse =
-  | { Complete: SetVerticesSuccess }
+  | { Success: SetVerticesSuccess }
   | { Error: SetVerticesError };
 
   

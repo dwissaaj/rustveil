@@ -1,6 +1,6 @@
 use tauri::{AppHandle, Manager, command};
 use std::sync::Mutex;
-use crate::social_network::state::{VerticesSelected,VerticesSetError,VerticesSetComplete,VerticesSelectedResult};
+use crate::social_network::state::{VerticesSelected,VerticesSetError,VerticesSetSuccess,VerticesSelectedResult};
 use crate::social_network::state::{CalculateProcess,CalculateProcessError,CalculateProcessComplete,UserNode};
 use rusqlite::Connection;
 use crate::SqliteDataState;
@@ -23,15 +23,14 @@ pub fn set_vertices(app: AppHandle, vertices_selected: VerticesSelected) -> Vert
     let mut vertex_choosed = binding.lock().unwrap();
     vertex_choosed.vertex_1 = vertices_selected.vertex_1.clone();
     vertex_choosed.vertex_2 = vertices_selected.vertex_2.clone();
-    println!("Vertices selected: {:#?}", vertex_choosed);
     if vertex_choosed.vertex_1.is_empty() || vertex_choosed.vertex_2.is_empty() {
        return VerticesSelectedResult::Error(VerticesSetError {
                 response_code: 401,
-                message: "No column target".to_string(),
+                message: "No column target. Set at Social > Edit > Locate Vertex".to_string(),
         })
     }
 
-    VerticesSelectedResult::Complete(VerticesSetComplete {
+    VerticesSelectedResult::Success(VerticesSetSuccess {
             response_code: 200,
             message: "Target column is saved".to_string(),
         })
@@ -54,14 +53,14 @@ pub fn calculate_centrality(app: AppHandle, graph_type: String ) -> CalculatePro
     if pathfile.is_empty() {
         return CalculateProcess::Error(CalculateProcessError {
             response_code: 404,
-            message: "Database loaded is empty!".to_string(),
+            message: "Database loaded is empty try to load. Go to Data > File > Load".to_string(),
         });
     }
     
     if vertex_1.is_empty() || vertex_2.is_empty() {
         return CalculateProcess::Error(CalculateProcessError {
             response_code: 404,
-            message: "No column target".to_string(),
+            message: "No column target. Set at Social > Edit > Locate Vertex".to_string(),
         });
     }
 
@@ -321,7 +320,7 @@ pub fn load_centrality_table(app: AppHandle,) -> CalculateProcess {
     if db.file_url.is_empty() {
         return CalculateProcess::Error(CalculateProcessError {
             response_code: 404,
-            message: "File path or database is unkown".to_string(),
+            message: "File path or database is none. Try to load Data > File > Load or Upload".to_string(),
         });
     }
     // 2. Check if rustveil table exists

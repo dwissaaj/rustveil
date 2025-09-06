@@ -14,7 +14,7 @@ pub struct VerticesSelected {
 #[derive(Serialize)]
 pub enum VerticesSelectedResult {
   
-    Complete(VerticesSetComplete),
+    Success(VerticesSetSuccess),
 
 
     Error(VerticesSetError),
@@ -22,7 +22,7 @@ pub enum VerticesSelectedResult {
 
 
 #[derive(Serialize)]
-pub struct VerticesSetComplete {
+pub struct VerticesSetSuccess {
 
     
     pub response_code: u32,
