@@ -36,12 +36,13 @@ export default function EdgesHome() {
 
       <div
         className="flex items-center justify-center"
-        style={{ marginLeft: "7px", marginRight: "7px" }}
+        style={{ marginLeft: "7px", marginRight: "7px", width: '5px' }}
       >
         <Button
-        variant="bg-red-500"
-          className="w-1 cursor-grab bg-red-500 rounded-lg transition-colors duration-200"
-          
+          variant="light"
+          color="primary"
+          className="w-px max-w-px h-full cursor-grab rounded-lg transition-colors duration-200"
+          onMouseDown={handleMouseDown}
           
         />
       </div>

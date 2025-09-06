@@ -31,9 +31,9 @@ export default function DataFileDropdown() {
     <>
       <Dropdown>
         <DropdownTrigger>
-          <Button variant="light">File</Button>
+          <Button className="text-black dark:text-white" color="primary" variant="light">File</Button>
         </DropdownTrigger>
-        <DropdownMenu aria-label="File actions">
+        <DropdownMenu color="primary" variant="flat" aria-label="File actions">
           <DropdownItem
             key="pick-file"
             description="Start with new data"

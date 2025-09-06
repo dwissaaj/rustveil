@@ -20,9 +20,9 @@ export function ViewDropdown({ onDataFetched }: ViewDropdownProps) {
   return (
     <Dropdown>
       <DropdownTrigger>
-        <Button variant="light">View</Button>
+        <Button className="text-black dark:text-white" color="primary" variant="light">View</Button>
       </DropdownTrigger>
-      <DropdownMenu aria-label="File actions">
+      <DropdownMenu color="primary" variant="flat" aria-label="view actions">
         <DropdownItem
           key="refresh"
           description="Check new data"
