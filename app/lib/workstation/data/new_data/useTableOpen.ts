@@ -1,5 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 import { useAtomValue } from "jotai";
+
 import { filePath, sheetSelected } from "../state";
 import { InvokeResponse } from "../response";
 
@@ -14,11 +15,11 @@ export function useTableOpen() {
         sheetName: sheet,
       });
 
-      if ("Complete" in response) {
+      if ("Success" in response) {
         return {
-          response_code: response.Complete.response_code,
-          message: response.Complete.message,
-          data: response.Complete.data,
+          response_code: response.Success.response_code,
+          message: response.Success.message,
+          data: response.Success.data,
         };
       } else if ("Error" in response) {
         return {
@@ -26,13 +27,13 @@ export function useTableOpen() {
           message: response.Error.message,
         };
       }
-    } catch (error: any) {
-      console.error("Error loading table data:", error);
+    } catch (error) {
       return {
-        response_code: 500, // or extract from error if available
-        message: "Error loading table data",
+        response_code: 500,
+        message: `Error loading table data ${error}`,
       };
     }
   };
+
   return loadTable;
 }

@@ -1,4 +1,3 @@
-import Filter from "@/components/filter";
 import TabWorkstation from "@/components/TabWorkstation";
 import ScrollSmotherProvider from "@/components/ScrollSmotherProvider";
 

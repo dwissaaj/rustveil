@@ -1,6 +1,7 @@
 import { addToast } from "@heroui/react";
-import { useGetDataServer } from "./useGetDataServer";
 import { useRef } from "react";
+
+import { useGetDataServer } from "./useGetDataServer";
 
 export function useRefreshServer(
   onDataFetched?: (data: any[], totalCount?: number) => void,
@@ -12,15 +13,15 @@ export function useRefreshServer(
     try {
       const result = await getData(page, 100);
 
-      if ("Complete" in result && result.Complete.data) {
+      if ("Success" in result && result.Success.data) {
         if (onDataFetched) {
-          onDataFetched(result.Complete.data, result.Complete.total_count || 0);
+          onDataFetched(result.Success.data, result.Success.total_count || 0);
         }
 
         if (!lastToastRef.current) {
           addToast({
             title: "Success",
-            description: result.Complete.message || "Data fetched successfully",
+            description: result.Success.message || "Data fetched successfully",
             color: "success",
           });
           lastToastRef.current = true; // mark as shown
@@ -33,7 +34,6 @@ export function useRefreshServer(
         });
       }
     } catch (error) {
-      console.error(error);
       addToast({
         title: "Error",
         description: `Refresh Failed ${error}`,

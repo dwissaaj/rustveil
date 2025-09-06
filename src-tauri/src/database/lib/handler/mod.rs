@@ -20,7 +20,7 @@ use crate::database::lib::state::DatabaseInsertionProgress;
 ///
 /// # Returns
 /// Returns `DatabaseProcess` enum with either:
-/// - `DatabaseProcess::Complete` with success message if validation passes
+/// - `DatabaseProcess::Success` with success message if validation passes
 /// - `DatabaseProcess::Error` with appropriate error code and message if validation fails
 ///
 /// # Validation Steps
@@ -47,7 +47,7 @@ pub fn load_data_sqlite(app: AppHandle, pathfile: String) -> DatabaseProcess {
     if pathfile.is_empty() {
         return DatabaseProcess::Error(DatabaseError {
             error_code: 404,
-            message: "File path or database is unkown".to_string(),
+            message: "File path or database is none. Try to load Data > File > Load or Upload".to_string(),
         });
     }
     // 2. Check if rustveil table exists
@@ -95,9 +95,9 @@ pub fn load_data_sqlite(app: AppHandle, pathfile: String) -> DatabaseProcess {
                 });
             }
         };
-    DatabaseProcess::Complete(DatabaseComplete {
+    DatabaseProcess::Success(DatabaseComplete {
         response_code: 200,
-        message: "Data table `Rustveil` exist you can refresh".to_string(),
+        message: "Data table `Rustveil` exit reload at Data > View > Refresh".to_string(),
         data: None, // You can populate this later when you fetch actual data
         total_count: Some(all_count)
     })
@@ -115,7 +115,7 @@ pub fn load_data_sqlite(app: AppHandle, pathfile: String) -> DatabaseProcess {
 /// - `connect`: An open SQLite database connection
 /// 
 /// # Returns
-/// - `DatabaseProcess::Complete` on success
+/// - `DatabaseProcess::Success` on success
 /// - `DatabaseProcess::Error` on failure
 pub fn data_to_sqlite(
     data_json: Vec<Value>,
@@ -228,7 +228,7 @@ pub fn data_to_sqlite(
         Ok(c) => c,
         Err(_) => 0,
     };
-    DatabaseProcess::Complete(DatabaseComplete {
+    DatabaseProcess::Success(DatabaseComplete {
         response_code: 200,
         message: format!("Success: inserted {} rows", total_inserted),
         data: Some(data_json),

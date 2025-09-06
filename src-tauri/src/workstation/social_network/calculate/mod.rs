@@ -71,7 +71,7 @@ pub fn closeness_centrality_calculate(edges: Vec<(u32, u32)>) -> Result<Vec<Opti
     if output.is_empty() {
         return Err(CalculateProcessError {
             response_code: 404,
-            message: "Closeness centrality calculation failed 0 result".to_string(),
+            message: "Closeness centrality calculation failed".to_string(),
         });
     }
     Ok(output)
@@ -100,7 +100,7 @@ pub fn degree_centrality_calculate(
     if output.is_empty() {
         return Err(CalculateProcessError {
             response_code: 404,
-            message: "Closeness centrality calculation failed 0 result".to_string(),
+            message: "Closeness centrality calculation failed".to_string(),
         });
     }
     Ok(output)

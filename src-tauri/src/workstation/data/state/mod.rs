@@ -4,7 +4,7 @@ use serde::Serialize;
 #[derive(Serialize)]
 pub enum ProcessingResult {
     /// Processing completed successfully with resulting data.
-    Complete(DataTable),
+    Success(DataTable),
     /// An error occurred during processing.
     Error(ErrorResult),
 }
