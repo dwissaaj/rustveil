@@ -16,7 +16,6 @@ export const useMapProgress = () => {
       "mapping-progress",
       (event) => {
         setProgress(event.payload);
-        console.log("Progress update:", event.payload); // Debug log
       },
     );
 

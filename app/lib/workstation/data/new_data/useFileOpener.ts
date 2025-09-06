@@ -1,6 +1,7 @@
 import { open } from "@tauri-apps/plugin-dialog";
 import { invoke } from "@tauri-apps/api/core";
 import { useAtom, useSetAtom } from "jotai";
+
 import { filePath, sheetAvailable, sheetSelected } from "./../state";
 export function useFileOpener() {
   const setSheets = useSetAtom(sheetAvailable);
@@ -20,26 +21,34 @@ export function useFileOpener() {
             },
           ],
         });
+
         if (file === null) {
           const newState = { isSelected: false, url: "" };
+
           setFileState(newState);
+
           return newState;
         }
         if (file) {
           const sheets: string[] = await invoke("get_sheet", { url: file });
+
           setSheets(sheets);
           setSelectedSheet(sheets[0] || "");
           const newState = { isSelected: true, url: file };
+
           setFileState(newState);
+
           return newState;
         }
       }
-    } catch (error) {
-      console.log("Error at loading file", error);
+    } catch {
       const newState = { isSelected: false, url: "" };
+
       setFileState(newState);
+
       return newState;
     }
   };
+
   return fileOpenerHandler;
 }

@@ -11,5 +11,5 @@ export interface ResponseError {
 }
 
 export type InvokeResponse =
-  | { Complete: ResponseSuccess }
+  | { Success: ResponseSuccess }
   | { Error: ResponseError };

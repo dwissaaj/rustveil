@@ -1,19 +1,45 @@
-import { NetworkGraphDataType } from "@/app/lib/workstation/data/dto";
-import { ResponsiveNetwork } from "@nivo/network";
-import { useTheme } from "next-themes";
-interface EdgesGraphNetworkProps {
-  data: NetworkGraphDataType;
-}
+"use client";
 
-export const EdgesGraphNetwork = ({ data }: EdgesGraphNetworkProps) => {
+import { useAtomValue } from "jotai";
+import { ResponsiveNetwork } from "@nivo/network";
+import {
+  NetworkGraphData,
+  centralityData,
+} from "@/app/lib/workstation/social/edges/state";
+import { useTheme } from "next-themes";
+import EdgesEmptyNetwork from "./EdgesEmptyNetwork";
+
+export default function EdgesGraphNetwork() {
+  const graph = useAtomValue(NetworkGraphData);
+  const centralityAtom = useAtomValue(centralityData); // can be null
   const { theme } = useTheme();
+
+  if (!graph || graph.nodes.length === 0) {
+    return <EdgesEmptyNetwork />;
+  }
+
+  // --- theme colors ---
   const textColor = theme === "dark" ? "#e5e7eb" : "#1f2937";
   const axisColor = theme === "dark" ? "#9ca3af" : "#6b7280";
   const gridColor = theme === "dark" ? "#374151" : "#e5e7eb";
   const tooltipBackgroundColor = theme === "dark" ? "#374151" : "#ffffff";
   const tooltipTextColor = theme === "dark" ? "#e5e7eb" : "#1f2937";
-  const { nodes, links } = data;
+  const linkColor = theme === "dark" ? "#9ca3af" : "#374151";
+  // --- tooltip with REAL centrality ---
   const NodeTooltip = ({ node }: { node: any }) => {
+    // safely check if centrality data is available
+    const centralityArr =
+      centralityAtom?.graphData?.betweenness_centrality ?? [];
+    const nodeMap = centralityAtom?.graphData?.node_map ?? {};
+
+    // find index of node in node_map
+    const entry = Object.entries(nodeMap).find(([_, id]) => id === node.id);
+    const idx = entry ? Number(entry[0]) : -1;
+
+    // lookup centrality value
+    const realCentrality =
+      idx >= 0 && idx < centralityArr.length ? centralityArr[idx] : 0;
+
     return (
       <div
         style={{
@@ -39,35 +65,42 @@ export const EdgesGraphNetwork = ({ data }: EdgesGraphNetworkProps) => {
           />
           <strong>{node.id}</strong>
         </div>
-        <div>Centrality: {node.size.toFixed(2)}</div>
+
+        <div>Centrality: {realCentrality}</div>
       </div>
     );
   };
-  const networkData = {
-    nodes: nodes.map((node) => ({
-      id: node.id,
-      size: node.size,
-      color: node.color,
-      height: node.height,
-    })),
-    links: links.map((link) => ({
-      source: link.source,
-      target: link.target,
-      distance: link.distance,
-    })),
-  };
+
+  const nodes = graph.nodes.map((n) => ({
+    ...n,
+    size: Math.max(1, n.size),
+  }));
+
+  const nodeIds = new Set(nodes.map((n) => n.id));
+  const links = graph.links
+    .filter((l) => nodeIds.has(l.source) && nodeIds.has(l.target))
+    .map((l) => ({ ...l }));
+
+  const data = { nodes, links };
 
   return (
-    <div style={{ height: "600px" }}>
+    <div style={{ height: 600 }}>
       <ResponsiveNetwork
-        data={networkData}
-        margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
-        linkDistance={(link) => link.distance} // 'link' is each link object
-        nodeSize={(node) => node.size} // 'node' is each node object
-        activeNodeSize={(node) => 1.5 * node.size}
-        nodeColor={(node) => node.color}
-        linkBlendMode="multiply"
+        data={data}
+        margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
+        linkDistance={(l) => l.distance}
+        nodeSize={(n) => n.size}
+        activeNodeSize={(n) => 1.5 * n.size}
+        nodeColor={(n) => n.color}
+        linkThickness={() => 2}
+        linkBlendMode="normal"
+        nodeTooltip={NodeTooltip}
         theme={{
+          labels: {
+            text: {
+              fill: textColor,
+            },
+          },
           axis: {
             domain: {
               line: {
@@ -103,8 +136,7 @@ export const EdgesGraphNetwork = ({ data }: EdgesGraphNetworkProps) => {
             },
           },
         }}
-        nodeTooltip={NodeTooltip}
       />
     </div>
   );
-};
+}

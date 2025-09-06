@@ -12,8 +12,7 @@ export default function SocialFilterListWrapper() {
       <div>
         <SocialCalculateMenu />
       </div>
-      <div>
-      </div>
+      <div></div>
     </div>
   );
 }

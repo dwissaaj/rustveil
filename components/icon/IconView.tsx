@@ -11,7 +11,7 @@ export const RefreshIcon: React.FC<IconSvgProps> = ({
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="currentColor"
-      className="size-6"
+      {...props}
     >
       <path
         fillRule="evenodd"
@@ -33,7 +33,7 @@ export const InfoIconSolid: React.FC<IconSvgProps> = ({
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="currentColor"
-      className="size-6"
+      {...props}
     >
       <path
         fillRule="evenodd"

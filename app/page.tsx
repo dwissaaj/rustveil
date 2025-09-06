@@ -1,7 +1,8 @@
 import { Link } from "@heroui/link";
 import { button as buttonStyles } from "@heroui/theme";
-import { title, subtitle } from "@/components/primitives";
 import { Code } from "@heroui/code";
+
+import { title, subtitle } from "@/components/primitives";
 
 export default function Home() {
   return (

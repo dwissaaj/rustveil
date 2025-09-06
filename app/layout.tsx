@@ -1,6 +1,5 @@
 import "@/styles/globals.css";
 import { Metadata, Viewport } from "next";
-import { Link } from "@heroui/link";
 import clsx from "clsx";
 
 import { Providers } from "./providers";
@@ -32,8 +31,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const d = new Date();
-  let year = d.getFullYear();
   return (
     <html suppressHydrationWarning lang="en">
       <head />

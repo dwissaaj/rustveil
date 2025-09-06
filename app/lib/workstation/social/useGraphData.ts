@@ -1,12 +1,13 @@
 "use client";
 import { useAtomValue, useAtom } from "jotai";
+
 import {
   edgesGraphValue,
-  centralityData,
   tableData,
   vertex1ColumnSelected,
   vertex2ColumnSelected,
   vertexGraphTypeSelected,
+  centralityData,
 } from "../data/state";
 
 export const useGraphData = () => {
@@ -18,12 +19,13 @@ export const useGraphData = () => {
   const [centralityValueData, setcentralityValueData] = useAtom(centralityData);
   const getColumnData = (columnName: string) => {
     if (!columnName || !data) return [];
+
     return data.rows.map((row) => row[columnName]);
   };
 
   return {
     data,
-    headers:  [],
+    headers: [],
     vertex1,
     setVertex1,
     vertex1Data: getColumnData(vertex1),

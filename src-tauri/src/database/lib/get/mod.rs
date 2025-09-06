@@ -5,7 +5,7 @@ use std::sync::Mutex;
 use tauri::{AppHandle, Manager, command};
 use crate::SqliteDataState;
 use serde::{Deserialize};
-
+use crate::VerticesSelected;
 
 #[derive(Deserialize)]
 pub struct PaginationParams {
@@ -22,7 +22,7 @@ pub struct PaginationParams {
 ///
 /// # Returns
 /// A [`DatabaseProcess`] enum that represents either:
-/// - `DatabaseProcess::Complete`: containing a success response with all rows retrieved,
+/// - `DatabaseProcess::Success`: containing a success response with all rows retrieved,
 /// - `DatabaseProcess::Error`: containing an error code and message describing what failed.
 ///
 /// # Errors
@@ -48,7 +48,7 @@ pub fn get_all_data(app: AppHandle) -> DatabaseProcess {
     if db_path.is_empty() {
         return DatabaseProcess::Error(DatabaseError {
             error_code: 404,
-            message: "No database found. Please import data first.".to_string(),
+            message: "File path or database is unknown. Try to load Data > File > Load or Upload".to_string(),
         });
     }
     
@@ -56,7 +56,7 @@ pub fn get_all_data(app: AppHandle) -> DatabaseProcess {
     if !std::path::Path::new(&db_path).exists() {
         return DatabaseProcess::Error(DatabaseError {
             error_code: 404,
-            message: "Sqlite or Database not found. Please import data first.".to_string(),
+            message: "Sqlite or Database not found. Try to load Data > File > Load or Upload".to_string(),
         });
     }
 
@@ -118,7 +118,7 @@ pub fn get_all_data(app: AppHandle) -> DatabaseProcess {
         all_data.push(Value::Object(obj));
     }
 
-    DatabaseProcess::Complete(DatabaseComplete {
+    DatabaseProcess::Success(DatabaseComplete {
         response_code: 200,
         message: "Data fetched successfully".to_string(),
         data: if all_data.is_empty() { None } else { Some(all_data) },
@@ -161,7 +161,7 @@ pub fn get_paginated_data(app: AppHandle, pagination: PaginationParams) -> Datab
         println!("❌ No database path found");
         return DatabaseProcess::Error(DatabaseError {
             error_code: 404,
-            message: "No database found. Please import data first.".to_string(),
+            message: "File path or database is unknown. Try to load Data > File > Load or Upload".to_string(),
         });
     }
     
@@ -169,7 +169,7 @@ pub fn get_paginated_data(app: AppHandle, pagination: PaginationParams) -> Datab
         println!("❌ Database file does not exist: {}", db_path);
         return DatabaseProcess::Error(DatabaseError {
             error_code: 404,
-            message: "SQLite database not found. Please import data first.".to_string(),
+            message: "SQLite database not found. Import Data > File > Load or Upload".to_string(),
         });
     }
 
@@ -237,8 +237,8 @@ pub fn get_paginated_data(app: AppHandle, pagination: PaginationParams) -> Datab
     };
 
     let mut page_data = Vec::new();
-    let mut row_count = 0;
-
+    let mut row_count  =0;
+    println!("Returned {}", row_count);
     while let Ok(Some(row)) = rows.next() {
         let mut obj = serde_json::Map::new();
 
@@ -260,7 +260,7 @@ pub fn get_paginated_data(app: AppHandle, pagination: PaginationParams) -> Datab
 
     // println!("✅ Returned {} rows for page {}", row_count, current_page);
 
-    DatabaseProcess::Complete(DatabaseComplete {
+    DatabaseProcess::Success(DatabaseComplete {
         response_code: 200,
         message: "Data fetched successfully".to_string(),
         data: if page_data.is_empty() { None } else { Some(page_data) },
@@ -268,3 +268,92 @@ pub fn get_paginated_data(app: AppHandle, pagination: PaginationParams) -> Datab
     })
 }
 
+
+
+#[command]
+pub fn get_all_vertices(app: AppHandle) -> DatabaseProcess {
+    let vertex_binding = app.state::<Mutex<VerticesSelected>>();
+    let vertex_choosed = vertex_binding.lock().unwrap();
+    let vertex_1 = vertex_choosed.vertex_1.clone();
+    let vertex_2 = vertex_choosed.vertex_2.clone();
+    
+    let pathfile_binding = app.state::<Mutex<SqliteDataState>>();
+    let db = pathfile_binding.lock().unwrap();
+    let pathfile = db.file_url.clone();
+    
+    if pathfile.is_empty() {
+        return DatabaseProcess::Error(DatabaseError {
+            error_code: 404,
+            message: "File path or database is unknown. Try to load Data > File > Load or Upload".to_string(),
+        });
+    }
+    if vertex_1.is_empty() || vertex_2.is_empty() {
+        return DatabaseProcess::Error(DatabaseError {
+            error_code: 400,
+            message: "Please select vertices columns first at File > Locate Vertices".to_string(),
+        });
+    }   
+    if !std::path::Path::new(&pathfile).exists() {
+        return DatabaseProcess::Error(DatabaseError {
+            error_code: 404,
+            message: "Sqlite or Database not found. Please import data first at Data > File > Load or Upload".to_string(),
+        });
+    }
+
+    let connect = match Connection::open(&pathfile) {
+        Ok(conn) => conn,
+        Err(_) => {
+            return DatabaseProcess::Error(DatabaseError {
+                error_code: 401,
+                message: "Error at SQLite connection Get Vertices Data".to_string(),
+            })
+        }
+    };
+
+
+    let sql = format!(
+        "SELECT {}, {} FROM rustveil",
+        vertex_1, vertex_2
+    );
+
+    let mut stmt = match connect.prepare(&sql) {
+        Ok(s) => s,
+        Err(e) => {
+            return DatabaseProcess::Error(DatabaseError {
+                error_code: 402,
+                message: format!("Failed to prepare statement: {}", e),
+            })
+        }
+    };
+
+    let mut rows = match stmt.query([]) {
+        Ok(r) => r,
+        Err(e) => {
+            return DatabaseProcess::Error(DatabaseError {
+                error_code: 403,
+                message: format!("Error querying vertices data: {}", e),
+            })
+        }
+    };
+
+    let mut edges = Vec::new();
+
+    while let Ok(Some(row)) = rows.next() {
+        let source: Result<String, _> = row.get(0);
+        let target: Result<String, _> = row.get(1);
+
+        if let (Ok(s), Ok(t)) = (source, target) {
+            let mut obj = serde_json::Map::new();
+            obj.insert("source".to_string(), Value::String(s));
+            obj.insert("target".to_string(), Value::String(t));
+            edges.push(Value::Object(obj));
+        }
+    }
+
+    DatabaseProcess::Success(DatabaseComplete {
+        response_code: 200,
+        message: "Vertices fetched successfully".to_string(),
+        data: if edges.is_empty() { None } else { Some(edges) },
+        total_count: None,
+    })
+}

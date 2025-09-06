@@ -1,25 +1,19 @@
 import { invoke } from "@tauri-apps/api/core";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom } from "jotai";
 
-import { CalculateCentralityResponse } from "../vertex/response";
-import { vertexGraphTypeSelected } from "../../data/state";
 import { centralityData } from "../edges/state";
+import { CalculateCentralityResponse } from "../vertex/response";
 
-export function useCalculateCentrality() {
-  const graphType = useAtomValue(vertexGraphTypeSelected);
-  const [, setGraphData] = useAtom(centralityData);
-
+export function useGetCentrality() {
+  const [, setCentralityData] = useAtom(centralityData);
   const getCentrality = async () => {
     try {
       const response = await invoke<CalculateCentralityResponse>(
-        "calculate_centrality",
-        {
-          graphType: graphType,
-        },
+        "load_centrality_table",
       );
 
       if ("Success" in response) {
-        setGraphData({
+        setCentralityData({
           graphData: {
             node_map: response.Success.node_map,
             betweenness_centrality: response.Success.betweenness_centrality,
@@ -48,10 +42,10 @@ export function useCalculateCentrality() {
           message: response.Error.message,
         };
       }
-    } catch (error: any) {
+    } catch (error) {
       return {
         response_code: 500,
-        message: `Error hook calculate to back end ${error}`,
+        message: `Error at hook get centrality data ${error}`,
       };
     }
   };
