@@ -6,9 +6,7 @@ import { Select, SelectItem } from "@heroui/react";
 import { useAtom } from "jotai";
 
 export default function SheetSelector() {
-
   const [sheets] = useAtom(sheetAvailable);
-
   const [selectedSheet, setSelectedSheet] = useAtom(sheetSelected);
 
   return (

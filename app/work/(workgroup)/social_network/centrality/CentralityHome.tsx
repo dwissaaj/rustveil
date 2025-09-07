@@ -3,9 +3,11 @@
 import { useEffect } from "react";
 import { useAtom } from "jotai";
 
-import { centralityData } from "@/app/lib/workstation/social/edges/state";
+import { centralityData } from "@/app/lib/workstation/social/network/state";
+import { SelectItem, Select } from "@heroui/react";
 
-export default function VerticesHome() {
+
+export default function CentralityHome() {
   const [graphData] = useAtom(centralityData);
 
   useEffect(() => {}, [graphData]);
@@ -14,7 +16,7 @@ export default function VerticesHome() {
     <div className="max-h-screen">
       <div className="w-full flex flex-col gap-2">
         <div className="m-2 w-1/2 ">
-          {/* <Select
+          <Select
             label="Select Chart Type"
             defaultSelectedKeys={"bar"}
             variant="underlined"
@@ -23,10 +25,10 @@ export default function VerticesHome() {
           >
             <SelectItem key={"pie"}>Pie</SelectItem>
             <SelectItem key={"bar"}>Bar</SelectItem>
-          </Select> */}
+          </Select>
         </div>
         <div className="grid grid-cols-2 gap-2 mt-10">
-          <div>asdsas</div>
+          asd
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { centralityData } from "@/app/lib/workstation/social/edges/state";
+import { centralityData } from "@/app/lib/workstation/social/network/state";
 import { RefreshIcon } from "@/components/icon/IconView";
 import {
   Table,
@@ -18,7 +18,7 @@ import { useAsyncList } from "@react-stately/data";
 import NoVerticesSelected from "./NoCentralityTable";
 import { useGetCentrality } from "@/app/lib/workstation/social/calculate/useGetCentrality";
 
-export default function CentralityTable() {
+export default function NetworkTableViewer() {
   const getCentrality = useGetCentrality();
   const [isLoading, setIsLoading] = useState(false);
   const graphDataState = useAtomValue(centralityData);
