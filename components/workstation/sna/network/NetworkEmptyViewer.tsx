@@ -1,10 +1,10 @@
 "use client";
 
-import { useGetEdges } from "@/app/lib/workstation/social/edges/useGetNetwork";
+import { useGetEdges } from "@/app/lib/workstation/social/network/useGetNetwork";
 import { InfoIconSolid, RefreshIcon } from "@/components/icon/IconView";
 import { addToast, Button } from "@heroui/react";
 
-export default function EdgesEmptyNetwork() {
+export default function NetworkEmptyViewer() {
   const transformNivo = useGetEdges();
 
   const handleRefresh = async () => {
@@ -33,9 +33,9 @@ export default function EdgesEmptyNetwork() {
   };
 
   return (
-    <div className="flex flex-1 items-center justify-center">
+    <div className="flex flex-1 items-center justify-center h-full">
       <div className="flex items-center gap-2">
-        <Button startContent={<InfoIconSolid />} color="warning">
+        <Button  startContent={<InfoIconSolid />} color="warning">
           Calculate Centrality First to show Graph
         </Button>
 

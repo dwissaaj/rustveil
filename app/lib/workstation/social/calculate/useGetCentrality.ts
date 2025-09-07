@@ -1,8 +1,8 @@
 import { invoke } from "@tauri-apps/api/core";
 import { useAtom } from "jotai";
 
-import { centralityData } from "../edges/state";
-import { CalculateCentralityResponse } from "../vertex/response";
+import { centralityData } from "../network/state";
+import { CalculateCentralityResponse } from "../vertices/response";
 
 export function useGetCentrality() {
   const [, setCentralityData] = useAtom(centralityData);
