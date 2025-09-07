@@ -4,8 +4,8 @@ import {
   NetworkGraphType,
   NetworkNodeType,
   NetworkLinkType,
-  centralityData,
 } from "./state";
+import { centralityData } from "../calculate/state";
 
 export interface Edge {
   source: string;

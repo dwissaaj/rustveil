@@ -1,31 +1,4 @@
-/**
- * Dual column selector for vertex analysis
- *
- * @component
- * @example
- *
- *
- * @description
- * Provides two synchronized dropdown selectors for choosing vertex columns.
- * Maintains selection state via useGraphData hook.
- *
- * @hooks
- * - useGraphData: Manages available headers and selection state
- *
- * @ui
- * - Hero UI Select components
- * - Vertical spacing (space-y-4)
- * - Clear selection labels
- *
- * @behavior
- * - Converts SelectionChange events to string values
- * - Handles empty selection state
- * - Synchronizes with parent component state
- *
- * @props
- * - Uses headers from useGraphData for options
- * - Maintains vertex1 and vertex2 selections
- */
+
 "use client";
 import {
   columnAvailable,
@@ -33,7 +6,7 @@ import {
   vertex2ColumnSelected,
   vertexGraphTypeSelected,
 } from "@/app/lib/workstation/data/state";
-import { useGraphData } from "@/app/lib/workstation/social/useGraphData";
+
 import { TooltipIcon, VerticesIcon } from "@/components/icon/IconFilter";
 import {
   Select,

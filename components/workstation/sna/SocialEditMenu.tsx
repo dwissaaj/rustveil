@@ -45,15 +45,15 @@ import {
   Button,
 } from "@heroui/react";
 import { VerticesIcon } from "@/components/icon/IconFilter";
-import { CalculateIcon } from "@/components/icon/IconGraph";
 
-export default function SocialNodesMenu() {
+
+export default function SocialEditMenu() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   return (
     <>
       <Dropdown>
         <DropdownTrigger>
-          <Button className="text-black dark:text-white" color="primary" variant="light">Edit</Button>
+          <Button size="lg" className="text-black dark:text-white" color="primary" variant="light">Edit</Button>
         </DropdownTrigger>
         <DropdownMenu color="primary" variant="flat" aria-label="locate vertices">
           <DropdownItem

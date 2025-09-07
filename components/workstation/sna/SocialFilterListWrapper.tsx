@@ -1,7 +1,7 @@
 "use client";
 
 import SocialCalculateMenu from "./SocialCalculateMenu";
-import SocialNodesMenu from "./SocialNodesMenu";
+import SocialNodesMenu from "./SocialEditMenu";
 
 export default function SocialFilterListWrapper() {
   return (

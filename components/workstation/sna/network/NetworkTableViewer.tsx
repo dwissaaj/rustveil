@@ -1,4 +1,4 @@
-import { centralityData } from "@/app/lib/workstation/social/network/state";
+
 import { RefreshIcon } from "@/components/icon/IconView";
 import {
   Table,
@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import { useAsyncList } from "@react-stately/data";
 import NoVerticesSelected from "./NoCentralityTable";
 import { useGetCentrality } from "@/app/lib/workstation/social/calculate/useGetCentrality";
+import { centralityData } from "@/app/lib/workstation/social/calculate/state";
 
 export default function NetworkTableViewer() {
   const getCentrality = useGetCentrality();
