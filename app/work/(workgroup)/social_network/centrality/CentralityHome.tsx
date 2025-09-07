@@ -1,34 +1,36 @@
 "use client";
 
-import { useEffect } from "react";
-import { useAtom } from "jotai";
-
-import { centralityData } from "@/app/lib/workstation/social/network/state";
-import { SelectItem, Select } from "@heroui/react";
-
+import CentralitySelectGraph from "./CentralitySelectGraph";
+import { selectedChart, selectedCentrality } from "@/app/lib/workstation/social/centrality/state";
+import { centralityData } from "@/app/lib/workstation/social/calculate/state";
+import { useAtomValue } from "jotai";
+import { ResponsivePie } from "@nivo/pie";
+import { ResponsiveBar } from "@nivo/bar";
+import { useTransformToPieData } from "@/app/lib/workstation/social/centrality/useTransformPie";
+import { CentralityPieChart } from "./CentralityPieChart";
 
 export default function CentralityHome() {
-  const [graphData] = useAtom(centralityData);
+  const data = useAtomValue(centralityData);
+  const chart = useAtomValue(selectedChart);
+  const centrality = useAtomValue(selectedCentrality);
+  const graphData = data?.graphData;
 
-  useEffect(() => {}, [graphData]);
-
+  console.log(graphData)
   return (
     <div className="max-h-screen">
       <div className="w-full flex flex-col gap-2">
-        <div className="m-2 w-1/2 ">
-          <Select
-            label="Select Chart Type"
-            defaultSelectedKeys={"bar"}
-            variant="underlined"
-            className=""
-            
-          >
-            <SelectItem key={"pie"}>Pie</SelectItem>
-            <SelectItem key={"bar"}>Bar</SelectItem>
-          </Select>
+        <div>
+          <CentralitySelectGraph />
         </div>
-        <div className="grid grid-cols-2 gap-2 mt-10">
-          asd
+        <div className="w-full h-full ">
+          {chart === "pie" && (
+            <CentralityPieChart graphData={graphData} centralityKey={centrality} />
+          )}
+          {chart === "bar" && (
+ <div>
+              bar {centrality}
+              </div>
+          )}
         </div>
       </div>
     </div>

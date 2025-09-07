@@ -4,14 +4,14 @@ import { useAtomValue } from "jotai";
 import { ResponsiveNetwork } from "@nivo/network";
 import {
   NetworkGraphData,
-  centralityData,
 } from "@/app/lib/workstation/social/network/state";
 import { useTheme } from "next-themes";
 import NetworkEmptyViewer from "./NetworkEmptyViewer";
+import { centralityData } from "@/app/lib/workstation/social/calculate/state";
 
 export default function NetworkGraphViewer() {
   const graph = useAtomValue(NetworkGraphData);
-  const centralityAtom = useAtomValue(centralityData); // can be null
+  const centralityAtom = useAtomValue(centralityData);
   const { theme } = useTheme();
 
   if (!graph || graph.nodes.length === 0) {

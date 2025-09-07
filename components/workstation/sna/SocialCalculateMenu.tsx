@@ -19,7 +19,7 @@ export default function SocialCalculateMenu() {
     <>
       <Dropdown>
         <DropdownTrigger>
-          <Button className="text-black dark:text-white" color="primary" variant="light" >Calculate</Button>
+          <Button size="lg" className="text-black dark:text-white" color="primary" variant="light" >Calculate</Button>
         </DropdownTrigger>
         <DropdownMenu color="primary" variant="flat" aria-label="Calculate graph metrics">
           <DropdownItem

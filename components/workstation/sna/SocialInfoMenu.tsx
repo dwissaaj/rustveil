@@ -45,7 +45,7 @@ import {
   Button,
 } from "@heroui/react";
 import { ReportIcon } from "@/components/icon/IconFilter";
-import InfoModal from "@/app/work/(workgroup)/social_network/filter/modal/InfoModal";
+
 
 export default function SocialInfoMenu() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -66,7 +66,7 @@ export default function SocialInfoMenu() {
           </DropdownItem>
         </DropdownMenu>
       </Dropdown>
-      <InfoModal isOpen={isOpen} onOpenChange={onOpenChange} />
+      
     </>
   );
 }

@@ -12,7 +12,7 @@ export default function SocialNetwork() {
         <SocialFilterListWrapper />
       </div>
       <div className="mt-4">
-        <Tabs aria-label="Social Tab" color="primary" variant="underlined">
+        <Tabs size="lg" aria-label="Social Tab" color="primary" variant="underlined">
           <Tab key="network" title="Network">
             <NetworkHome />
           </Tab>

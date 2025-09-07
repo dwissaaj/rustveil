@@ -1,9 +1,5 @@
 import { atom } from "jotai";
 
-import { TableDataType } from "./dto";
-
-// need to deleted since we not ising jotai atom
-export const tableData = atom<TableDataType | null>(null);
 
 // get all sheets from the file
 export const sheetAvailable = atom<string[]>([]);
