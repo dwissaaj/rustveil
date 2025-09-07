@@ -1,11 +1,15 @@
 "use client";
 
 import { CalculateCentralityType } from "@/app/lib/workstation/social/calculate/state";
-import { InfoIcon } from "@/components/icon/IconFilter";
+import { FilterIcon, InfoIcon } from "@/components/icon/IconFilter";
 import { FullScreenIcon } from "@/components/icon/IconView";
-import { Select, SelectItem, Button, Modal, ModalBody, ModalContent, ModalHeader, useDisclosure, Tooltip, ModalFooter } from "@heroui/react";
+import { Select, SelectItem, Button, Modal, ModalBody, ModalContent, ModalHeader, useDisclosure, Tooltip, ModalFooter, Slider, Input } from "@heroui/react";
 import { ResponsivePie } from "@nivo/pie";
+import { atom, useAtom, useAtomValue } from "jotai";
 import { useMemo } from "react";
+import { showFilterAtom } from "./state";
+import { selectedCentrality, selectedChart } from "@/app/lib/workstation/social/centrality/state";
+import { FilterPanel } from "./FilterPanel";
 
 export function CentralityPieChart({
   graphData,
@@ -16,8 +20,11 @@ export function CentralityPieChart({
   centralityKey: keyof Omit<CalculateCentralityType, "node_map">;
   topN?: number;
 }) {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+    const { isOpen, onOpen, onOpenChange } = useDisclosure(); 
 
+    const [showFilter, setshowFilter] = useAtom(showFilterAtom)
+  const chart = useAtomValue(selectedChart);
+  const centrality = useAtomValue(selectedCentrality);
   const nodes = graphData?.node_map ?? {};
   const values = graphData?.[centralityKey] ?? [];
 
@@ -39,7 +46,6 @@ export function CentralityPieChart({
     <div className="w-full flex flex-col gap-10 border rounded-xl p-4">
       <div className="font-medium flex flex-row justify-start gap-4 items-center">
         <Button variant="flat" isIconOnly startContent={<FullScreenIcon className="w-6" />} color="primary" onPress={onOpen}>
-       
         </Button>
          <Tooltip content="Customize Chart in Full Screen Mode">
             <Button variant="flat" isIconOnly startContent={<InfoIcon className="w-6" />} color="primary"></Button>
@@ -67,27 +73,42 @@ export function CentralityPieChart({
         )}
       </div>
 
-      {/* fullscreen modal */}
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="5xl" scrollBehavior="outside">
-        <ModalContent>
-          <ModalHeader className="flex flex-col gap-1">Fullscreen Chart</ModalHeader>
-          <ModalBody>
-            <div className="h-[75vh]">
-              <ResponsivePie
-                data={data}
-                margin={{ top: 40, right: 40, bottom: 40, left: 40 }}
-                innerRadius={0.5}
-                padAngle={1}
-                cornerRadius={3}
-                activeOuterRadiusOffset={8}
-              />
-            </div>
-          </ModalBody>
-          <ModalFooter>
-            
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+
+<Modal isOpen={isOpen} onOpenChange={onOpenChange} size="5xl" scrollBehavior="outside">
+  <ModalContent>
+    <ModalHeader className="flex flex-row justify-start gap-4 items-center">
+      {chart} {centrality}
+      <Button
+        variant="light"
+        color="default"
+        isIconOnly
+        startContent={<FilterIcon className="w-4" />}
+        onPress={() => setshowFilter(!showFilter)}
+      />
+    </ModalHeader>
+
+    <ModalBody>
+      <div className="flex flex-row h-[75vh] gap-4">
+        {/* Chart */}
+        <div className="flex-1 border rounded-lg">
+          <ResponsivePie
+            data={data}
+            margin={{ top: 40, right: 40, bottom: 40, left: 40 }}
+            innerRadius={0.5}
+            padAngle={1}
+            cornerRadius={3}
+            activeOuterRadiusOffset={8}
+          />
+        </div>
+
+
+       {showFilter && <FilterPanel />}
+      </div>
+    </ModalBody>
+  </ModalContent>
+</Modal>
+
+
     </div>
   );
 }
