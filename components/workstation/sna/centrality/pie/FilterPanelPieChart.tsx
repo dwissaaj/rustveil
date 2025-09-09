@@ -1,8 +1,8 @@
 import { useAtom } from "jotai";
-import { FilterState, ColorSchema, topShowDataPie } from "../../../../../app/work/(workgroup)/social_network/centrality/state";
+import { PieFilterState, ColorSchema, topShowDataPie } from "../../../../../app/work/(workgroup)/social_network/centrality/state";
 import { Select, SelectItem, Slider, Input, Textarea } from "@heroui/react";
-export function FilterPanel({ maxNodes }: { maxNodes: number }) {
-  const [filter, setFilter] = useAtom(FilterState);
+export function FilterPanelPieChart({ maxNodes }: { maxNodes: number }) {
+  const [filter, setFilter] = useAtom(PieFilterState);
   const [topN, setTopN] = useAtom(topShowDataPie);
 
   const topOptions = [

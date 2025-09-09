@@ -29,7 +29,7 @@ export enum ColorSchema {
   yellow_orange_red = "yellow_orange_red",
 }
 
-export interface FilterStateType {
+export interface PieFilterStateType {
   innerRadius: number;
   padAngle: number;
   cornerRadius: number;
@@ -42,7 +42,7 @@ export interface FilterStateType {
 }
 
 
-export const FilterState = atom<FilterStateType>({
+export const PieFilterState = atom<PieFilterStateType>({
   innerRadius: 0.5,
   padAngle: 1,
   labelsOffset : 0,
@@ -62,3 +62,65 @@ export interface NivoPieType {
 }
 
 export const topShowDataPie = atom(100);
+
+
+
+
+export interface NivoBarType {
+  node: string;           
+  centrality: number;     
+  [key: string]: string | number;
+}
+
+export const topShowDataBar = atom(20);
+
+
+
+
+export interface BarFilterStateType {
+  layout: "horizontal"| "vertical";
+  topMargin: number;
+  bottomMargin: number;
+  leftMargin: number;
+  rightMargin:number;
+  colorSchema: ColorSchema;
+  borderRadius: number;
+  borderWidth: number;
+  labelPosition: "start" | "middle"| "end";
+  labelOffset: number;
+  axisBottomSize: number;
+  axisBottomPadding: number;
+  axisBottomRotation: number;
+  axisBottomLegend: string;
+  axisBottomLegendOffset: number;
+  axisLeftSize: number;
+  axisLeftPadding: number;
+  axisLeftRotation: number;
+  axisLeftLegend: string;
+  axisLeftLegendOffset: number;
+}
+
+
+export const BarFilterState = atom<BarFilterStateType>({
+  layout: "horizontal",
+  topMargin: 50,
+  bottomMargin: 50,
+  leftMargin: 50,
+  rightMargin:50,
+  borderRadius: 0,
+  borderWidth: 0,
+  labelPosition: "start",
+  labelOffset: 0,
+  colorSchema: ColorSchema.nivo,
+  axisBottomSize: 0,
+  axisBottomPadding: 0,
+  axisBottomRotation: 0,
+  axisBottomLegend: 'Bottom Legend',
+  axisBottomLegendOffset: 0,
+  axisLeftSize: 0,
+  axisLeftPadding: 0,
+  axisLeftRotation: 0,
+  axisLeftLegend: "Left Legend",
+  axisLeftLegendOffset: 0,
+});
+

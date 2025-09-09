@@ -1,13 +1,13 @@
 import { ResponsivePie } from "@nivo/pie";
 import { ColorSchemeId } from "@nivo/colors";
-import { FilterStateType, NivoPieType } from "../../../../../app/work/(workgroup)/social_network/centrality/state";
+import { PieFilterStateType, NivoPieType } from "../../../../../app/work/(workgroup)/social_network/centrality/state";
 
 export function CentralityPieComponent({
   data,
   chartFilter,
 }: {
   data: NivoPieType[];
-  chartFilter: FilterStateType
+  chartFilter: PieFilterStateType
 }) {
   return (
     <div className={`flex-1 h-[75vh]`}>
