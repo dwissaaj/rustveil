@@ -53,3 +53,10 @@ export const FilterState = atom<FilterStateType>({
   description: "Description",
   author: "Your Name"
 });
+
+
+export interface NivoPieType {
+  id: string;
+  value: number;
+  label?: string;
+}
