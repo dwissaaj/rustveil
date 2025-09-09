@@ -8,7 +8,7 @@ import {
 import { centralityData } from "@/app/lib/workstation/social/calculate/state";
 import { useAtomValue } from "jotai";
 import { CentralityPieChart } from "./CentralityPieChart";
-import { CentralityBarChart } from "../../../../../components/workstation/sna/centrality/bar/CentralityBarChart";
+import { CentralityBarChart } from "./CentralityBarChart";
 
 export default function CentralityHome() {
   const data = useAtomValue(centralityData);

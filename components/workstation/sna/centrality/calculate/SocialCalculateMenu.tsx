@@ -1,5 +1,4 @@
 "use client";
-import VerticesModal from "@/app/work/(workgroup)/social_network/filter/modal/EdgesModal";
 import {
   Dropdown,
   DropdownTrigger,
@@ -8,7 +7,6 @@ import {
   DropdownItem,
   Button,
 } from "@heroui/react";
-import { VerticesIcon } from "@/components/icon/IconFilter";
 import SocialCalculateModal from "@/app/work/(workgroup)/social_network/filter/modal/CalculateModal";
 import { CalculateIcon } from "@/components/icon/IconGraph";
 
