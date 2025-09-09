@@ -35,7 +35,7 @@ export default function CentralitySelectGraph() {
         selectedKeys={new Set([pendingCentrality])}
         onSelectionChange={(keys) => {
           const value = Array.from(keys)[0] as CentralityKey;
-          setPendingCentrality(value); // update local only
+          setPendingCentrality(value); 
         }}
         variant="underlined"
         placeholder="Centrality Value"

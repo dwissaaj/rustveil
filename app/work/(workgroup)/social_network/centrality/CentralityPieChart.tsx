@@ -38,23 +38,20 @@ export function CentralityPieChart({
   const values = graphData?.[centralityKey] ?? [];
 
   const topN = useAtomValue(topShowDataPie);
-  const data = useMemo(() => {
-    const mapped = values
-      .map((value, index) => ({
-        id: nodes[index] ?? `Node ${index}`,
-        label: nodes[index] ?? `Node ${index}`,
-        value,
-      }))
-      .filter((d) => d.value > 0)
-      .sort((a, b) => b.value - a.value);
+const data = useMemo(() => {
+  const mapped = values
+    .map((value, index) => ({
+      id: nodes[index] ?? `Node ${index}`,
+      label: nodes[index] ?? `Node ${index}`,
+      value: Number(value.toPrecision(3)), // max 3 significant digits
+    }))
+    .filter((d) => d.value > 0)
+    .sort((a, b) => b.value - a.value);
 
-    const maxValue = mapped[0]?.value ?? 0;
-    const threshold = maxValue * 0.05;
-    const filtered = mapped.filter((d) => d.value >= threshold);
-
-    const safeTopN = Math.max(10, Math.min(topN, filtered.length)); 
-    return filtered.slice(0, safeTopN);
-  }, [values, nodes, topN]);
+  // slice topN directly
+  const safeTopN = Math.min(topN ?? mapped.length, mapped.length);
+  return mapped.slice(0, safeTopN);
+}, [values, nodes, topN]);
 
   const hasData = data.some((d) => d.value > 0);
 

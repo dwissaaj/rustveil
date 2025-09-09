@@ -1,6 +1,18 @@
 import { useAtom } from "jotai";
-import { PieFilterState, ColorSchema, topShowDataPie } from "../../../../../app/work/(workgroup)/social_network/centrality/state";
-import { Select, SelectItem, Slider, Input, Textarea } from "@heroui/react";
+import {
+  PieFilterState,
+  ColorSchema,
+  topShowDataPie,
+} from "../../../../../app/work/(workgroup)/social_network/centrality/state";
+import {
+  Select,
+  SelectItem,
+  Slider,
+  Input,
+  Textarea,
+  Accordion,
+  AccordionItem,
+} from "@heroui/react";
 export function FilterPanelPieChart({ maxNodes }: { maxNodes: number }) {
   const [filter, setFilter] = useAtom(PieFilterState);
   const [topN, setTopN] = useAtom(topShowDataPie);
@@ -21,99 +33,133 @@ export function FilterPanelPieChart({ maxNodes }: { maxNodes: number }) {
   ];
 
   return (
-    <div className="w-64 ">
-      <h3 className="font-xl font-bold flex flex-col gap-8">Filter Options</h3>
-      <Input
-        className="my-4"
-        label="Title"
-        placeholder={filter.title}
-        value={filter.title}
-        onChange={(e) => setFilter({ ...filter, title: e.target.value })}
-      />
-      <Input
-        className="my-4"
-        label="Author"
-        placeholder="Author Reference"
-        value={filter.author}
-        onChange={(e) => setFilter({ ...filter, author: e.target.value })}
-      />
-      <Textarea
-        className="my-4"
-        label="Description"
-        placeholder="Description about the chart"
-        value={filter.description}
-        onChange={(e) => setFilter({ ...filter, description: e.target.value })}
-      />
-      <Select
-        className="my-2 max-w-xs"
-        label="Show Top Nodes"
-        value={topN.toString()}
-        onChange={(e) => setTopN(Number(e.target.value))}
-      >
-        {topOptions.map((opt) => (
-          <SelectItem key={opt.value.toString()}>{opt.label}</SelectItem>
-        ))}
-      </Select>
-      <Slider
-        label="Inner Radius"
-        step={0.05}
-        minValue={0}
-        maxValue={0.95}
-        value={filter.innerRadius}
-        onChange={(val) => setFilter({ ...filter, innerRadius: Number(val) })}
-      />
+    <>
+      <div>
+        <h3 className="text-2xl font-bold my-2">Filter Options</h3>
+      </div>
+      <Accordion>
+        <AccordionItem key="1" aria-label="General Tab" title="General">
+<div className="flex flex-col gap-2">
+             <Select
+            className=""
+            label="Show Top Nodes"
+            value={topN.toString()}
+            onChange={(e) => setTopN(Number(e.target.value))}
+          >
+            {topOptions.map((opt) => (
+              <SelectItem key={opt.value.toString()}>{opt.label}</SelectItem>
+            ))}
+          </Select>
+          <Select
+            className="my-4"
+            label="Color Scheme"
+            selectedKeys={[filter.colorSchema]}
+            onChange={(e) =>
+              setFilter({
+                ...filter,
+                colorSchema: e.target.value as ColorSchema,
+              })
+            }
+          >
+            {Object.values(ColorSchema).map((schema) => (
+              <SelectItem key={schema}>{schema}</SelectItem>
+            ))}
+          </Select>
+</div>
+          
+        </AccordionItem>
+        <AccordionItem key="2" aria-label="title tab" title="Title">
+          <div className="flex flex-col gap-2">
+            <Input
+            className=""
+            label="Title"
+            placeholder={filter.title}
+            value={filter.title}
+            onChange={(e) => setFilter({ ...filter, title: e.target.value })}
+          />
+          <Input
+            className=""
+            label="Author"
+            placeholder="Author Reference"
+            value={filter.author}
+            onChange={(e) => setFilter({ ...filter, author: e.target.value })}
+          />
+          <Textarea
+            className=""
+            label="Description"
+            placeholder="Description about the chart"
+            value={filter.description}
+            onChange={(e) =>
+              setFilter({ ...filter, description: e.target.value })
+            }
+          />
+          </div>
 
-      <Slider
-        label="Pad Angle"
-        step={0.1}
-        minValue={0}
-        maxValue={10}
-        value={filter.padAngle}
-        onChange={(val) => setFilter({ ...filter, padAngle: Number(val) })}
-      />
+         
+         
+          
+        </AccordionItem>
+        <AccordionItem key="3" aria-label="Legend" title="Legend">
+           <Slider
+           size="sm"
+            label="Inner Radius"
+            step={0.05}
+            minValue={0}
+            maxValue={0.95}
+            value={filter.innerRadius}
+            onChange={(val) =>
+              setFilter({ ...filter, innerRadius: Number(val) })
+            }
+          />
 
-      <Slider
-        label="Corner Radius"
-        step={1}
-        minValue={0}
-        maxValue={45}
-        value={filter.cornerRadius}
-        onChange={(val) => setFilter({ ...filter, cornerRadius: Number(val) })}
-      />
-      <Slider
-        label="Label Offset"
-        step={1}
-        minValue={-24}
-        maxValue={24}
-        defaultValue={0}
-        value={filter.labelsOffset}
-        onChange={(val) => setFilter({ ...filter, labelsOffset: Number(val) })}
-      />
-      <Slider
-        label="Text Offset"
-        step={1}
-        defaultValue={0}
-        minValue={-24}
-        maxValue={24}
-        value={filter.textOffset}
-        onChange={(val) => setFilter({ ...filter, textOffset: Number(val) })}
-      />
+          <Slider
+          size="sm"
+            label="Pad Angle"
+            step={0.1}
+            minValue={0}
+            maxValue={10}
+            value={filter.padAngle}
+            onChange={(val) => setFilter({ ...filter, padAngle: Number(val) })}
+          />
 
-      <Select
-        className="my-4"
-        label="Color Scheme"
-        selectedKeys={[filter.colorSchema]}
-        onChange={(e) =>
-          setFilter({
-            ...filter,
-            colorSchema: e.target.value as ColorSchema,
-          })
-        }
-      >
-        {Object.values(ColorSchema).map((schema) => (
-          <SelectItem key={schema}>{schema}</SelectItem>
-        ))}
-      </Select>
-    </div>
+          <Slider
+          size="sm"
+            label="Corner Radius"
+            step={1}
+            minValue={0}
+            maxValue={45}
+            value={filter.cornerRadius}
+            onChange={(val) =>
+              setFilter({ ...filter, cornerRadius: Number(val) })
+            }
+          />
+          <Slider
+          size="sm"
+            label="Label Offset"
+            step={1}
+            minValue={-24}
+            maxValue={24}
+            defaultValue={0}
+            value={filter.labelsOffset}
+            onChange={(val) =>
+              setFilter({ ...filter, labelsOffset: Number(val) })
+            }
+          />
+          <Slider
+          size="sm"
+            label="Text Offset"
+            step={1}
+            defaultValue={0}
+            minValue={-24}
+            maxValue={24}
+            value={filter.textOffset}
+            onChange={(val) =>
+              setFilter({ ...filter, textOffset: Number(val) })
+            }
+          />
+
+        </AccordionItem>
+      </Accordion>
+    </>
   );
 }

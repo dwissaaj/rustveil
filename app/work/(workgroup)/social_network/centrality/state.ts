@@ -61,7 +61,7 @@ export interface NivoPieType {
   label?: string;
 }
 
-export const topShowDataPie = atom(100);
+export const topShowDataPie = atom(20);
 
 
 
