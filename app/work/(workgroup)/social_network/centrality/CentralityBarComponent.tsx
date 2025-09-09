@@ -4,6 +4,7 @@ import {
   NivoBarType
 } from "./state";
 import { ResponsiveBar } from "@nivo/bar";
+import { useTheme } from "next-themes";
 
 export function CentralityBarComponent({
   data,
@@ -12,6 +13,12 @@ export function CentralityBarComponent({
   data: NivoBarType[];
   chartFilter: BarFilterStateType;
 }) {
+    const { theme } = useTheme();
+  const textColor = theme === "dark" ? "#e5e7eb" : "#1f2937";
+  const axisColor = theme === "dark" ? "#9ca3af" : "#6b7280";
+  const gridColor = theme === "dark" ? "#374151" : "#e5e7eb";
+  const tooltipBackgroundColor = theme === "dark" ? "#374151" : "#ffffff";
+  const tooltipTextColor = theme === "dark" ? "#e5e7eb" : "#1f2937";
   return (
     <div className={`flex-1 h-[75vh]`}>
       <ResponsiveBar
@@ -46,6 +53,42 @@ export function CentralityBarComponent({
           legendOffset: chartFilter.axisLeftLegendOffset,
         }}
         enableGridY={true}
+        theme={{
+        axis: {
+          domain: {
+            line: {
+              stroke: axisColor,
+            },
+          },
+          ticks: {
+            line: {
+              stroke: axisColor,
+            },
+            text: {
+              fill: textColor,
+            },
+          },
+          legend: {
+            text: {
+              fill: textColor,
+            },
+          },
+        },
+        grid: {
+          line: {
+            stroke: gridColor,
+            strokeWidth: 1,
+          },
+        },
+        tooltip: {
+          container: {
+            background: tooltipBackgroundColor,
+            color: tooltipTextColor,
+            fontSize: 12,
+            borderRadius: 4,
+          },
+        },
+      }}
       />
     </div>
   );

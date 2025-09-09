@@ -1,6 +1,6 @@
 "use client";
 
-import SocialCalculateMenu from "./SocialCalculateMenu";
+import SocialCalculateMenu from "./centrality/calculate/SocialCalculateMenu";
 import SocialNodesMenu from "./SocialEditMenu";
 
 export default function SocialFilterListWrapper() {
