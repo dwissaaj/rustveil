@@ -1,5 +1,5 @@
 "use client";
-import { ColorSchemeId } from "@nivo/colors"; // add this
+import { ColorSchemeId } from "@nivo/colors";
 import { CalculateCentralityType } from "@/app/lib/workstation/social/calculate/state";
 import { FilterIcon, InfoIcon } from "@/components/icon/IconFilter";
 import { FullScreenIcon } from "@/components/icon/IconView";
@@ -26,6 +26,7 @@ import {
   selectedChart,
 } from "@/app/lib/workstation/social/centrality/state";
 import { FilterPanel } from "./FilterPanel";
+import { CentralityPie } from "./CentralityPie";
 
 export function CentralityPieChart({
   graphData,
@@ -84,17 +85,7 @@ export function CentralityPieChart({
             No data available
           </div>
         ) : hasData ? (
-          <ResponsivePie
-            data={data}
-            margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
-            innerRadius={chartFilter.innerRadius}
-            padAngle={chartFilter.padAngle}
-            cornerRadius={chartFilter.cornerRadius}
-            activeOuterRadiusOffset={8}
-            arcLinkLabelsOffset={chartFilter.labelsOffset}
-            arcLinkLabelsTextOffset={chartFilter.textOffset}
-            colors={{ scheme: chartFilter.colorSchema as ColorSchemeId }}
-          />
+          <CentralityPie data={data} chartFilter={chartFilter} height="500px" />
         ) : (
           <div className="flex items-center justify-center h-full text-gray-500">
             All Values or Zero
@@ -132,25 +123,16 @@ export function CentralityPieChart({
                     {chartFilter.author}
                   </p>
                 </div>
-                <div className="flex-1 h-[75vh]">
-                  <ResponsivePie
-                    data={data}
-                    margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
-                    innerRadius={chartFilter.innerRadius}
-                    padAngle={chartFilter.padAngle}
-                    cornerRadius={chartFilter.cornerRadius}
-                    activeOuterRadiusOffset={8}
-                    arcLinkLabelsOffset={chartFilter.labelsOffset}
-                    arcLinkLabelsTextOffset={chartFilter.textOffset}
-                    colors={{
-                      scheme: chartFilter.colorSchema as ColorSchemeId,
-                    }}
-                  />
-                </div>
+
+                <CentralityPie
+                  data={data}
+                  chartFilter={chartFilter}
+                  height="75vh"
+                />
               </div>
 
               {showFilter && (
-                <div className="m-2 w-1/4 ">
+                <div className="m-2 w-1/4">
                   <FilterPanel />
                 </div>
               )}
