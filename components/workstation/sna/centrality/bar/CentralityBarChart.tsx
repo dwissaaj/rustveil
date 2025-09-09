@@ -16,17 +16,15 @@ import { useAtom, useAtomValue } from "jotai";
 import { useMemo } from "react";
 import {
   BarFilterState,
-  PieFilterState,
   showFilterAtom,
   topShowDataBar,
-} from "./state";
+} from "../../../../../app/work/(workgroup)/social_network/centrality/state";
 import {
   selectedCentrality,
   selectedChart,
 } from "@/app/lib/workstation/social/centrality/state";
-import { ResponsiveBar } from "@nivo/bar";
 import { FilterPanelBarChart } from "./FilterControlBarChart";
-import { CentralityBarComponent } from "./CentralityBarComponent";
+import { CentralityBarComponent } from "../../../../../app/work/(workgroup)/social_network/centrality/CentralityBarComponent";
 
 export function CentralityBarChart({
   graphData,

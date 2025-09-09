@@ -1,14 +1,14 @@
 "use client";
 
 import CentralitySelectGraph from "../../../../../components/workstation/sna/centrality/pie/CentralitySelectGraph";
-import { selectedChart, selectedCentrality } from "@/app/lib/workstation/social/centrality/state";
+import {
+  selectedChart,
+  selectedCentrality,
+} from "@/app/lib/workstation/social/centrality/state";
 import { centralityData } from "@/app/lib/workstation/social/calculate/state";
 import { useAtomValue } from "jotai";
-import { ResponsivePie } from "@nivo/pie";
-import { ResponsiveBar } from "@nivo/bar";
-import { useTransformToPieData } from "@/app/lib/workstation/social/centrality/useTransformPie";
 import { CentralityPieChart } from "./CentralityPieChart";
-import { CentralityBarChart } from "./CentralityBarChart";
+import { CentralityBarChart } from "../../../../../components/workstation/sna/centrality/bar/CentralityBarChart";
 
 export default function CentralityHome() {
   const data = useAtomValue(centralityData);
@@ -16,7 +16,6 @@ export default function CentralityHome() {
   const centrality = useAtomValue(selectedCentrality);
   const graphData = data?.graphData;
 
-console.log(graphData)
   return (
     <div className="max-h-screen">
       <div className="w-full flex flex-col gap-2">
@@ -25,12 +24,18 @@ console.log(graphData)
         </div>
         <div className="w-full h-full ">
           {chart === "pie" && (
-            <CentralityPieChart graphData={graphData} centralityKey={centrality} />
+            <CentralityPieChart
+              graphData={graphData}
+              centralityKey={centrality}
+            />
           )}
           {chart === "bar" && (
- <div>
-             <CentralityBarChart graphData={graphData} centralityKey={centrality} />
-              </div>
+            <div>
+              <CentralityBarChart
+                graphData={graphData}
+                centralityKey={centrality}
+              />
+            </div>
           )}
         </div>
       </div>

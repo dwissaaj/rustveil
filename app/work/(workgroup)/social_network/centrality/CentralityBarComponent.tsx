@@ -1,7 +1,7 @@
 import { ColorSchemeId } from "@nivo/colors";
 import {
-  NivoBarType,
   BarFilterStateType,
+  NivoBarType
 } from "./state";
 import { ResponsiveBar } from "@nivo/bar";
 
@@ -9,7 +9,7 @@ export function CentralityBarComponent({
   data,
   chartFilter,
 }: {
-  data: { node: string; centrality: number }[];
+  data: NivoBarType[];
   chartFilter: BarFilterStateType;
 }) {
   return (

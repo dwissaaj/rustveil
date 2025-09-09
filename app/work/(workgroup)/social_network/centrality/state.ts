@@ -67,10 +67,11 @@ export const topShowDataPie = atom(100);
 
 
 export interface NivoBarType {
-  node: string;           
-  centrality: number;     
-  [key: string]: string | number;
+  node: string;
+  centrality: number;
+  [key: string]: string | number; 
 }
+
 
 export const topShowDataBar = atom(20);
 
