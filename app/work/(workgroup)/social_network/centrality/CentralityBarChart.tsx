@@ -14,17 +14,13 @@ import {
 } from "@heroui/react";
 import { useAtom, useAtomValue } from "jotai";
 import { useMemo } from "react";
-import {
-  BarFilterState,
-  showFilterAtom,
-  topShowDataBar,
-} from "../../../../../app/work/(workgroup)/social_network/centrality/state";
+import { BarFilterState, showFilterAtom, topShowDataBar } from "./state";
 import {
   selectedCentrality,
   selectedChart,
 } from "@/app/lib/workstation/social/centrality/state";
-import { FilterPanelBarChart } from "./FilterControlBarChart";
-import { CentralityBarComponent } from "../../../../../app/work/(workgroup)/social_network/centrality/CentralityBarComponent";
+import { FilterPanelBarChart } from "../../../../../components/workstation/sna/centrality/bar/FilterControlBarChart";
+import { CentralityBarComponent } from "../../../../../components/workstation/sna/centrality/bar/CentralityBarComponent";
 
 export function CentralityBarChart({
   graphData,
@@ -87,7 +83,20 @@ export function CentralityBarChart({
             No data available
           </div>
         ) : hasData ? (
-          <CentralityBarComponent data={data} chartFilter={chartFilter} />
+          <div className="flex-1 w-full overflow-auto">
+            <div className="min-w-[1200px] h-[75vh]">
+              <CentralityBarComponent
+                data={data}
+                chartFilter={{
+                  ...chartFilter,
+                  topMargin: 40,
+                  rightMargin: 40,
+                  bottomMargin: 120,
+                  leftMargin: 150,
+                }}
+              />
+            </div>
+          </div>
         ) : (
           <div className="flex items-center justify-center h-full text-gray-500">
             All Values or Zero
@@ -98,7 +107,7 @@ export function CentralityBarChart({
       <Modal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
-        size="5xl"
+        className="w-4/5 max-w-[1s00px]"
         scrollBehavior="outside"
       >
         <ModalContent>
@@ -114,9 +123,12 @@ export function CentralityBarChart({
           </ModalHeader>
 
           <ModalBody className="">
-            <div className="p-2 flex flex-row w-full gap-4 ">
+            <div
+              className="overflow-auto flex gap-4"
+              style={{ maxHeight: "75vh" }}
+            >
               <div className={showFilter ? "w-3/4" : "w-full"}>
-                <div className="flex justify-center items-start text-center">
+                <div className="flex justify-center items-start text-center mb-2">
                   <div className="flex flex-col gap-2">
                     <p className="text-lg font-bold">{chartFilter.title}</p>
                     <p className="text-sm font-light">
@@ -127,12 +139,16 @@ export function CentralityBarChart({
                     </p>
                   </div>
                 </div>
-                <div className="flex-1 h-[75vh]">
-                  <CentralityBarComponent
-                    data={data}
-                    chartFilter={chartFilter}
-                  />
-                </div>
+                <CentralityBarComponent
+                  data={data}
+                  chartFilter={{
+                    ...chartFilter,
+                    topMargin: 40,
+                    leftMargin: 120,
+                    rightMargin: 40,
+                    bottomMargin: 100,
+                  }}
+                />
               </div>
 
               {showFilter && (

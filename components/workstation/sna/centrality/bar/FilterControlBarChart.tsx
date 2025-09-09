@@ -302,8 +302,8 @@ export function FilterPanelBarChart({ maxNodes }: { maxNodes: number }) {
                   <Slider
                     size="sm"
                     label="Tick Offset"
-                    minValue={-60}
-                    maxValue={60}
+                    minValue={-200}
+                    maxValue={50}
                     value={filter.axisLeftLegendOffset}
                     onChange={(val) =>
                       setFilter({

@@ -2,7 +2,7 @@ import { ColorSchemeId } from "@nivo/colors";
 import {
   BarFilterStateType,
   NivoBarType
-} from "./state";
+} from "../../../../../app/work/(workgroup)/social_network/centrality/state";
 import { ResponsiveBar } from "@nivo/bar";
 import { useTheme } from "next-themes";
 
@@ -46,7 +46,7 @@ export function CentralityBarComponent({
         }}
         axisLeft={{
           tickRotation: chartFilter.axisLeftRotation,
-          tickSize:  chartFilter.axisLeftRotation,
+          tickSize:  chartFilter.axisLeftSize,
           tickPadding:  chartFilter.axisLeftPadding,
           legend:  chartFilter.axisLeftLegend,
           legendPosition: "middle",
