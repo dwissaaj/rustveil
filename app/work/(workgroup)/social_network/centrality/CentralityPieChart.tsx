@@ -1,11 +1,9 @@
 "use client";
-import { ColorSchemeId } from "@nivo/colors";
+
 import { CalculateCentralityType } from "@/app/lib/workstation/social/calculate/state";
 import { FilterIcon, InfoIcon } from "@/components/icon/IconFilter";
 import { FullScreenIcon } from "@/components/icon/IconView";
 import {
-  Select,
-  SelectItem,
   Button,
   Modal,
   ModalBody,
@@ -13,12 +11,9 @@ import {
   ModalHeader,
   useDisclosure,
   Tooltip,
-  ModalFooter,
-  Slider,
-  Input,
 } from "@heroui/react";
 import { ResponsivePie } from "@nivo/pie";
-import { atom, useAtom, useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { useMemo } from "react";
 import { FilterState, showFilterAtom } from "./state";
 import {
@@ -26,7 +21,6 @@ import {
   selectedChart,
 } from "@/app/lib/workstation/social/centrality/state";
 import { FilterPanel } from "./FilterPanel";
-import { CentralityPie } from "./CentralityPie";
 
 export function CentralityPieChart({
   graphData,
@@ -38,7 +32,7 @@ export function CentralityPieChart({
   topN?: number;
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [chartFilter, setChartFilter] = useAtom(FilterState);
+  const chartFilter = useAtomValue(FilterState);
   const [showFilter, setshowFilter] = useAtom(showFilterAtom);
   const chart = useAtomValue(selectedChart);
   const centrality = useAtomValue(selectedCentrality);
@@ -85,7 +79,15 @@ export function CentralityPieChart({
             No data available
           </div>
         ) : hasData ? (
-          <CentralityPie data={data} chartFilter={chartFilter} height="500px" />
+          <ResponsivePie
+            data={data}
+            margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+            innerRadius={chartFilter.innerRadius}
+            padAngle={chartFilter.padAngle}
+            cornerRadius={chartFilter.cornerRadius}
+            activeOuterRadiusOffset={8}
+            colors={{ scheme: "nivo" }}
+          />
         ) : (
           <div className="flex items-center justify-center h-full text-gray-500">
             All Values or Zero
@@ -111,33 +113,33 @@ export function CentralityPieChart({
             />
           </ModalHeader>
 
-          <ModalBody className="p-2 ">
-            <div className="p-2 flex flex-row w-full gap-4 ">
-              <div className={showFilter ? "w-3/4" : "w-full"}>
-                <div>
-                  <p className="text-lg font-bold">{chartFilter.title}</p>
-                  <p className="text-sm font-light">
-                    {chartFilter.description}
-                  </p>
-                  <p className="text-sm font-light italic">
-                    {chartFilter.author}
-                  </p>
-                </div>
+<ModalBody className="">
+  <div className="p-2 flex flex-row w-full gap-4 ">
+    <div className={showFilter ? "w-3/4" : "w-full"}>
+      <div>
+        <p className="text-lg font-bold">{chartFilter.title}</p>
+        <p className="text-sm font-light">{chartFilter.description}</p>
+        <p className="text-sm font-light italic">{chartFilter.author}</p>
+      </div>
+      <div className="flex-1 h-[75vh]">
+        <ResponsivePie
+          data={data}
+          margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+          innerRadius={chartFilter.innerRadius}
+          padAngle={chartFilter.padAngle}
+          cornerRadius={chartFilter.cornerRadius}
+          activeOuterRadiusOffset={8}
+          arcLinkLabelsOffset={chartFilter.labelsOffset}
+          arcLinkLabelsTextOffset={chartFilter.textOffset}
+          
+        />
+      </div>
+    </div>
 
-                <CentralityPie
-                  data={data}
-                  chartFilter={chartFilter}
-                  height="75vh"
-                />
-              </div>
+    {showFilter && <div className="w-1/4"><FilterPanel /></div>}
+  </div>
+</ModalBody>
 
-              {showFilter && (
-                <div className="m-2 w-1/4">
-                  <FilterPanel />
-                </div>
-              )}
-            </div>
-          </ModalBody>
         </ModalContent>
       </Modal>
     </div>

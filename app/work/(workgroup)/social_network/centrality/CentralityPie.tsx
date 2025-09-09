@@ -1,17 +1,13 @@
 import { ResponsivePie } from "@nivo/pie";
 import { ColorSchemeId } from "@nivo/colors";
-import { FilterStateType } from "./state";
-export interface PieDatum {
-  id: string;
-  value: number;
-  label?: string;
-}
+import { FilterStateType, NivoPieType } from "./state";
+
 export function CentralityPie({
   data,
   chartFilter,
   height = "75vh",
 }: {
-  data: PieDatum[];
+  data: NivoPieType[];
   chartFilter: FilterStateType
   height?: string;
 }) {
