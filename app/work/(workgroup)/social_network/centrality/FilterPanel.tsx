@@ -1,22 +1,40 @@
 import { useAtom } from "jotai";
-import { filterState, ColorSchema } from "./state";
-import { Select, SelectItem,  Slider, Input } from "@heroui/react";
+import { FilterState, ColorSchema } from "./state";
+import { Select, SelectItem, Slider, Input, Textarea } from "@heroui/react";
 export function FilterPanel() {
-  const [filter, setFilter] = useAtom(filterState);
+  const [filter, setFilter] = useAtom(FilterState);
 
   return (
-    <div className="w-64 border-l pl-4">
-      <h3 className="font-medium mb-2 flex flex-col gap-8">Filter Options</h3>
-
+    <div className="w-64 ">
+      <h3 className="font-xl font-bold flex flex-col gap-8">Filter Options</h3>
+      <Input
+        className="my-4"
+        label="Title"
+        placeholder={filter.title}
+        value={filter.title}
+        onChange={(e) => setFilter({ ...filter, title: e.target.value })}
+      />
+      <Input
+        className="my-4"
+        label="Author"
+        placeholder="Author Reference"
+        value={filter.author}
+        onChange={(e) => setFilter({ ...filter, author: e.target.value })}
+      />
+      <Textarea
+        className="my-4"
+        label="Description"
+        placeholder="Description about the chart"
+        value={filter.description}
+        onChange={(e) => setFilter({ ...filter, description: e.target.value })}
+      />
       <Slider
         label="Inner Radius"
         step={0.05}
         minValue={0}
         maxValue={0.95}
         value={filter.innerRadius}
-        onChange={(val) =>
-          setFilter({ ...filter, innerRadius: Number(val) })
-        }
+        onChange={(val) => setFilter({ ...filter, innerRadius: Number(val) })}
       />
 
       <Slider
@@ -32,20 +50,31 @@ export function FilterPanel() {
         label="Corner Radius"
         step={1}
         minValue={0}
-        maxValue={20}
+        maxValue={45}
         value={filter.cornerRadius}
         onChange={(val) => setFilter({ ...filter, cornerRadius: Number(val) })}
       />
-
-      <Input
-      className="my-4"
-        label="Title"
-        placeholder="Title graph"
-        value={filter.title}
-        onChange={(e) => setFilter({ ...filter, title: e.target.value })}
+      <Slider
+        label="Label Offset"
+        step={1}
+        minValue={-24}
+        maxValue={24}
+        defaultValue={0}
+        value={filter.labelsOffset}
+        onChange={(val) => setFilter({ ...filter, labelsOffset: Number(val) })}
+      />
+      <Slider
+        label="Text Offset"
+        step={1}
+        defaultValue={0}
+        minValue={-24}
+        maxValue={24}
+        value={filter.textOffset}
+        onChange={(val) => setFilter({ ...filter, textOffset: Number(val) })}
       />
 
       <Select
+        className="my-4"
         label="Color Scheme"
         selectedKeys={[filter.colorSchema]}
         onChange={(e) =>

@@ -1,14 +1,30 @@
 "use client";
-
+import { ColorSchemeId } from "@nivo/colors"; // add this
 import { CalculateCentralityType } from "@/app/lib/workstation/social/calculate/state";
 import { FilterIcon, InfoIcon } from "@/components/icon/IconFilter";
 import { FullScreenIcon } from "@/components/icon/IconView";
-import { Select, SelectItem, Button, Modal, ModalBody, ModalContent, ModalHeader, useDisclosure, Tooltip, ModalFooter, Slider, Input } from "@heroui/react";
+import {
+  Select,
+  SelectItem,
+  Button,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
+  useDisclosure,
+  Tooltip,
+  ModalFooter,
+  Slider,
+  Input,
+} from "@heroui/react";
 import { ResponsivePie } from "@nivo/pie";
 import { atom, useAtom, useAtomValue } from "jotai";
 import { useMemo } from "react";
-import { showFilterAtom } from "./state";
-import { selectedCentrality, selectedChart } from "@/app/lib/workstation/social/centrality/state";
+import { FilterState, showFilterAtom } from "./state";
+import {
+  selectedCentrality,
+  selectedChart,
+} from "@/app/lib/workstation/social/centrality/state";
 import { FilterPanel } from "./FilterPanel";
 
 export function CentralityPieChart({
@@ -20,9 +36,9 @@ export function CentralityPieChart({
   centralityKey: keyof Omit<CalculateCentralityType, "node_map">;
   topN?: number;
 }) {
-    const { isOpen, onOpen, onOpenChange } = useDisclosure(); 
-
-    const [showFilter, setshowFilter] = useAtom(showFilterAtom)
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [chartFilter, setChartFilter] = useAtom(FilterState);
+  const [showFilter, setshowFilter] = useAtom(showFilterAtom);
   const chart = useAtomValue(selectedChart);
   const centrality = useAtomValue(selectedCentrality);
   const nodes = graphData?.node_map ?? {};
@@ -45,10 +61,20 @@ export function CentralityPieChart({
   return (
     <div className="w-full flex flex-col gap-10 border rounded-xl p-4">
       <div className="font-medium flex flex-row justify-start gap-4 items-center">
-        <Button variant="flat" isIconOnly startContent={<FullScreenIcon className="w-6" />} color="primary" onPress={onOpen}>
-        </Button>
-         <Tooltip content="Customize Chart in Full Screen Mode">
-            <Button variant="flat" isIconOnly startContent={<InfoIcon className="w-6" />} color="primary"></Button>
+        <Button
+          variant="flat"
+          isIconOnly
+          startContent={<FullScreenIcon className="w-6" />}
+          color="primary"
+          onPress={onOpen}
+        ></Button>
+        <Tooltip content="Customize Chart in Full Screen Mode">
+          <Button
+            variant="flat"
+            isIconOnly
+            startContent={<InfoIcon className="w-6" />}
+            color="primary"
+          ></Button>
         </Tooltip>
       </div>
 
@@ -61,10 +87,13 @@ export function CentralityPieChart({
           <ResponsivePie
             data={data}
             margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
-            innerRadius={0.5}
-            padAngle={1}
-            cornerRadius={3}
+            innerRadius={chartFilter.innerRadius}
+            padAngle={chartFilter.padAngle}
+            cornerRadius={chartFilter.cornerRadius}
             activeOuterRadiusOffset={8}
+            arcLinkLabelsOffset={chartFilter.labelsOffset}
+            arcLinkLabelsTextOffset={chartFilter.textOffset}
+            colors={{ scheme: chartFilter.colorSchema as ColorSchemeId }}
           />
         ) : (
           <div className="flex items-center justify-center h-full text-gray-500">
@@ -73,42 +102,62 @@ export function CentralityPieChart({
         )}
       </div>
 
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        size="5xl"
+        scrollBehavior="outside"
+      >
+        <ModalContent>
+          <ModalHeader className="flex flex-row justify-start gap-4 items-center">
+            {chart.toUpperCase()} - {centrality.toUpperCase()}
+            <Button
+              variant="light"
+              color="default"
+              isIconOnly
+              startContent={<FilterIcon className="w-4" />}
+              onPress={() => setshowFilter(!showFilter)}
+            />
+          </ModalHeader>
 
-<Modal isOpen={isOpen} onOpenChange={onOpenChange} size="5xl" scrollBehavior="outside">
-  <ModalContent>
-    <ModalHeader className="flex flex-row justify-start gap-4 items-center">
-      {chart} {centrality}
-      <Button
-        variant="light"
-        color="default"
-        isIconOnly
-        startContent={<FilterIcon className="w-4" />}
-        onPress={() => setshowFilter(!showFilter)}
-      />
-    </ModalHeader>
+          <ModalBody className="p-2 ">
+            <div className="p-2 flex flex-row w-full gap-4 ">
+              <div className={showFilter ? "w-3/4" : "w-full"}>
+                <div>
+                  <p className="text-lg font-bold">{chartFilter.title}</p>
+                  <p className="text-sm font-light">
+                    {chartFilter.description}
+                  </p>
+                  <p className="text-sm font-light italic">
+                    {chartFilter.author}
+                  </p>
+                </div>
+                <div className="flex-1 h-[75vh]">
+                  <ResponsivePie
+                    data={data}
+                    margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+                    innerRadius={chartFilter.innerRadius}
+                    padAngle={chartFilter.padAngle}
+                    cornerRadius={chartFilter.cornerRadius}
+                    activeOuterRadiusOffset={8}
+                    arcLinkLabelsOffset={chartFilter.labelsOffset}
+                    arcLinkLabelsTextOffset={chartFilter.textOffset}
+                    colors={{
+                      scheme: chartFilter.colorSchema as ColorSchemeId,
+                    }}
+                  />
+                </div>
+              </div>
 
-    <ModalBody>
-      <div className="flex flex-row h-[75vh] gap-4">
-        {/* Chart */}
-        <div className="flex-1 border rounded-lg">
-          <ResponsivePie
-            data={data}
-            margin={{ top: 40, right: 40, bottom: 40, left: 40 }}
-            innerRadius={0.5}
-            padAngle={1}
-            cornerRadius={3}
-            activeOuterRadiusOffset={8}
-          />
-        </div>
-
-
-       {showFilter && <FilterPanel />}
-      </div>
-    </ModalBody>
-  </ModalContent>
-</Modal>
-
-
+              {showFilter && (
+                <div className="m-2 w-1/4 ">
+                  <FilterPanel />
+                </div>
+              )}
+            </div>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </div>
   );
 }
