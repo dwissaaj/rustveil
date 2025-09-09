@@ -78,6 +78,9 @@ export const topShowDataBar = atom(20);
 
 
 export interface BarFilterStateType {
+  title: string;
+  description: string;
+  author: string;
   layout: "horizontal"| "vertical";
   topMargin: number;
   bottomMargin: number;
@@ -102,6 +105,9 @@ export interface BarFilterStateType {
 
 
 export const BarFilterState = atom<BarFilterStateType>({
+    title: 'Chart Title',
+  description: "Simple Description",
+  author: "Your Name",
   layout: "horizontal",
   topMargin: 50,
   bottomMargin: 50,

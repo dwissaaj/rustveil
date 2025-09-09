@@ -115,10 +115,26 @@ export function CentralityBarChart({
             />
           </ModalHeader>
 
-          <ModalBody className="w-full">
+          <ModalBody className="">
             <div className="p-2 flex flex-row w-full gap-4 ">
               <div className={showFilter ? "w-3/4" : "w-full"}>
-                <CentralityBarComponent data={data} chartFilter={chartFilter} />
+                <div className="flex justify-center items-start text-center">
+                  <div className="flex flex-col gap-2">
+                    <p className="text-lg font-bold">{chartFilter.title}</p>
+                    <p className="text-sm font-light">
+                      {chartFilter.description}
+                    </p>
+                    <p className="text-sm font-light italic">
+                      {chartFilter.author}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex-1 h-[75vh]">
+                  <CentralityBarComponent
+                    data={data}
+                    chartFilter={chartFilter}
+                  />
+                </div>
               </div>
 
               {showFilter && (

@@ -38,18 +38,40 @@ export function FilterPanelBarChart({ maxNodes }: { maxNodes: number }) {
     { label: "Middle", value: "middle" },
     { label: "End", value: "end" },
   ];
-  // topMargin: 50,
-  // bottomMargin: 50,
-  // leftMargin: 50,
-  // rightMargin:50,
-  // borderRadius: 0,
-  // borderWidth: 0,
-  // labelPosition: "start",
-  // labelOffset: 0,
+
   return (
     <div className="flex flex-col gap-2">
       <div>
         <h3 className="text-2xl font-bold my-2">Filter Options</h3>
+      </div>
+      <div className="flex flex-col gap-2">
+        <Input
+          size="sm"
+          className=""
+          label="Chart Title"
+          placeholder="Title"
+          value={filter.title}
+          onChange={(e) =>
+            setFilter({ ...filter, title: e.target.value })
+          }
+        />
+        <Textarea
+        className="my-4"
+        label="Description"
+        placeholder="Description about the chart"
+        value={filter.description}
+        onChange={(e) => setFilter({ ...filter, description: e.target.value })}
+      />
+        <Input
+          size="sm"
+          className=""
+          label="Author"
+          placeholder="Your Name"
+          value={filter.author}
+          onChange={(e) =>
+            setFilter({ ...filter, author: e.target.value })
+          }
+        />
       </div>
       <div>
         <Switch
