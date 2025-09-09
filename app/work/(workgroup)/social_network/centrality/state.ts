@@ -29,19 +29,27 @@ export enum ColorSchema {
   yellow_orange_red = "yellow_orange_red",
 }
 
-export interface FilterState {
+export interface FilterStateType {
   innerRadius: number;
   padAngle: number;
   cornerRadius: number;
   colorSchema: ColorSchema;
   title: string;
+  description: string;
+  author: string;
+  labelsOffset :number
+  textOffset: number
 }
 
-// ✅ proper default state
-export const filterState = atom<FilterState>({
+
+export const FilterState = atom<FilterStateType>({
   innerRadius: 0.5,
   padAngle: 1,
-  cornerRadius: 3,
+  labelsOffset : 0,
+  textOffset:0,
+  cornerRadius: 0,
   colorSchema: ColorSchema.nivo,
   title: "My Chart",
+  description: "Description",
+  author: "Your Name"
 });
