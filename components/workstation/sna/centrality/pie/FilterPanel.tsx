@@ -1,8 +1,24 @@
 import { useAtom } from "jotai";
-import { FilterState, ColorSchema } from "./state";
+import { FilterState, ColorSchema, topShowDataPie } from "../../../../../app/work/(workgroup)/social_network/centrality/state";
 import { Select, SelectItem, Slider, Input, Textarea } from "@heroui/react";
-export function FilterPanel() {
+export function FilterPanel({ maxNodes }: { maxNodes: number }) {
   const [filter, setFilter] = useAtom(FilterState);
+  const [topN, setTopN] = useAtom(topShowDataPie);
+
+  const topOptions = [
+    { label: "Top 10", value: 10 },
+    { label: "Top 20", value: 20 },
+    { label: "Top 100", value: 100 },
+    {
+      label: `Half (${Math.floor(maxNodes / 2)})`,
+      value: Math.floor(maxNodes / 2),
+    },
+    {
+      label: `3/4 (${Math.floor((maxNodes * 3) / 4)})`,
+      value: Math.floor((maxNodes * 3) / 4),
+    },
+    { label: `All (${maxNodes})`, value: maxNodes },
+  ];
 
   return (
     <div className="w-64 ">
@@ -28,6 +44,16 @@ export function FilterPanel() {
         value={filter.description}
         onChange={(e) => setFilter({ ...filter, description: e.target.value })}
       />
+      <Select
+        className="my-2 max-w-xs"
+        label="Show Top Nodes"
+        value={topN.toString()}
+        onChange={(e) => setTopN(Number(e.target.value))}
+      >
+        {topOptions.map((opt) => (
+          <SelectItem key={opt.value.toString()}>{opt.label}</SelectItem>
+        ))}
+      </Select>
       <Slider
         label="Inner Radius"
         step={0.05}

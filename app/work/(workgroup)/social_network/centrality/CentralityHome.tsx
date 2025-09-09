@@ -1,6 +1,6 @@
 "use client";
 
-import CentralitySelectGraph from "./CentralitySelectGraph";
+import CentralitySelectGraph from "../../../../../components/workstation/sna/centrality/pie/CentralitySelectGraph";
 import { selectedChart, selectedCentrality } from "@/app/lib/workstation/social/centrality/state";
 import { centralityData } from "@/app/lib/workstation/social/calculate/state";
 import { useAtomValue } from "jotai";
@@ -15,7 +15,7 @@ export default function CentralityHome() {
   const centrality = useAtomValue(selectedCentrality);
   const graphData = data?.graphData;
 
-  console.log(graphData)
+
   return (
     <div className="max-h-screen">
       <div className="w-full flex flex-col gap-2">

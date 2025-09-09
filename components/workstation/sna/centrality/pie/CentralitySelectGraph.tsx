@@ -10,7 +10,7 @@ export default function CentralitySelectGraph() {
   const [chart, setChart] = useAtom(selectedChart);
   const [centrality, setCentrality] = useAtom(selectedCentrality);
 
-  // local state for centrality before refreshing
+
   const [pendingCentrality, setPendingCentrality] = useState<CentralityKey>(centrality);
 
   return (
