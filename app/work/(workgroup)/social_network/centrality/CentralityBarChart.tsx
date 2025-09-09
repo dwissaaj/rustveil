@@ -14,15 +14,21 @@ import {
 } from "@heroui/react";
 import { useAtom, useAtomValue } from "jotai";
 import { useMemo } from "react";
-import { PieFilterState, showFilterAtom, topShowDataPie } from "./state";
+import {
+  BarFilterState,
+  PieFilterState,
+  showFilterAtom,
+  topShowDataBar,
+} from "./state";
 import {
   selectedCentrality,
   selectedChart,
 } from "@/app/lib/workstation/social/centrality/state";
-import { FilterPanelPieChart } from "../../../../../components/workstation/sna/centrality/pie/FilterPanelPieChart";
-import { CentralityPieComponent } from "../../../../../components/workstation/sna/centrality/pie/CentralityPieComponent";
+import { ResponsiveBar } from "@nivo/bar";
+import { FilterPanelBarChart } from "./FilterControlBarChart";
+import { CentralityBarComponent } from "./CentralityBarComponent";
 
-export function CentralityPieChart({
+export function CentralityBarChart({
   graphData,
   centralityKey,
 }: {
@@ -30,33 +36,32 @@ export function CentralityPieChart({
   centralityKey: keyof Omit<CalculateCentralityType, "node_map">;
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const chartFilter = useAtomValue(PieFilterState);
+  const chartFilter = useAtomValue(BarFilterState);
   const [showFilter, setshowFilter] = useAtom(showFilterAtom);
   const chart = useAtomValue(selectedChart);
   const centrality = useAtomValue(selectedCentrality);
   const nodes = graphData?.node_map ?? {};
   const values = graphData?.[centralityKey] ?? [];
 
-  const topN = useAtomValue(topShowDataPie);
+  const topN = useAtomValue(topShowDataBar);
+
   const data = useMemo(() => {
-    const mapped = values
-      .map((value, index) => ({
-        id: nodes[index] ?? `Node ${index}`,
-        label: nodes[index] ?? `Node ${index}`,
-        value,
-      }))
-      .filter((d) => d.value > 0)
-      .sort((a, b) => b.value - a.value);
+    const mapped = values.map((value, index) => ({
+      node: nodes[index] ?? `Node ${index}`,
+      centrality: Number(value.toPrecision(3)), // max 3 significant digits
+    }));
 
-    const maxValue = mapped[0]?.value ?? 0;
-    const threshold = maxValue * 0.05;
-    const filtered = mapped.filter((d) => d.value >= threshold);
+    // sort descending
+    const sorted = mapped.sort((a, b) => b.centrality - a.centrality);
 
-    const safeTopN = Math.max(10, Math.min(topN, filtered.length)); 
-    return filtered.slice(0, safeTopN);
+    // slice topN
+    let topCount = topN ?? 10;
+    if (topCount > sorted.length) topCount = sorted.length;
+
+    return sorted.slice(0, topCount);
   }, [values, nodes, topN]);
 
-  const hasData = data.some((d) => d.value > 0);
+  const hasData = data.some((d) => d.centrality > 0);
 
   return (
     <div className="w-full flex flex-col gap-10 border rounded-xl p-4">
@@ -78,13 +83,13 @@ export function CentralityPieChart({
         </Tooltip>
       </div>
 
-      <div className="flex-1 min-h-[500px]">
+      <div className="flex-1 w-full">
         {graphData === null || graphData === undefined ? (
           <div className="flex items-center justify-center h-full text-gray-500">
             No data available
           </div>
         ) : hasData ? (
-          <CentralityPieComponent data={data} chartFilter={chartFilter} />
+          <CentralityBarComponent data={data} chartFilter={chartFilter} />
         ) : (
           <div className="flex items-center justify-center h-full text-gray-500">
             All Values or Zero
@@ -110,29 +115,15 @@ export function CentralityPieChart({
             />
           </ModalHeader>
 
-          <ModalBody className="">
+          <ModalBody className="w-full">
             <div className="p-2 flex flex-row w-full gap-4 ">
               <div className={showFilter ? "w-3/4" : "w-full"}>
-                <div>
-                  <p className="text-lg font-bold">{chartFilter.title}</p>
-                  <p className="text-sm font-light">
-                    {chartFilter.description}
-                  </p>
-                  <p className="text-sm font-light italic">
-                    {chartFilter.author}
-                  </p>
-                </div>
-                <div className="flex-1 h-[75vh]">
-                  <CentralityPieComponent
-                    data={data}
-                    chartFilter={chartFilter}
-                  />
-                </div>
+                <CentralityBarComponent data={data} chartFilter={chartFilter} />
               </div>
 
               {showFilter && (
                 <div className="w-1/4">
-                  <FilterPanelPieChart
+                  <FilterPanelBarChart
                     maxNodes={Object.keys(graphData?.node_map ?? {}).length}
                   />
                 </div>

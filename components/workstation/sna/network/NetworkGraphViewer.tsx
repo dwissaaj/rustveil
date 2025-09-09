@@ -2,9 +2,7 @@
 
 import { useAtomValue } from "jotai";
 import { ResponsiveNetwork } from "@nivo/network";
-import {
-  NetworkGraphData,
-} from "@/app/lib/workstation/social/network/state";
+import { NetworkGraphData } from "@/app/lib/workstation/social/network/state";
 import { useTheme } from "next-themes";
 import NetworkEmptyViewer from "./NetworkEmptyViewer";
 import { centralityData } from "@/app/lib/workstation/social/calculate/state";
@@ -18,25 +16,20 @@ export default function NetworkGraphViewer() {
     return <NetworkEmptyViewer />;
   }
 
-  // --- theme colors ---
   const textColor = theme === "dark" ? "#e5e7eb" : "#1f2937";
   const axisColor = theme === "dark" ? "#9ca3af" : "#6b7280";
   const gridColor = theme === "dark" ? "#374151" : "#e5e7eb";
   const tooltipBackgroundColor = theme === "dark" ? "#374151" : "#ffffff";
   const tooltipTextColor = theme === "dark" ? "#e5e7eb" : "#1f2937";
-  const linkColor = theme === "dark" ? "#9ca3af" : "#374151";
-  // --- tooltip with REAL centrality ---
+
   const NodeTooltip = ({ node }: { node: any }) => {
-    // safely check if centrality data is available
     const centralityArr =
       centralityAtom?.graphData?.betweenness_centrality ?? [];
     const nodeMap = centralityAtom?.graphData?.node_map ?? {};
 
-    // find index of node in node_map
     const entry = Object.entries(nodeMap).find(([_, id]) => id === node.id);
     const idx = entry ? Number(entry[0]) : -1;
 
-    // lookup centrality value
     const realCentrality =
       idx >= 0 && idx < centralityArr.length ? centralityArr[idx] : 0;
 

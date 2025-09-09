@@ -8,6 +8,7 @@ import { ResponsivePie } from "@nivo/pie";
 import { ResponsiveBar } from "@nivo/bar";
 import { useTransformToPieData } from "@/app/lib/workstation/social/centrality/useTransformPie";
 import { CentralityPieChart } from "./CentralityPieChart";
+import { CentralityBarChart } from "./CentralityBarChart";
 
 export default function CentralityHome() {
   const data = useAtomValue(centralityData);
@@ -15,7 +16,7 @@ export default function CentralityHome() {
   const centrality = useAtomValue(selectedCentrality);
   const graphData = data?.graphData;
 
-
+console.log(graphData)
   return (
     <div className="max-h-screen">
       <div className="w-full flex flex-col gap-2">
@@ -28,7 +29,7 @@ export default function CentralityHome() {
           )}
           {chart === "bar" && (
  <div>
-              bar {centrality}
+             <CentralityBarChart graphData={graphData} centralityKey={centrality} />
               </div>
           )}
         </div>
