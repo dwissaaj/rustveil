@@ -22,7 +22,7 @@ import {
 } from "@/app/lib/workstation/social/centrality/state";
 import { FilterPanelBarChart } from "../../../../../components/workstation/sna/centrality/bar/FilterControlBarChart";
 import { CentralityBarComponent } from "../../../../../components/workstation/sna/centrality/bar/CentralityBarComponent";
-import { useExportToImage } from "./useExport";
+import { useExportToImage } from "../../../../lib/workstation/social/useExportToImage";
 
 export function CentralityBarChart({
   graphData,
@@ -140,11 +140,9 @@ export function CentralityBarChart({
       </div>
 
       <Modal
-             ref={chartRef}
         isOpen={isOpen}
         onOpenChange={onOpenChange}
-        // className="w-4/5 max-w-[1600px]"
-        size="full"
+        className="w-4/5 max-w-[1800px]"
         scrollBehavior="outside"
       >
         <ModalContent>
@@ -162,15 +160,12 @@ export function CentralityBarChart({
             </Button>
           </ModalHeader>
 
-          <ModalBody className="">
-            <div
-
-              className="overflow-auto flex gap-4"
-              style={{ maxHeight: "75vh" }}
-            >
-              <div   className={showFilter ? "w-3/4" : "w-full"}>
-                <div   className="flex justify-center items-start text-center mb-2">
-                  <div className="flex flex-col gap-2">
+          <ModalBody>
+            <div className="flex gap-4">
+              <div className={showFilter ? "w-3/4" : "w-full"}>
+                {/* ✅ Export wrapper includes title, description, author, and chart */}
+                <div ref={chartRef} className="bg-white p-4">
+                  <div className="flex flex-col gap-2 text-center mb-4">
                     <p className="text-lg font-bold">{chartFilter.title}</p>
                     <p className="text-sm font-light">
                       {chartFilter.description}
@@ -179,22 +174,27 @@ export function CentralityBarChart({
                       {chartFilter.author}
                     </p>
                   </div>
+
+                  <CentralityBarComponent
+                    data={data}
+                    chartFilter={{
+                      ...chartFilter,
+                      topMargin: 40,
+                      leftMargin: 120,
+                      rightMargin: 40,
+                      bottomMargin: 100,
+                    }}
+                  />
                 </div>
-                <CentralityBarComponent
-                  data={data}
-                  chartFilter={{
-                    ...chartFilter,
-                    topMargin: 40,
-                    leftMargin: 120,
-                    rightMargin: 40,
-                    bottomMargin: 100,
-                  }}
-                />
               </div>
 
               {showFilter && (
-                <div className="w-1/4">
+                <div
+                  className="w-1/4 overflow-auto"
+                  style={{ maxHeight: "75vh" }}
+                >
                   <FilterPanelBarChart
+                    exportImage={handletoImage}
                     maxNodes={Object.keys(graphData?.node_map ?? {}).length}
                   />
                 </div>

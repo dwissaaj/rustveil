@@ -35,7 +35,7 @@ export default function NetworkEmptyViewer() {
   return (
     <div className="flex flex-1 items-center justify-center h-full">
       <div className="flex items-center gap-2">
-        <Button  startContent={<InfoIconSolid />} color="warning">
+        <Button startContent={<InfoIconSolid />} color="warning">
           Calculate Centrality First to show Graph
         </Button>
 

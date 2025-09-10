@@ -46,7 +46,6 @@ import {
 } from "@heroui/react";
 import { ReportIcon } from "@/components/icon/IconFilter";
 
-
 export default function SocialInfoMenu() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   return (
@@ -66,7 +65,6 @@ export default function SocialInfoMenu() {
           </DropdownItem>
         </DropdownMenu>
       </Dropdown>
-      
     </>
   );
 }

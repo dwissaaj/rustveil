@@ -1,6 +1,6 @@
 import { atom } from "jotai";
 
-export const selectedChart = atom<"pie" | "bar">("pie"); 
+export const selectedChart = atom<"pie" | "bar">("pie");
 
 export type CentralityKey =
   | "betweenness_centrality"

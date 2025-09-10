@@ -46,16 +46,26 @@ import {
 } from "@heroui/react";
 import { VerticesIcon } from "@/components/icon/IconFilter";
 
-
 export default function SocialEditMenu() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   return (
     <>
       <Dropdown>
         <DropdownTrigger>
-          <Button size="lg" className="text-black dark:text-white" color="primary" variant="light">Edit</Button>
+          <Button
+            size="lg"
+            className="text-black dark:text-white"
+            color="primary"
+            variant="light"
+          >
+            Edit
+          </Button>
         </DropdownTrigger>
-        <DropdownMenu color="primary" variant="flat" aria-label="locate vertices">
+        <DropdownMenu
+          color="primary"
+          variant="flat"
+          aria-label="locate vertices"
+        >
           <DropdownItem
             key="vertices"
             description="Select vertices for analysis"

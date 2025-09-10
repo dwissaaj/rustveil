@@ -1,4 +1,3 @@
-
 import { RefreshIcon } from "@/components/icon/IconView";
 import {
   Table,
@@ -118,7 +117,6 @@ export default function NetworkTableViewer() {
         bottomContentPlacement="outside"
         topContent={
           <Button
-
             onPress={loadData}
             isIconOnly
             className="m-2"

@@ -12,9 +12,14 @@ import {
   Textarea,
   Accordion,
   AccordionItem,
+  Button,
 } from "@heroui/react";
-
-export function FilterPanelPieChart({ maxNodes }: { maxNodes: number }) {
+import { DownloadActionIconSolid } from "@/components/icon/IconAction";
+interface FilterType {
+  maxNodes: number;
+  exportImage: () => void;
+}
+export function FilterPanelPieChart({ maxNodes, exportImage }: FilterType) {
   const [filter, setFilter] = useAtom(PieFilterState);
   const [topN, setTopN] = useAtom(topShowDataPie);
 
@@ -40,69 +45,64 @@ export function FilterPanelPieChart({ maxNodes }: { maxNodes: number }) {
       </div>
       <Accordion>
         <AccordionItem key="1" aria-label="General Tab" title="General">
-<div className="flex flex-col gap-2">
-             <Select
-            className=""
-            label="Show Top Nodes"
-            value={topN.toString()}
-            onChange={(e) => setTopN(Number(e.target.value))}
-          >
-            {topOptions.map((opt) => (
-              <SelectItem key={opt.value.toString()}>{opt.label}</SelectItem>
-            ))}
-          </Select>
-          <Select
-            className="my-4"
-            label="Color Scheme"
-            selectedKeys={[filter.colorSchema]}
-            onChange={(e) =>
-              setFilter({
-                ...filter,
-                colorSchema: e.target.value as ColorSchema,
-              })
-            }
-          >
-            {Object.values(ColorSchema).map((schema) => (
-              <SelectItem key={schema}>{schema}</SelectItem>
-            ))}
-          </Select>
-</div>
-          
+          <div className="flex flex-col gap-2">
+            <Select
+              className=""
+              label="Show Top Nodes"
+              value={topN.toString()}
+              onChange={(e) => setTopN(Number(e.target.value))}
+            >
+              {topOptions.map((opt) => (
+                <SelectItem key={opt.value.toString()}>{opt.label}</SelectItem>
+              ))}
+            </Select>
+            <Select
+              className="my-4"
+              label="Color Scheme"
+              selectedKeys={[filter.colorSchema]}
+              onChange={(e) =>
+                setFilter({
+                  ...filter,
+                  colorSchema: e.target.value as ColorSchema,
+                })
+              }
+            >
+              {Object.values(ColorSchema).map((schema) => (
+                <SelectItem key={schema}>{schema}</SelectItem>
+              ))}
+            </Select>
+          </div>
         </AccordionItem>
         <AccordionItem key="2" aria-label="title tab" title="Title">
           <div className="flex flex-col gap-2">
             <Input
-            className=""
-            label="Title"
-            placeholder={filter.title}
-            value={filter.title}
-            onChange={(e) => setFilter({ ...filter, title: e.target.value })}
-          />
-          <Input
-            className=""
-            label="Author"
-            placeholder="Author Reference"
-            value={filter.author}
-            onChange={(e) => setFilter({ ...filter, author: e.target.value })}
-          />
-          <Textarea
-            className=""
-            label="Description"
-            placeholder="Description about the chart"
-            value={filter.description}
-            onChange={(e) =>
-              setFilter({ ...filter, description: e.target.value })
-            }
-          />
+              className=""
+              label="Title"
+              placeholder={filter.title}
+              value={filter.title}
+              onChange={(e) => setFilter({ ...filter, title: e.target.value })}
+            />
+            <Input
+              className=""
+              label="Author"
+              placeholder="Author Reference"
+              value={filter.author}
+              onChange={(e) => setFilter({ ...filter, author: e.target.value })}
+            />
+            <Textarea
+              className=""
+              label="Description"
+              placeholder="Description about the chart"
+              value={filter.description}
+              onChange={(e) =>
+                setFilter({ ...filter, description: e.target.value })
+              }
+            />
           </div>
-
-         
-         
-          
         </AccordionItem>
         <AccordionItem key="3" aria-label="Legend" title="Legend">
-           <Slider
-           size="sm"
+          <Slider
+            size="sm"
             label="Inner Radius"
             step={0.05}
             minValue={0}
@@ -114,7 +114,7 @@ export function FilterPanelPieChart({ maxNodes }: { maxNodes: number }) {
           />
 
           <Slider
-          size="sm"
+            size="sm"
             label="Pad Angle"
             step={0.1}
             minValue={0}
@@ -124,7 +124,7 @@ export function FilterPanelPieChart({ maxNodes }: { maxNodes: number }) {
           />
 
           <Slider
-          size="sm"
+            size="sm"
             label="Corner Radius"
             step={1}
             minValue={0}
@@ -135,7 +135,7 @@ export function FilterPanelPieChart({ maxNodes }: { maxNodes: number }) {
             }
           />
           <Slider
-          size="sm"
+            size="sm"
             label="Label Offset"
             step={1}
             minValue={-24}
@@ -147,7 +147,7 @@ export function FilterPanelPieChart({ maxNodes }: { maxNodes: number }) {
             }
           />
           <Slider
-          size="sm"
+            size="sm"
             label="Text Offset"
             step={1}
             defaultValue={0}
@@ -158,9 +158,8 @@ export function FilterPanelPieChart({ maxNodes }: { maxNodes: number }) {
               setFilter({ ...filter, textOffset: Number(val) })
             }
           />
-
         </AccordionItem>
-        <AccordionItem key="5" aria-label="Margin Setting" title="Margin">
+        <AccordionItem key="4" aria-label="Margin Setting" title="Margin">
           <div className="flex flex-col gap-2">
             <Input
               size="sm"
@@ -204,7 +203,17 @@ export function FilterPanelPieChart({ maxNodes }: { maxNodes: number }) {
             />
           </div>
         </AccordionItem>
-
+        <AccordionItem key="5" aria-label="Export" title="Export">
+          <Button
+            startContent={<DownloadActionIconSolid className="w-6" />}
+            className="w-full"
+            onPress={exportImage}
+            variant="solid"
+            color="primary"
+          >
+            Download Image
+          </Button>
+        </AccordionItem>
       </Accordion>
     </>
   );

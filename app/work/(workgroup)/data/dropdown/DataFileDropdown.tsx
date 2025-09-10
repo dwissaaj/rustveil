@@ -31,7 +31,14 @@ export default function DataFileDropdown() {
     <>
       <Dropdown>
         <DropdownTrigger>
-          <Button size="lg" className="text-black dark:text-white" color="primary" variant="light">File</Button>
+          <Button
+            size="lg"
+            className="text-black dark:text-white"
+            color="primary"
+            variant="light"
+          >
+            File
+          </Button>
         </DropdownTrigger>
         <DropdownMenu color="primary" variant="flat" aria-label="File actions">
           <DropdownItem

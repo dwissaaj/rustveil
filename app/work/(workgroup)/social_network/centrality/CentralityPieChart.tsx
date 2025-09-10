@@ -11,9 +11,10 @@ import {
   ModalHeader,
   useDisclosure,
   Tooltip,
+  addToast,
 } from "@heroui/react";
 import { useAtom, useAtomValue } from "jotai";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { PieFilterState, showFilterAtom, topShowDataPie } from "./state";
 import {
   selectedCentrality,
@@ -21,6 +22,7 @@ import {
 } from "@/app/lib/workstation/social/centrality/state";
 import { FilterPanelPieChart } from "../../../../../components/workstation/sna/centrality/pie/FilterPanelPieChart";
 import { CentralityPieComponent } from "../../../../../components/workstation/sna/centrality/pie/CentralityPieComponent";
+import { useExportToImage } from "../../../../lib/workstation/social/useExportToImage";
 
 export function CentralityPieChart({
   graphData,
@@ -36,19 +38,51 @@ export function CentralityPieChart({
   const centrality = useAtomValue(selectedCentrality);
   const nodes = graphData?.node_map ?? {};
   const values = graphData?.[centralityKey] ?? [];
+  const chartRef = useRef<HTMLDivElement>(null);
 
+  const exportImage = useExportToImage({
+    targetRef: chartRef,
+    filename: `${chartFilter.title}`,
+  });
+  const handletoImage = async () => {
+    try {
+      const response = await exportImage();
+
+      if (response?.response_code === 200) {
+        addToast({
+          title: "Image Exported",
+          description: `${response?.message}`,
+          color: "success",
+        });
+        onOpenChange();
+      }
+
+      if (response?.response_code !== 200) {
+        addToast({
+          title: "Operation Error",
+          description: `${response?.message}`,
+          color: "danger",
+        });
+      }
+    } catch (error) {
+      addToast({
+        title: "Operation Error",
+        description: `${error}`,
+        color: "danger",
+      });
+    }
+  };
   const topN = useAtomValue(topShowDataPie);
   const data = useMemo(() => {
     const mapped = values
       .map((value, index) => ({
         id: nodes[index] ?? `Node ${index}`,
         label: nodes[index] ?? `Node ${index}`,
-        value: Number(value.toPrecision(3)), // max 3 significant digits
+        value: Number(value.toPrecision(3)),
       }))
       .filter((d) => d.value > 0)
       .sort((a, b) => b.value - a.value);
 
-    // slice topN directly
     const safeTopN = Math.min(topN ?? mapped.length, mapped.length);
     return mapped.slice(0, safeTopN);
   }, [values, nodes, topN]);
@@ -105,7 +139,7 @@ export function CentralityPieChart({
       <Modal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
-        size="5xl"
+        className="w-4/5 max-w-[1800px]"
         scrollBehavior="outside"
       >
         <ModalContent>
@@ -120,14 +154,12 @@ export function CentralityPieChart({
             />
           </ModalHeader>
 
-          <ModalBody className="">
-            <div
-              className="overflow-auto flex gap-4"
-              style={{ maxHeight: "75vh" }}
-            >
+          <ModalBody>
+            <div className="flex gap-4">
               <div className={showFilter ? "w-3/4" : "w-full"}>
-                <div className="flex justify-center items-start text-center mb-2">
-                  <div className="flex flex-col gap-2">
+                {/* ✅ Export wrapper includes title, description, author, and chart */}
+                <div ref={chartRef} className="bg-white p-4">
+                  <div className="flex flex-col gap-2 text-center mb-4">
                     <p className="text-lg font-bold">{chartFilter.title}</p>
                     <p className="text-sm font-light">
                       {chartFilter.description}
@@ -136,22 +168,27 @@ export function CentralityPieChart({
                       {chartFilter.author}
                     </p>
                   </div>
+
+                  <CentralityPieComponent
+                    data={data}
+                    chartFilter={{
+                      ...chartFilter,
+                      topMargin: 40,
+                      leftMargin: 120,
+                      rightMargin: 40,
+                      bottomMargin: 100,
+                    }}
+                  />
                 </div>
-                <CentralityPieComponent
-                  data={data}
-                  chartFilter={{
-                    ...chartFilter,
-                    topMargin: 40,
-                    leftMargin: 120,
-                    rightMargin: 40,
-                    bottomMargin: 100,
-                  }}
-                />
               </div>
 
               {showFilter && (
-                <div className="w-1/4">
+                <div
+                  className="w-1/4 overflow-auto"
+                  style={{ maxHeight: "75vh" }}
+                >
                   <FilterPanelPieChart
+                    exportImage={handletoImage}
                     maxNodes={Object.keys(graphData?.node_map ?? {}).length}
                   />
                 </div>

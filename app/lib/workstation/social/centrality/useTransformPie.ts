@@ -2,7 +2,7 @@ import { CalculateCentralityType } from "../calculate/state";
 
 export function useTransformToPieData(
   graphData: CalculateCentralityType,
-  centralityKey: keyof Omit<CalculateCentralityType, "node_map">
+  centralityKey: keyof Omit<CalculateCentralityType, "node_map">,
 ) {
   const nodes = graphData.node_map ?? {};
   const values = graphData[centralityKey] ?? [];

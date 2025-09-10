@@ -13,8 +13,16 @@ import {
   Switch,
   Accordion,
   AccordionItem,
+  Button,
 } from "@heroui/react";
-export function FilterPanelBarChart({ maxNodes }: { maxNodes: number }) {
+import { DownloadActionIconSolid } from "@/components/icon/IconAction";
+
+interface FilterType {
+  maxNodes: number;
+  exportImage: () => void;
+}
+
+export function FilterPanelBarChart({ maxNodes, exportImage }: FilterType) {
   const [filter, setFilter] = useAtom(BarFilterState);
   const [topN, setTopN] = useAtom(topShowDataBar);
 
@@ -195,126 +203,136 @@ export function FilterPanelBarChart({ maxNodes }: { maxNodes: number }) {
         >
           <div className="flex flex-col gap-2">
             <div className="flex flex-col gap-2">
-                <Input
-                  size="sm"
-                  className=""
-                  label="Title Bottom"
-                  placeholder="Chart Title"
-                  value={filter.axisBottomLegend}
-                  onChange={(e) =>
-                    setFilter({ ...filter, axisBottomLegend: e.target.value })
-                  }
-                />
-                <Slider
-                  size="sm"
-                  label="Tick Size"
-                  minValue={0}
-                  maxValue={20}
-                  value={filter.axisBottomSize}
-                  onChange={(val) =>
-                    setFilter({ ...filter, axisBottomSize: Number(val) })
-                  }
-                />
-                <Slider
-                  size="sm"
-                  label="Padding"
-                  minValue={0}
-                  maxValue={20}
-                  value={filter.axisBottomPadding}
-                  onChange={(val) =>
-                    setFilter({ ...filter, axisBottomPadding: Number(val) })
-                  }
-                />
-                <Slider
-                  size="sm"
-                  label="Tick Rotation"
-                  minValue={-90}
-                  maxValue={90}
-                  value={filter.axisBottomRotation}
-                  onChange={(val) =>
-                    setFilter({ ...filter, axisBottomRotation: Number(val) })
-                  }
-                />
-                <Slider
-                  size="sm"
-                  label="Tick Offset"
-                  minValue={-60}
-                  maxValue={60}
-                  value={filter.axisBottomLegendOffset}
-                  onChange={(val) =>
-                    setFilter({
-                      ...filter,
-                      axisBottomLegendOffset: Number(val),
-                    })
-                  }
-                />
-              </div>
-            
+              <Input
+                size="sm"
+                className=""
+                label="Title Bottom"
+                placeholder="Chart Title"
+                value={filter.axisBottomLegend}
+                onChange={(e) =>
+                  setFilter({ ...filter, axisBottomLegend: e.target.value })
+                }
+              />
+              <Slider
+                size="sm"
+                label="Tick Size"
+                minValue={0}
+                maxValue={20}
+                value={filter.axisBottomSize}
+                onChange={(val) =>
+                  setFilter({ ...filter, axisBottomSize: Number(val) })
+                }
+              />
+              <Slider
+                size="sm"
+                label="Padding"
+                minValue={0}
+                maxValue={20}
+                value={filter.axisBottomPadding}
+                onChange={(val) =>
+                  setFilter({ ...filter, axisBottomPadding: Number(val) })
+                }
+              />
+              <Slider
+                size="sm"
+                label="Tick Rotation"
+                minValue={-90}
+                maxValue={90}
+                value={filter.axisBottomRotation}
+                onChange={(val) =>
+                  setFilter({ ...filter, axisBottomRotation: Number(val) })
+                }
+              />
+              <Slider
+                size="sm"
+                label="Tick Offset"
+                minValue={-60}
+                maxValue={60}
+                value={filter.axisBottomLegendOffset}
+                onChange={(val) =>
+                  setFilter({
+                    ...filter,
+                    axisBottomLegendOffset: Number(val),
+                  })
+                }
+              />
+            </div>
           </div>
         </AccordionItem>
         <AccordionItem
-              key="6"
-              aria-label="Left Legend Setting"
-              title="Left Legend"
-            >
-              <div className="flex flex-col gap-2">
-                <div className="flex flex-col gap-2">
-                  <Input
-                    size="sm"
-                    className=""
-                    label="Left Legend"
-                    placeholder="Data Title"
-                    value={filter.axisLeftLegend}
-                    onChange={(e) =>
-                      setFilter({ ...filter, axisLeftLegend: e.target.value })
-                    }
-                  />
-                  <Slider
-                    size="sm"
-                    label="Tick Size"
-                    minValue={0}
-                    maxValue={20}
-                    value={filter.axisLeftSize}
-                    onChange={(val) =>
-                      setFilter({ ...filter, axisLeftSize: Number(val) })
-                    }
-                  />
-                  <Slider
-                    size="sm"
-                    label="Padding"
-                    minValue={0}
-                    maxValue={20}
-                    value={filter.axisLeftPadding}
-                    onChange={(val) =>
-                      setFilter({ ...filter, axisLeftPadding: Number(val) })
-                    }
-                  />
-                  <Slider
-                    size="sm"
-                    label="Tick Rotation"
-                    minValue={-90}
-                    maxValue={90}
-                    value={filter.axisLeftRotation}
-                    onChange={(val) =>
-                      setFilter({ ...filter, axisLeftRotation: Number(val) })
-                    }
-                  />
-                  <Slider
-                    size="sm"
-                    label="Tick Offset"
-                    minValue={-200}
-                    maxValue={50}
-                    value={filter.axisLeftLegendOffset}
-                    onChange={(val) =>
-                      setFilter({
-                        ...filter,
-                        axisLeftLegendOffset: Number(val),
-                      })
-                    }
-                  />
-                </div>
-              </div>
-            </AccordionItem>
+          key="6"
+          aria-label="Left Legend Setting"
+          title="Left Legend"
+        >
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2">
+              <Input
+                size="sm"
+                className=""
+                label="Left Legend"
+                placeholder="Data Title"
+                value={filter.axisLeftLegend}
+                onChange={(e) =>
+                  setFilter({ ...filter, axisLeftLegend: e.target.value })
+                }
+              />
+              <Slider
+                size="sm"
+                label="Tick Size"
+                minValue={0}
+                maxValue={20}
+                value={filter.axisLeftSize}
+                onChange={(val) =>
+                  setFilter({ ...filter, axisLeftSize: Number(val) })
+                }
+              />
+              <Slider
+                size="sm"
+                label="Padding"
+                minValue={0}
+                maxValue={20}
+                value={filter.axisLeftPadding}
+                onChange={(val) =>
+                  setFilter({ ...filter, axisLeftPadding: Number(val) })
+                }
+              />
+              <Slider
+                size="sm"
+                label="Tick Rotation"
+                minValue={-90}
+                maxValue={90}
+                value={filter.axisLeftRotation}
+                onChange={(val) =>
+                  setFilter({ ...filter, axisLeftRotation: Number(val) })
+                }
+              />
+              <Slider
+                size="sm"
+                label="Tick Offset"
+                minValue={-200}
+                maxValue={50}
+                value={filter.axisLeftLegendOffset}
+                onChange={(val) =>
+                  setFilter({
+                    ...filter,
+                    axisLeftLegendOffset: Number(val),
+                  })
+                }
+              />
+            </div>
+          </div>
+        </AccordionItem>
+        <AccordionItem key="7" aria-label="Export" title="Export">
+          <Button
+            startContent={<DownloadActionIconSolid className="w-6" />}
+            className="w-full"
+            onPress={exportImage}
+            variant="solid"
+            color="primary"
+          >
+            Download Image
+          </Button>
+        </AccordionItem>
       </Accordion>
     </>
   );
