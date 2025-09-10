@@ -56,6 +56,11 @@ export function CentralityBarComponent({
         }}
         enableGridY={true}
         theme={{
+          labels: {
+            text: {
+              fill: textColor,
+            },
+          },
           axis: {
             domain: {
               line: {
@@ -63,9 +68,6 @@ export function CentralityBarComponent({
               },
             },
             ticks: {
-              line: {
-                stroke: axisColor,
-              },
               text: {
                 fill: textColor,
               },
@@ -73,7 +75,16 @@ export function CentralityBarComponent({
             legend: {
               text: {
                 fill: textColor,
+                fontSize: 16,
+                fontWeight: 700
+
               },
+            },
+          },
+          
+          legends: {
+            text: {
+              fill: textColor,
             },
           },
           grid: {

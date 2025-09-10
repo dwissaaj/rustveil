@@ -32,9 +32,7 @@ export function useExportToImage({ targetRef, filename }: ExportImageOptions) {
         };
       }
 
-      const canvas = await html2canvas(targetRef.current, {
-        backgroundColor: "#fff",
-      });
+      const canvas = await html2canvas(targetRef.current);
 
       const blob: Blob | null = await new Promise((resolve) =>
         canvas.toBlob(resolve, "image/png"),
