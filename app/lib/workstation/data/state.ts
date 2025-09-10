@@ -1,6 +1,5 @@
 import { atom } from "jotai";
 
-
 // get all sheets from the file
 export const sheetAvailable = atom<string[]>([]);
 
@@ -37,5 +36,3 @@ export const columnAvailable = atom<string[]>([]);
 export const vertex1ColumnSelected = atom<string>("");
 export const vertex2ColumnSelected = atom<string>("");
 export const vertexGraphTypeSelected = atom<string>("direct");
-
-

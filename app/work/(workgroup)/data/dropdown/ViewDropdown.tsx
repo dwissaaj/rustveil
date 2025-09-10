@@ -20,7 +20,14 @@ export function ViewDropdown({ onDataFetched }: ViewDropdownProps) {
   return (
     <Dropdown>
       <DropdownTrigger>
-        <Button size="lg" className="text-black dark:text-white" color="primary" variant="light">View</Button>
+        <Button
+          size="lg"
+          className="text-black dark:text-white"
+          color="primary"
+          variant="light"
+        >
+          View
+        </Button>
       </DropdownTrigger>
       <DropdownMenu color="primary" variant="flat" aria-label="view actions">
         <DropdownItem

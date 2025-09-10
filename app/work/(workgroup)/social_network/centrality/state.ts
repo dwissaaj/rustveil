@@ -2,7 +2,6 @@ import { atom } from "jotai";
 
 export const showFilterAtom = atom(false);
 
-
 export enum ColorSchema {
   nivo = "nivo",
   category10 = "category10",
@@ -37,31 +36,29 @@ export interface PieFilterStateType {
   title: string;
   description: string;
   author: string;
-  labelsOffset :number
+  labelsOffset: number;
   textOffset: number;
-    topMargin: number;
+  topMargin: number;
   bottomMargin: number;
   leftMargin: number;
-  rightMargin:number;
+  rightMargin: number;
 }
-
 
 export const PieFilterState = atom<PieFilterStateType>({
   innerRadius: 0.5,
   padAngle: 1,
-  labelsOffset : 0,
-  textOffset:0,
+  labelsOffset: 0,
+  textOffset: 0,
   cornerRadius: 0,
-    topMargin: 50,
+  topMargin: 50,
   bottomMargin: 50,
   leftMargin: 50,
-  rightMargin:50,
+  rightMargin: 50,
   colorSchema: ColorSchema.nivo,
   title: "My Chart",
   description: "Description",
-  author: "Your Name"
+  author: "Your Name",
 });
-
 
 export interface NivoPieType {
   id: string;
@@ -71,34 +68,27 @@ export interface NivoPieType {
 
 export const topShowDataPie = atom(20);
 
-
-
-
 export interface NivoBarType {
   node: string;
   centrality: number;
-  [key: string]: string | number; 
+  [key: string]: string | number;
 }
 
-
 export const topShowDataBar = atom(20);
-
-
-
 
 export interface BarFilterStateType {
   title: string;
   description: string;
   author: string;
-  layout: "horizontal"| "vertical";
+  layout: "horizontal" | "vertical";
   topMargin: number;
   bottomMargin: number;
   leftMargin: number;
-  rightMargin:number;
+  rightMargin: number;
   colorSchema: ColorSchema;
   borderRadius: number;
   borderWidth: number;
-  labelPosition: "start" | "middle"| "end";
+  labelPosition: "start" | "middle" | "end";
   labelOffset: number;
   axisBottomSize: number;
   axisBottomPadding: number;
@@ -112,16 +102,15 @@ export interface BarFilterStateType {
   axisLeftLegendOffset: number;
 }
 
-
 export const BarFilterState = atom<BarFilterStateType>({
-    title: 'Chart Title',
+  title: "Chart Title",
   description: "Simple Description",
   author: "Your Name",
   layout: "horizontal",
   topMargin: 50,
   bottomMargin: 50,
   leftMargin: 50,
-  rightMargin:50,
+  rightMargin: 50,
   borderRadius: 0,
   borderWidth: 0,
   labelPosition: "start",
@@ -130,7 +119,7 @@ export const BarFilterState = atom<BarFilterStateType>({
   axisBottomSize: 0,
   axisBottomPadding: 0,
   axisBottomRotation: 0,
-  axisBottomLegend: 'Bottom Legend',
+  axisBottomLegend: "Bottom Legend",
   axisBottomLegendOffset: 0,
   axisLeftSize: 0,
   axisLeftPadding: 0,
@@ -138,4 +127,3 @@ export const BarFilterState = atom<BarFilterStateType>({
   axisLeftLegend: "Left Legend",
   axisLeftLegendOffset: 0,
 });
-

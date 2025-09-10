@@ -5,7 +5,6 @@ import { CalculateCentralityResponse } from "../vertices/response";
 import { vertexGraphTypeSelected } from "../../data/state";
 import { centralityData } from "./state";
 
-
 export function useCalculateCentrality() {
   const graphType = useAtomValue(vertexGraphTypeSelected);
   const [, setGraphData] = useAtom(centralityData);

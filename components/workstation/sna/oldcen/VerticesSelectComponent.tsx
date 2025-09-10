@@ -1,4 +1,3 @@
-
 "use client";
 import {
   columnAvailable,
@@ -30,7 +29,7 @@ export default function VerticesSelectComponent() {
         <div>
           <Tooltip color="primary" content="Minimal 2 data for edges">
             <Button
-            className="text-black dark:text-white"
+              className="text-black dark:text-white"
               variant="light"
               color="primary"
               endContent={<TooltipIcon className="w-6" />}

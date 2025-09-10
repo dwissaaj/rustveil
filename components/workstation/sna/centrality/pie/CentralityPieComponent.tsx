@@ -22,10 +22,12 @@ export function CentralityPieComponent({
     <div className={`flex-1 h-[75vh]`}>
       <ResponsivePie
         data={data}
-        margin={{ top: chartFilter.topMargin, 
+        margin={{
+          top: chartFilter.topMargin,
           right: chartFilter.rightMargin,
-           bottom: chartFilter.bottomMargin, 
-          left: chartFilter.leftMargin }}
+          bottom: chartFilter.bottomMargin,
+          left: chartFilter.leftMargin,
+        }}
         innerRadius={chartFilter.innerRadius}
         padAngle={chartFilter.padAngle}
         cornerRadius={chartFilter.cornerRadius}

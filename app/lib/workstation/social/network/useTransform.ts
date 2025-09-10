@@ -1,10 +1,6 @@
 import { getDefaultStore } from "jotai";
 
-import {
-  NetworkGraphType,
-  NetworkNodeType,
-  NetworkLinkType,
-} from "./state";
+import { NetworkGraphType, NetworkNodeType, NetworkLinkType } from "./state";
 import { centralityData } from "../calculate/state";
 
 export interface Edge {

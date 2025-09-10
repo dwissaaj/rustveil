@@ -1,6 +1,10 @@
 "use client";
 
-import { CentralityKey, selectedCentrality, selectedChart } from "@/app/lib/workstation/social/centrality/state";
+import {
+  CentralityKey,
+  selectedCentrality,
+  selectedChart,
+} from "@/app/lib/workstation/social/centrality/state";
 import { Button, Select, SelectItem } from "@heroui/react";
 import { RefreshIcon } from "@/components/icon/IconView";
 import { useAtom } from "jotai";
@@ -10,8 +14,8 @@ export default function CentralitySelectGraph() {
   const [chart, setChart] = useAtom(selectedChart);
   const [centrality, setCentrality] = useAtom(selectedCentrality);
 
-
-  const [pendingCentrality, setPendingCentrality] = useState<CentralityKey>(centrality);
+  const [pendingCentrality, setPendingCentrality] =
+    useState<CentralityKey>(centrality);
 
   return (
     <div className="flex flex-row gap-6">
@@ -35,7 +39,7 @@ export default function CentralitySelectGraph() {
         selectedKeys={new Set([pendingCentrality])}
         onSelectionChange={(keys) => {
           const value = Array.from(keys)[0] as CentralityKey;
-          setPendingCentrality(value); 
+          setPendingCentrality(value);
         }}
         variant="underlined"
         placeholder="Centrality Value"

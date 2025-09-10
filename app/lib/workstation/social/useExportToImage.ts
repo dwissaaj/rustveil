@@ -8,7 +8,7 @@ export interface ExportImageOptions {
 }
 async function getUniqueFilename(
   baseName: string,
-  ext: string
+  ext: string,
 ): Promise<string> {
   let counter = 0;
   let filename = `${baseName}.${ext}`;
@@ -37,7 +37,7 @@ export function useExportToImage({ targetRef, filename }: ExportImageOptions) {
       });
 
       const blob: Blob | null = await new Promise((resolve) =>
-        canvas.toBlob(resolve, "image/png")
+        canvas.toBlob(resolve, "image/png"),
       );
 
       if (!blob) {
