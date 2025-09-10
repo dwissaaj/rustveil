@@ -22,7 +22,10 @@ export function CentralityPieComponent({
     <div className={`flex-1 h-[75vh]`}>
       <ResponsivePie
         data={data}
-        margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+        margin={{ top: chartFilter.topMargin, 
+          right: chartFilter.rightMargin,
+           bottom: chartFilter.bottomMargin, 
+          left: chartFilter.leftMargin }}
         innerRadius={chartFilter.innerRadius}
         padAngle={chartFilter.padAngle}
         cornerRadius={chartFilter.cornerRadius}
@@ -32,7 +35,7 @@ export function CentralityPieComponent({
         theme={{
           labels: {
             text: {
-              fill: textColor, // Color for the labels displayed on the arcs
+              fill: textColor,
             },
           },
           legends: {

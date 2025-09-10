@@ -13,7 +13,7 @@ import {
   Tooltip,
 } from "@heroui/react";
 import { useAtom, useAtomValue } from "jotai";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { PieFilterState, showFilterAtom, topShowDataPie } from "./state";
 import {
   selectedCentrality,
@@ -38,20 +38,20 @@ export function CentralityPieChart({
   const values = graphData?.[centralityKey] ?? [];
 
   const topN = useAtomValue(topShowDataPie);
-const data = useMemo(() => {
-  const mapped = values
-    .map((value, index) => ({
-      id: nodes[index] ?? `Node ${index}`,
-      label: nodes[index] ?? `Node ${index}`,
-      value: Number(value.toPrecision(3)), // max 3 significant digits
-    }))
-    .filter((d) => d.value > 0)
-    .sort((a, b) => b.value - a.value);
+  const data = useMemo(() => {
+    const mapped = values
+      .map((value, index) => ({
+        id: nodes[index] ?? `Node ${index}`,
+        label: nodes[index] ?? `Node ${index}`,
+        value: Number(value.toPrecision(3)), // max 3 significant digits
+      }))
+      .filter((d) => d.value > 0)
+      .sort((a, b) => b.value - a.value);
 
-  // slice topN directly
-  const safeTopN = Math.min(topN ?? mapped.length, mapped.length);
-  return mapped.slice(0, safeTopN);
-}, [values, nodes, topN]);
+    // slice topN directly
+    const safeTopN = Math.min(topN ?? mapped.length, mapped.length);
+    return mapped.slice(0, safeTopN);
+  }, [values, nodes, topN]);
 
   const hasData = data.some((d) => d.value > 0);
 
@@ -75,13 +75,26 @@ const data = useMemo(() => {
         </Tooltip>
       </div>
 
-      <div className="flex-1 min-h-[500px]">
+      <div className="flex-1 w-full">
         {graphData === null || graphData === undefined ? (
           <div className="flex items-center justify-center h-full text-gray-500">
             No data available
           </div>
         ) : hasData ? (
-          <CentralityPieComponent data={data} chartFilter={chartFilter} />
+          <div className="flex-1 w-full overflow-auto">
+            <div className="min-w-[1200px] h-[75vh]">
+              <CentralityPieComponent
+                data={data}
+                chartFilter={{
+                  ...chartFilter,
+                  topMargin: 50,
+                  rightMargin: 50,
+                  bottomMargin: 50,
+                  leftMargin: 50,
+                }}
+              />
+            </div>
+          </div>
         ) : (
           <div className="flex items-center justify-center h-full text-gray-500">
             All Values or Zero
@@ -108,23 +121,32 @@ const data = useMemo(() => {
           </ModalHeader>
 
           <ModalBody className="">
-            <div className="p-2 flex flex-row w-full gap-4 ">
+            <div
+              className="overflow-auto flex gap-4"
+              style={{ maxHeight: "75vh" }}
+            >
               <div className={showFilter ? "w-3/4" : "w-full"}>
-                <div>
-                  <p className="text-lg font-bold">{chartFilter.title}</p>
-                  <p className="text-sm font-light">
-                    {chartFilter.description}
-                  </p>
-                  <p className="text-sm font-light italic">
-                    {chartFilter.author}
-                  </p>
+                <div className="flex justify-center items-start text-center mb-2">
+                  <div className="flex flex-col gap-2">
+                    <p className="text-lg font-bold">{chartFilter.title}</p>
+                    <p className="text-sm font-light">
+                      {chartFilter.description}
+                    </p>
+                    <p className="text-sm font-light italic">
+                      {chartFilter.author}
+                    </p>
+                  </div>
                 </div>
-                <div className="flex-1 h-[75vh]">
-                  <CentralityPieComponent
-                    data={data}
-                    chartFilter={chartFilter}
-                  />
-                </div>
+                <CentralityPieComponent
+                  data={data}
+                  chartFilter={{
+                    ...chartFilter,
+                    topMargin: 40,
+                    leftMargin: 120,
+                    rightMargin: 40,
+                    bottomMargin: 100,
+                  }}
+                />
               </div>
 
               {showFilter && (
