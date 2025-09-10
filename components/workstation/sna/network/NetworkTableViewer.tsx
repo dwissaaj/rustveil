@@ -91,15 +91,20 @@ export default function NetworkTableViewer() {
         });
       }
     } catch (err) {
-      console.error("Centrality load error:", err);
+      addToast({
+          title: "Error at Fetch",
+          description: `${err}`,
+          color: "danger",
+        });
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-2">
       <Table
+
         aria-label="Centrality table"
         sortDescriptor={list.sortDescriptor}
         onSortChange={list.sort}
@@ -114,12 +119,13 @@ export default function NetworkTableViewer() {
             </div>
           )
         }
-        bottomContentPlacement="outside"
+
+        bottomContentPlacement="inside"
         topContent={
           <Button
             onPress={loadData}
             isIconOnly
-            className="m-2"
+            className=""
             color="primary"
             startContent={<RefreshIcon className="w-6" />}
             variant="light"
