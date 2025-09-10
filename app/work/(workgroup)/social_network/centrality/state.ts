@@ -42,6 +42,11 @@ export interface PieFilterStateType {
   bottomMargin: number;
   leftMargin: number;
   rightMargin: number;
+  startAngle: number;
+  endAngle: number;
+  labelSkip:  number;
+  labelDiagonalLength:  number;
+  labelStraightLength: number
 }
 
 export const PieFilterState = atom<PieFilterStateType>({
@@ -58,6 +63,11 @@ export const PieFilterState = atom<PieFilterStateType>({
   title: "My Chart",
   description: "Description",
   author: "Your Name",
+  startAngle: 0,
+  endAngle: 360,
+    labelSkip:  0,
+  labelDiagonalLength:  16,
+  labelStraightLength: 24
 });
 
 export interface NivoPieType {
@@ -120,10 +130,10 @@ export const BarFilterState = atom<BarFilterStateType>({
   axisBottomPadding: 0,
   axisBottomRotation: 0,
   axisBottomLegend: "Bottom Legend",
-  axisBottomLegendOffset: 0,
+  axisBottomLegendOffset: 32,
   axisLeftSize: 0,
   axisLeftPadding: 0,
   axisLeftRotation: 0,
   axisLeftLegend: "Left Legend",
-  axisLeftLegendOffset: 0,
+  axisLeftLegendOffset: -40,
 });

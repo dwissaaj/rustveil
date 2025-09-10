@@ -28,12 +28,22 @@ export function CentralityPieComponent({
           bottom: chartFilter.bottomMargin,
           left: chartFilter.leftMargin,
         }}
+        startAngle={chartFilter.startAngle}
+        endAngle={chartFilter.endAngle}
         innerRadius={chartFilter.innerRadius}
         padAngle={chartFilter.padAngle}
         cornerRadius={chartFilter.cornerRadius}
         activeOuterRadiusOffset={8}
         arcLinkLabelsOffset={chartFilter.labelsOffset}
+        arcLinkLabelsTextOffset={chartFilter.textOffset}
         colors={{ scheme: chartFilter.colorSchema as ColorSchemeId }}
+        arcLinkLabelsColor={{ from: "color" }} 
+        enableArcLinkLabels={true}
+        arcLinkLabelsThickness={2}
+        arcLabelsSkipAngle={chartFilter.labelSkip}
+        arcLinkLabelsDiagonalLength={chartFilter.labelDiagonalLength}
+        arcLinkLabelsStraightLength={chartFilter.labelStraightLength}
+        
         theme={{
           labels: {
             text: {
@@ -54,6 +64,7 @@ export function CentralityPieComponent({
             },
           },
         }}
+        
       />
     </div>
   );

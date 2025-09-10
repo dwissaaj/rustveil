@@ -71,6 +71,25 @@ export function FilterPanelPieChart({ maxNodes, exportImage }: FilterType) {
                 <SelectItem key={schema}>{schema}</SelectItem>
               ))}
             </Select>
+            <Slider
+            size="sm"
+            label="Start Angle"
+            minValue={-180}
+            maxValue={360}
+            value={filter.startAngle}
+            onChange={(val) =>
+              setFilter({ ...filter, startAngle: Number(val) })
+            }
+          />
+
+          <Slider
+            size="sm"
+            label="End Angle"
+            minValue={-360}
+            maxValue={360}
+            value={filter.endAngle}
+            onChange={(val) => setFilter({ ...filter, endAngle: Number(val) })}
+          />
           </div>
         </AccordionItem>
         <AccordionItem key="2" aria-label="title tab" title="Title">
@@ -100,7 +119,7 @@ export function FilterPanelPieChart({ maxNodes, exportImage }: FilterType) {
             />
           </div>
         </AccordionItem>
-        <AccordionItem key="3" aria-label="Legend" title="Legend">
+        <AccordionItem key="3" aria-label="Label" title="Label">
           <Slider
             size="sm"
             label="Inner Radius"
@@ -158,6 +177,36 @@ export function FilterPanelPieChart({ maxNodes, exportImage }: FilterType) {
               setFilter({ ...filter, textOffset: Number(val) })
             }
           />
+          <Slider
+            size="sm"
+            label="Label Skip"
+            minValue={0}
+            maxValue={45}
+            value={filter.labelSkip}
+            onChange={(val) =>
+              setFilter({ ...filter, labelSkip: Number(val) })
+            }
+          />
+          <Slider
+            size="sm"
+            label="Label Straight Length"
+            minValue={0}
+            maxValue={36}
+            value={filter.labelStraightLength}
+            onChange={(val) =>
+              setFilter({ ...filter, labelStraightLength: Number(val) })
+            }
+          />
+          <Slider
+            size="sm"
+            label="Label Diagonal Length"
+            minValue={0}
+            maxValue={36}
+            value={filter.labelDiagonalLength}
+            onChange={(val) =>
+              setFilter({ ...filter, labelDiagonalLength: Number(val) })
+            }
+          />
         </AccordionItem>
         <AccordionItem key="4" aria-label="Margin Setting" title="Margin">
           <div className="flex flex-col gap-2">
@@ -178,7 +227,7 @@ export function FilterPanelPieChart({ maxNodes, exportImage }: FilterType) {
               placeholder="Bottom"
               value={filter.bottomMargin.toString()}
               onChange={(e) =>
-                setFilter({ ...filter, topMargin: Number(e.target.value) })
+                setFilter({ ...filter, bottomMargin: Number(e.target.value) })
               }
             />
             <Input

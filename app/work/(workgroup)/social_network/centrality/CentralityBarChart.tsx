@@ -23,6 +23,9 @@ import {
 import { FilterPanelBarChart } from "../../../../../components/workstation/sna/centrality/bar/FilterControlBarChart";
 import { CentralityBarComponent } from "../../../../../components/workstation/sna/centrality/bar/CentralityBarComponent";
 import { useExportToImage } from "../../../../lib/workstation/social/useExportToImage";
+import { useTheme } from "next-themes";
+import NoDataChartComponent from "@/components/workstation/sna/centrality/NoDataChartComponent";
+import AllZeroComponent from "@/components/workstation/sna/centrality/AllZeroComponent";
 
 export function CentralityBarChart({
   graphData,
@@ -40,7 +43,7 @@ export function CentralityBarChart({
   const values = graphData?.[centralityKey] ?? [];
   const topN = useAtomValue(topShowDataBar);
   const chartRef = useRef<HTMLDivElement>(null);
-
+  const { theme } = useTheme();
   const exportImage = useExportToImage({
     targetRef: chartRef,
     filename: `${chartFilter.title}`,
@@ -114,11 +117,9 @@ export function CentralityBarChart({
 
       <div className="flex-1 w-full">
         {graphData === null || graphData === undefined ? (
-          <div className="flex items-center justify-center h-full text-gray-500">
-            No data available
-          </div>
+          <NoDataChartComponent />
         ) : hasData ? (
-          <div className="flex-1 w-full overflow-auto">
+          <div className="flex-1 w-full ">
             <div className="min-w-[1200px] h-[75vh]">
               <CentralityBarComponent
                 data={data}
@@ -133,8 +134,8 @@ export function CentralityBarChart({
             </div>
           </div>
         ) : (
-          <div className="flex items-center justify-center h-full text-gray-500">
-            All Values or Zero
+          <div className="w-full h-full">
+           <AllZeroComponent />
           </div>
         )}
       </div>
@@ -155,16 +156,17 @@ export function CentralityBarChart({
               startContent={<FilterIcon className="w-4" />}
               onPress={() => setshowFilter(!showFilter)}
             />
-            <Button variant="light" color="primary" onPress={handletoImage}>
-              Export
-            </Button>
           </ModalHeader>
 
           <ModalBody>
             <div className="flex gap-4">
               <div className={showFilter ? "w-3/4" : "w-full"}>
-                {/* ✅ Export wrapper includes title, description, author, and chart */}
-                <div ref={chartRef} className="bg-white p-4">
+                <div
+                  ref={chartRef}
+                  style={{
+                    background: theme === "dark" ? "#18181b" : "#ffffff",
+                  }}
+                >
                   <div className="flex flex-col gap-2 text-center mb-4">
                     <p className="text-lg font-bold">{chartFilter.title}</p>
                     <p className="text-sm font-light">
@@ -190,7 +192,7 @@ export function CentralityBarChart({
 
               {showFilter && (
                 <div
-                  className="w-1/4 overflow-auto"
+                  className="w-1/4 "
                   style={{ maxHeight: "75vh" }}
                 >
                   <FilterPanelBarChart

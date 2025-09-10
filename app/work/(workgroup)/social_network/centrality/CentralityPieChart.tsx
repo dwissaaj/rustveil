@@ -23,6 +23,9 @@ import {
 import { FilterPanelPieChart } from "../../../../../components/workstation/sna/centrality/pie/FilterPanelPieChart";
 import { CentralityPieComponent } from "../../../../../components/workstation/sna/centrality/pie/CentralityPieComponent";
 import { useExportToImage } from "../../../../lib/workstation/social/useExportToImage";
+import { useTheme } from "next-themes";
+import NoDataChartComponent from "@/components/workstation/sna/centrality/NoDataChartComponent";
+import AllZeroComponent from "@/components/workstation/sna/centrality/AllZeroComponent";
 
 export function CentralityPieChart({
   graphData,
@@ -39,7 +42,7 @@ export function CentralityPieChart({
   const nodes = graphData?.node_map ?? {};
   const values = graphData?.[centralityKey] ?? [];
   const chartRef = useRef<HTMLDivElement>(null);
-
+  const { theme } = useTheme();
   const exportImage = useExportToImage({
     targetRef: chartRef,
     filename: `${chartFilter.title}`,
@@ -111,11 +114,9 @@ export function CentralityPieChart({
 
       <div className="flex-1 w-full">
         {graphData === null || graphData === undefined ? (
-          <div className="flex items-center justify-center h-full text-gray-500">
-            No data available
-          </div>
+          <NoDataChartComponent />
         ) : hasData ? (
-          <div className="flex-1 w-full overflow-auto">
+          <div className="flex-1 w-full ">
             <div className="min-w-[1200px] h-[75vh]">
               <CentralityPieComponent
                 data={data}
@@ -130,8 +131,8 @@ export function CentralityPieChart({
             </div>
           </div>
         ) : (
-          <div className="flex items-center justify-center h-full text-gray-500">
-            All Values or Zero
+          <div className="">
+            <AllZeroComponent />
           </div>
         )}
       </div>
@@ -155,11 +156,15 @@ export function CentralityPieChart({
           </ModalHeader>
 
           <ModalBody>
-            <div className="flex gap-4">
+            <div className="flex gap-2">
               <div className={showFilter ? "w-3/4" : "w-full"}>
-                {/* ✅ Export wrapper includes title, description, author, and chart */}
-                <div ref={chartRef} className="bg-white p-4">
-                  <div className="flex flex-col gap-2 text-center mb-4">
+                <div
+                  ref={chartRef}
+                  style={{
+                    background: theme === "dark" ? "#18181b" : "#ffffff",
+                  }}
+                >
+                  <div className="flex flex-col gap-2 text-center">
                     <p className="text-lg font-bold">{chartFilter.title}</p>
                     <p className="text-sm font-light">
                       {chartFilter.description}
@@ -168,25 +173,15 @@ export function CentralityPieChart({
                       {chartFilter.author}
                     </p>
                   </div>
-
                   <CentralityPieComponent
                     data={data}
-                    chartFilter={{
-                      ...chartFilter,
-                      topMargin: 40,
-                      leftMargin: 120,
-                      rightMargin: 40,
-                      bottomMargin: 100,
-                    }}
+                    chartFilter={chartFilter}
                   />
                 </div>
               </div>
 
               {showFilter && (
-                <div
-                  className="w-1/4 overflow-auto"
-                  style={{ maxHeight: "75vh" }}
-                >
+                <div className="w-1/4 " style={{ maxHeight: "75vh" }}>
                   <FilterPanelPieChart
                     exportImage={handletoImage}
                     maxNodes={Object.keys(graphData?.node_map ?? {}).length}
