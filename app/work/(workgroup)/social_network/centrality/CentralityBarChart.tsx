@@ -1,5 +1,5 @@
 "use client";
-
+import { writeFile, BaseDirectory } from "@tauri-apps/plugin-fs";
 import { CalculateCentralityType } from "@/app/lib/workstation/social/calculate/state";
 import { FilterIcon, InfoIcon } from "@/components/icon/IconFilter";
 import { FullScreenIcon } from "@/components/icon/IconView";
@@ -11,9 +11,10 @@ import {
   ModalHeader,
   useDisclosure,
   Tooltip,
+  addToast,
 } from "@heroui/react";
 import { useAtom, useAtomValue } from "jotai";
-import { useMemo } from "react";
+import { useMemo, useRef, useState } from "react";
 import { BarFilterState, showFilterAtom, topShowDataBar } from "./state";
 import {
   selectedCentrality,
@@ -21,6 +22,7 @@ import {
 } from "@/app/lib/workstation/social/centrality/state";
 import { FilterPanelBarChart } from "../../../../../components/workstation/sna/centrality/bar/FilterControlBarChart";
 import { CentralityBarComponent } from "../../../../../components/workstation/sna/centrality/bar/CentralityBarComponent";
+import { useExportToImage } from "./useExport";
 
 export function CentralityBarChart({
   graphData,
@@ -36,8 +38,41 @@ export function CentralityBarChart({
   const centrality = useAtomValue(selectedCentrality);
   const nodes = graphData?.node_map ?? {};
   const values = graphData?.[centralityKey] ?? [];
-
   const topN = useAtomValue(topShowDataBar);
+  const chartRef = useRef<HTMLDivElement>(null);
+
+  const exportImage = useExportToImage({
+    targetRef: chartRef,
+    filename: `${chartFilter.title}`,
+  });
+  const handletoImage = async () => {
+    try {
+      const response = await exportImage();
+
+      if (response?.response_code === 200) {
+        addToast({
+          title: "Image Exported",
+          description: `${response?.message}`,
+          color: "success",
+        });
+        onOpenChange();
+      }
+
+      if (response?.response_code !== 200) {
+        addToast({
+          title: "Operation Error",
+          description: `${response?.message}`,
+          color: "danger",
+        });
+      }
+    } catch (error) {
+      addToast({
+        title: "Operation Error",
+        description: `${error}`,
+        color: "danger",
+      });
+    }
+  };
 
   const data = useMemo(() => {
     const mapped = values.map((value, index) => ({
@@ -105,9 +140,11 @@ export function CentralityBarChart({
       </div>
 
       <Modal
+             ref={chartRef}
         isOpen={isOpen}
         onOpenChange={onOpenChange}
-        className="w-4/5 max-w-[1s00px]"
+        // className="w-4/5 max-w-[1600px]"
+        size="full"
         scrollBehavior="outside"
       >
         <ModalContent>
@@ -120,15 +157,19 @@ export function CentralityBarChart({
               startContent={<FilterIcon className="w-4" />}
               onPress={() => setshowFilter(!showFilter)}
             />
+            <Button variant="light" color="primary" onPress={handletoImage}>
+              Export
+            </Button>
           </ModalHeader>
 
           <ModalBody className="">
             <div
+
               className="overflow-auto flex gap-4"
               style={{ maxHeight: "75vh" }}
             >
-              <div className={showFilter ? "w-3/4" : "w-full"}>
-                <div className="flex justify-center items-start text-center mb-2">
+              <div   className={showFilter ? "w-3/4" : "w-full"}>
+                <div   className="flex justify-center items-start text-center mb-2">
                   <div className="flex flex-col gap-2">
                     <p className="text-lg font-bold">{chartFilter.title}</p>
                     <p className="text-sm font-light">

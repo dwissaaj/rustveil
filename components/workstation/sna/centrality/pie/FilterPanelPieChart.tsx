@@ -13,6 +13,7 @@ import {
   Accordion,
   AccordionItem,
 } from "@heroui/react";
+
 export function FilterPanelPieChart({ maxNodes }: { maxNodes: number }) {
   const [filter, setFilter] = useAtom(PieFilterState);
   const [topN, setTopN] = useAtom(topShowDataPie);
@@ -159,6 +160,51 @@ export function FilterPanelPieChart({ maxNodes }: { maxNodes: number }) {
           />
 
         </AccordionItem>
+        <AccordionItem key="5" aria-label="Margin Setting" title="Margin">
+          <div className="flex flex-col gap-2">
+            <Input
+              size="sm"
+              className=""
+              label="Top Margin"
+              placeholder="Top"
+              value={filter.topMargin.toString()}
+              onChange={(e) =>
+                setFilter({ ...filter, topMargin: Number(e.target.value) })
+              }
+            />
+            <Input
+              size="sm"
+              className=""
+              label="Bottom Margin"
+              placeholder="Bottom"
+              value={filter.bottomMargin.toString()}
+              onChange={(e) =>
+                setFilter({ ...filter, topMargin: Number(e.target.value) })
+              }
+            />
+            <Input
+              size="sm"
+              className=""
+              label="Left Margin"
+              placeholder="Left"
+              value={filter.leftMargin.toString()}
+              onChange={(e) =>
+                setFilter({ ...filter, leftMargin: Number(e.target.value) })
+              }
+            />
+            <Input
+              size="sm"
+              className=""
+              label="right Margin"
+              placeholder="Right"
+              value={filter.rightMargin.toString()}
+              onChange={(e) =>
+                setFilter({ ...filter, rightMargin: Number(e.target.value) })
+              }
+            />
+          </div>
+        </AccordionItem>
+
       </Accordion>
     </>
   );

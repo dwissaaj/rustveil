@@ -38,7 +38,11 @@ export interface PieFilterStateType {
   description: string;
   author: string;
   labelsOffset :number
-  textOffset: number
+  textOffset: number;
+    topMargin: number;
+  bottomMargin: number;
+  leftMargin: number;
+  rightMargin:number;
 }
 
 
@@ -48,6 +52,10 @@ export const PieFilterState = atom<PieFilterStateType>({
   labelsOffset : 0,
   textOffset:0,
   cornerRadius: 0,
+    topMargin: 50,
+  bottomMargin: 50,
+  leftMargin: 50,
+  rightMargin:50,
   colorSchema: ColorSchema.nivo,
   title: "My Chart",
   description: "Description",
