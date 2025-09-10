@@ -4,8 +4,10 @@ import NetworkTableViewer from "@/components/workstation/sna/network/NetworkTabl
 
 export default function NetworkTable() {
   return (
-    <div>
-      <NetworkTableViewer />
-    </div>
+    
+
+        <NetworkTableViewer />
+
+
   );
 }

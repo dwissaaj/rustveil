@@ -18,7 +18,7 @@ export default function CentralitySelectGraph() {
     useState<CentralityKey>(centrality);
 
   return (
-    <div className="flex flex-row gap-6">
+    <div className="flex flex-row items-center justify-center gap-6">
       <Select
         label="Select Chart Type"
         selectedKeys={new Set([chart])}
@@ -52,10 +52,12 @@ export default function CentralitySelectGraph() {
       </Select>
 
       <Button
+      color="primary"
+      variant="light"
         isIconOnly
         startContent={<RefreshIcon className="w-6" />}
         onPress={() => {
-          setCentrality(pendingCentrality); // apply only when refresh is clicked
+          setCentrality(pendingCentrality); 
         }}
       />
     </div>

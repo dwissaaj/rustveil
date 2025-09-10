@@ -34,9 +34,9 @@ export default function NetworkHome() {
   };
 
   return (
-    <div className="flex w-full max-w-screen items-stretch">
+    <div className="flex w-full max-w-screen max-h-full items-stretch">
       <div
-        className="flex-shrink-0 max-w-[75%]" // max width 80% of parent
+        className="flex-shrink-0 max-w-[75%] " // max width 80% of parent
         style={{ width: `${width}px` }}
       >
         <EdgesTable />
@@ -56,7 +56,7 @@ export default function NetworkHome() {
         ></button>
       </div>
 
-      <div className="flex-1">
+      <div className="flex-1 max-h-full">
         <EdgesGraph />
       </div>
     </div>
