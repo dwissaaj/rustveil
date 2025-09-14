@@ -24,7 +24,7 @@ export default function NetworkGraph() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const canvasRef = useRef<NetworkCanvasHandle>(null);
   const [layout, setLayout] = useState("forceDirected2d");
-const [modalSize, setModalSize] = useState({ width: 800, height: 600 });
+
   return (
     <div className="bg-content1 shadow-md border-1 dark:border-0 rounded-lg">
       <div className="p-2 font-medium flex flex-row justify-start gap-4 items-center">
