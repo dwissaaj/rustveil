@@ -4,7 +4,7 @@ import { useTheme } from "next-themes";
 import { Button } from "@heroui/button";
 
 import EdgesTable from "./NetworkTable";
-import EdgesGraph from "./NetworkGraph";
+import NetworkGraph from "./NetworkGraph";
 
 export default function NetworkHome() {
   const { theme } = useTheme();
@@ -49,15 +49,15 @@ export default function NetworkHome() {
         <button
           onMouseDown={handleMouseDown}
           className={`
-      w-full h-full rounded transition-colors duration-200
-      ${theme === "dark" ? "bg-gray-600" : "bg-gray-300"} 
-      hover:opacity-100 opacity-40 transition-200
-    `}
+            w-full h-full rounded transition-colors duration-200
+            ${theme === "dark" ? "bg-gray-600" : "bg-gray-300"} 
+            hover:opacity-100 opacity-40 transition-200
+          `}
         ></button>
       </div>
 
       <div className="flex-1 max-h-full">
-        <EdgesGraph />
+        <NetworkGraph />
       </div>
     </div>
   );
