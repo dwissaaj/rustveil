@@ -10,7 +10,7 @@ import { useAtomValue } from "jotai";
 import { CentralityPieChart } from "./CentralityPieChart";
 import { CentralityBarChart } from "./CentralityBarChart";
 
-export default function CentralityHome() {
+export default function ChartHome() {
   const data = useAtomValue(centralityData);
   const chart = useAtomValue(selectedChart);
   const centrality = useAtomValue(selectedCentrality);
