@@ -1,13 +1,30 @@
 "use client";
-import { useRef } from "react";
-import { Button, useDisclosure, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@heroui/react";
-import { FitViewOutline, FullScreenIcon, ZoomInOutline, ZoomOutOutline } from "@/components/icon/IconView";
-import NetworkCanvasReagraph, { NetworkCanvasHandle } from "../../../../../components/workstation/sna/network/reagraph/NetworkCanvasReagraph";
+
+import { useRef, useState } from "react";
+import {
+  Button,
+  useDisclosure,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Select,
+  SelectItem,
+} from "@heroui/react";
+import {
+  FitViewOutline,
+  FullScreenIcon,
+  ZoomInOutline,
+  ZoomOutOutline,
+} from "@/components/icon/IconView";
+import NetworkCanvasReagraph, { NetworkCanvasHandle, LAYOUT_OPTIONS } from "../../../../../components/workstation/sna/network/reagraph/NetworkCanvasReagraph";
 
 export default function NetworkGraph() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const canvasRef = useRef<NetworkCanvasHandle>(null);
-
+  const [layout, setLayout] = useState("forceDirected2d");
+const [modalSize, setModalSize] = useState({ width: 800, height: 600 });
   return (
     <div className="bg-content1 shadow-md border-1 dark:border-0 rounded-lg">
       <div className="p-2 font-medium flex flex-row justify-start gap-4 items-center">
@@ -39,21 +56,32 @@ export default function NetworkGraph() {
           color="primary"
           onPress={() => canvasRef.current?.zoomOut()}
         />
+
+        {/* Hero UI Select */}
+        <Select
+          className="max-w-xs"
+          label="Graph Layout"
+          placeholder="Select layout"
+          value={layout}
+          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setLayout(e.target.value)}
+        >
+          {LAYOUT_OPTIONS.map((o) => (
+            <SelectItem key={o.value}>{o.label}</SelectItem>
+          ))}
+        </Select>
       </div>
 
-      {/* Main graph */}
       <div className="p-2">
-        <NetworkCanvasReagraph ref={canvasRef} />
+        <NetworkCanvasReagraph ref={canvasRef} layout={layout as any} />
       </div>
 
-      {/* Modal */}
       <Modal size="5xl" isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">Network</ModalHeader>
               <ModalBody className="overflow-hidden">
-                <NetworkCanvasReagraph ref={canvasRef} />
+                <NetworkCanvasReagraph ref={canvasRef} layout={layout as any} />
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>

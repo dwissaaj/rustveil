@@ -1,13 +1,14 @@
 "use client";
 
 import { useAtomValue } from "jotai";
-import React, { useMemo, useRef, useImperativeHandle, forwardRef } from "react";
+import React, { useMemo, useRef, useImperativeHandle, forwardRef, useEffect, useState } from "react";
 import {
   GraphCanvas,
   darkTheme,
   lightTheme,
   Theme,
   GraphCanvasRef,
+  LayoutTypes,
 } from "reagraph";
 import { useTheme } from "next-themes";
 import NoNetworkReagraph from "./NoNetworkReagraph";
@@ -16,23 +17,48 @@ import { Button } from "@heroui/button";
 import { CloseActionIcon } from "@/components/icon/IconAction";
 import { ReagraphData } from "@/app/lib/workstation/social/network/reagraph/state";
 
+export const LAYOUT_OPTIONS: { label: string; value: LayoutTypes }[] = [
+  { label: "Force Directed 2D", value: "forceDirected2d" },
+  { label: "Force Directed 3D", value: "forceDirected3d" },
+  { label: "Circular 2D", value: "circular2d" },
+  { label: "Concentric 2D", value: "concentric2d" },
+  { label: "Concentric 3D", value: "concentric3d" },
+  { label: "Tree Top Down 2D", value: "treeTd2d" },
+  { label: "Tree Left Right 2D", value: "treeLr2d" },
+  { label: "Tree Top Down 3D", value: "treeTd3d" },
+  { label: "Tree Left Right 3D", value: "treeLr3d" },
+  { label: "Radial Out 2D", value: "radialOut2d" },
+  { label: "Radial Out 3D", value: "radialOut3d" },
+  { label: "No Overlap 2D", value: "nooverlap" },
+  { label: "ForceAtlas2 2D", value: "forceatlas2" },
+];
+
 export type NetworkCanvasHandle = {
   fitView: () => void;
   zoomIn: () => void;
   zoomOut: () => void;
 };
 
-function NetworkCanvasReagraph(props: {}, ref: React.Ref<NetworkCanvasHandle>) {
+type Props = {
+  layout?: LayoutTypes;
+};
+
+function NetworkCanvasReagraph(props: Props, ref: React.Ref<NetworkCanvasHandle>) {
   const graphData = useAtomValue(ReagraphData);
   const centralityAtom = useAtomValue(centralityData);
   const hasGraph = graphData.nodes.length > 0 && graphData.edges.length > 0;
   const { theme } = useTheme();
-
   const isDark = theme === "dark";
   const baseTheme: Theme = isDark ? darkTheme : lightTheme;
   const graphRef = useRef<GraphCanvasRef | null>(null);
 
-  // expose methods to parent
+  const [layout, setLayout] = useState<LayoutTypes>(props.layout ?? "forceDirected2d");
+
+  // update layout if prop changes
+  useEffect(() => {
+    if (props.layout && props.layout !== layout) setLayout(props.layout);
+  }, [props.layout]);
+
   useImperativeHandle(ref, () => ({
     fitView: () => graphRef.current?.fitNodesInView(),
     zoomIn: () => graphRef.current?.zoomIn(),
@@ -91,6 +117,7 @@ function NetworkCanvasReagraph(props: {}, ref: React.Ref<NetworkCanvasHandle>) {
           edges={graphData.edges}
           theme={customTheme}
           ref={graphRef}
+          layoutType={layout}
           contextMenu={({ data, onClose }) => {
             const nodeMap = centralityAtom?.graphData?.node_map ?? {};
             const betweenness = centralityAtom?.graphData?.betweenness_centrality ?? [];
@@ -137,6 +164,5 @@ function NetworkCanvasReagraph(props: {}, ref: React.Ref<NetworkCanvasHandle>) {
     </div>
   );
 }
-
 
 export default forwardRef(NetworkCanvasReagraph);
