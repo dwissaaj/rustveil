@@ -32,7 +32,7 @@ const config = {
               700: "#8a8a8c",
               800: "#656567",
               900: "#404041",
-              foreground: "#0000",
+              foreground: "#000",
               DEFAULT: "#d4d4d8",
             },
             primary: {
@@ -140,7 +140,7 @@ const config = {
               700: "#afafb1",
               800: "#d7d7d8",
               900: "#ffffff",
-              foreground: "#ffff",
+              foreground: "#fff",
               DEFAULT: "#36363d",
             },
             primary: {

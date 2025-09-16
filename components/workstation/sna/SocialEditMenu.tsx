@@ -44,27 +44,39 @@ import {
   DropdownItem,
   Button,
 } from "@heroui/react";
-import { ReportIcon } from "@/components/icon/IconFilter";
+import { VerticesIcon } from "@/components/icon/IconFilter";
 
-export default function SocialInfoMenu() {
+export default function SocialEditMenu() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   return (
     <>
       <Dropdown>
         <DropdownTrigger>
-          <Button variant="light">Info</Button>
-        </DropdownTrigger>
-        <DropdownMenu aria-label="Info about social network analysis">
-          <DropdownItem
-            onPress={onOpen}
-            description="Information about social network data"
-            startContent={<ReportIcon />}
-            key="info"
+          <Button
+            size="lg"
+            className="text-black dark:text-white"
+            color="primary"
+            variant="light"
           >
-            Info
+            Edit
+          </Button>
+        </DropdownTrigger>
+        <DropdownMenu
+          color="primary"
+          variant="flat"
+          aria-label="locate vertices"
+        >
+          <DropdownItem
+            key="vertices"
+            description="Select vertices for analysis"
+            startContent={<VerticesIcon className="w-6" />}
+            onPress={onOpen}
+          >
+            Locate Vertices
           </DropdownItem>
         </DropdownMenu>
       </Dropdown>
+      <VerticesModal isOpen={isOpen} onOpenChange={onOpenChange} />
     </>
   );
 }
