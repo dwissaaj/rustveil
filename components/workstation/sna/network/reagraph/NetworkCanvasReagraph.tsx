@@ -32,7 +32,20 @@ export const LAYOUT_OPTIONS: { label: string; value: LayoutTypes }[] = [
   { label: "No Overlap 2D", value: "nooverlap" },
   { label: "ForceAtlas2 2D", value: "forceatlas2" },
 ];
+export type CentralityKey =
+  | "betweenness_centrality"
+  | "closeness_centrality"
+  | "degree_centrality"
+  | "eigenvector_centrality"
+  | "katz_centrality";
 
+export const CENTRALITY_OPTIONS: { label: string; value: CentralityKey }[] = [
+  { label: "Betweenness", value: "betweenness_centrality" },
+  { label: "Closeness", value: "closeness_centrality" },
+  { label: "Degree", value: "degree_centrality" },
+  { label: "Eigenvector", value: "eigenvector_centrality" },
+  { label: "Katz", value: "katz_centrality" },
+];
 export type NetworkCanvasHandle = {
   fitView: () => void;
   zoomIn: () => void;
@@ -41,6 +54,7 @@ export type NetworkCanvasHandle = {
 
 type Props = {
   layout?: LayoutTypes;
+  centrality?: CentralityKey;
 };
 
 function NetworkCanvasReagraph(props: Props, ref: React.Ref<NetworkCanvasHandle>) {
@@ -52,9 +66,15 @@ function NetworkCanvasReagraph(props: Props, ref: React.Ref<NetworkCanvasHandle>
   const baseTheme: Theme = isDark ? darkTheme : lightTheme;
   const graphRef = useRef<GraphCanvasRef | null>(null);
 
-  const [layout, setLayout] = useState<LayoutTypes | undefined>(props.layout ?? "forceDirected2d");
-
-  // update layout if prop changes
+  const [layout, setLayout] = useState<LayoutTypes>(props.layout ?? "forceDirected2d");
+  const [selectedMetric, setSelectedMetric] = useState<CentralityKey>(
+    props.centrality ?? "betweenness_centrality"
+  );
+  useEffect(() => {
+  if (props.centrality && props.centrality !== selectedMetric) {
+    setSelectedMetric(props.centrality);
+  }
+}, [props.centrality]);
   useEffect(() => {
     if (props.layout && props.layout !== layout) setLayout(props.layout);
   }, [props.layout]);
@@ -91,32 +111,36 @@ function NetworkCanvasReagraph(props: Props, ref: React.Ref<NetworkCanvasHandle>
       : undefined,
   };
 
-  const sizedNodes = useMemo(() => {
-    if (!hasGraph) return [];
-    const nodeMap = centralityAtom?.graphData?.node_map ?? {};
-    const centralityArr = centralityAtom?.graphData?.betweenness_centrality ?? [];
-    if (centralityArr.length === 0) return graphData.nodes;
+const sizedNodes = useMemo(() => {
+  if (!hasGraph) return [];
 
-    const max = Math.max(...centralityArr);
-    const min = Math.min(...centralityArr);
+  const nodeMap = centralityAtom?.graphData?.node_map ?? {};
+  const metricArr = centralityAtom?.graphData?.[selectedMetric] ?? [];
 
-    return graphData.nodes.map((n) => {
-      const entry = Object.entries(nodeMap).find(([_, id]) => id === n.id);
-      const idx = entry ? Number(entry[0]) : -1;
-      const centrality = idx >= 0 && idx < centralityArr.length ? centralityArr[idx] : 0;
-      const norm = max === min ? 0.5 : (centrality - min) / (max - min);
-      return { ...n, label: n.label ?? n.id, size: 20 + norm * 80 };
-    });
-  }, [graphData, centralityAtom, hasGraph]);
+  if (metricArr.length === 0) return graphData.nodes;
+
+  const max = Math.max(...metricArr);
+  const min = Math.min(...metricArr);
+
+  return graphData.nodes.map((n) => {
+    const entry = Object.entries(nodeMap).find(([_, id]) => id === n.id);
+    const idx = entry ? Number(entry[0]) : -1;
+    const centrality = idx >= 0 && idx < metricArr.length ? metricArr[idx] : 0;
+    const norm = max === min ? 0.5 : (centrality - min) / (max - min);
+    return { ...n, label: n.label ?? n.id, size: 20 + norm * 80 };
+  });
+}, [graphData, centralityAtom, hasGraph, selectedMetric]);
 
   return (
     <div className="relative flex-1 min-h-[600px] overflow-hidden">
       {hasGraph ? (
         <GraphCanvas
+          key={selectedMetric} 
           nodes={sizedNodes}
           edges={graphData.edges}
           theme={customTheme}
           ref={graphRef}
+          labelType="all"
           layoutType={layout}
           contextMenu={({ data, onClose }) => {
             const nodeMap = centralityAtom?.graphData?.node_map ?? {};
