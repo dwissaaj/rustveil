@@ -63,7 +63,7 @@ export default function NetworkGraph() {
           label="Graph Layout"
           placeholder="Select layout"
           value={layout}
-          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setLayout(e.target.value)}
+          onChange={(e) => setLayout(e.target.value)}
         >
           {LAYOUT_OPTIONS.map((o) => (
             <SelectItem key={o.value}>{o.label}</SelectItem>

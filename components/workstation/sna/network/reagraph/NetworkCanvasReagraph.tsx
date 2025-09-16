@@ -52,7 +52,7 @@ function NetworkCanvasReagraph(props: Props, ref: React.Ref<NetworkCanvasHandle>
   const baseTheme: Theme = isDark ? darkTheme : lightTheme;
   const graphRef = useRef<GraphCanvasRef | null>(null);
 
-  const [layout, setLayout] = useState<LayoutTypes>(props.layout ?? "forceDirected2d");
+  const [layout, setLayout] = useState<LayoutTypes | undefined>(props.layout ?? "forceDirected2d");
 
   // update layout if prop changes
   useEffect(() => {
