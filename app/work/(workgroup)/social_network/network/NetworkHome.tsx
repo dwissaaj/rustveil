@@ -1,8 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import { useTheme } from "next-themes";
-import { Button } from "@heroui/button";
-
 import EdgesTable from "./NetworkTable";
 import NetworkGraph from "./NetworkGraph";
 
@@ -36,7 +34,7 @@ export default function NetworkHome() {
   return (
     <div className="flex w-full max-w-screen max-h-full items-stretch">
       <div
-        className="flex-shrink-0 max-w-[75%] " // max width 80% of parent
+        className="flex-shrink-0 min-w-[25%] max-w-[65%] "
         style={{ width: `${width}px` }}
       >
         <EdgesTable />
