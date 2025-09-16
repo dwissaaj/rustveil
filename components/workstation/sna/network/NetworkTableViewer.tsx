@@ -85,14 +85,14 @@ export default function NetworkTableViewer() {
         });
       } else {
         addToast({
-          title: "Error at Fetch",
+          title: "Error at Fetch 3",
           description: `${response?.message}`,
           color: "danger",
         });
       }
     } catch (err) {
       addToast({
-          title: "Error at Fetch",
+          title: "Error at Fetch 2",
           description: `${err}`,
           color: "danger",
         });
@@ -182,11 +182,11 @@ export default function NetworkTableViewer() {
             <TableRow key={row.id}>
               <TableCell>{startRow + list.items.indexOf(row) + 1}</TableCell>
               <TableCell>{row.label}</TableCell>
-              <TableCell>{row.degree}</TableCell>
-              <TableCell>{row.betweenness}</TableCell>
-              <TableCell>{row.closeness}</TableCell>
-              <TableCell>{row.eigenvector}</TableCell>
-              <TableCell>{row.katz}</TableCell>
+              <TableCell>{row.degree.toFixed(4)}</TableCell>
+              <TableCell>{row.betweenness.toFixed(4)}</TableCell>
+              <TableCell>{row.closeness.toFixed(4)}</TableCell>
+              <TableCell>{row.eigenvector.toFixed(4)}</TableCell>
+              <TableCell>{row.katz.toFixed(4)}</TableCell>
             </TableRow>
           )}
         </TableBody>
