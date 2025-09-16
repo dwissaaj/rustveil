@@ -1,3 +1,4 @@
 npm run tauri dev
 npx prettier --write .
 npx tauri dev
+npx eslint "{src,app}/**/*.{ts,tsx,js,jsx}"

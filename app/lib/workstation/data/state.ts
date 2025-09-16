@@ -1,10 +1,5 @@
 import { atom } from "jotai";
 
-import { TableDataType } from "./dto";
-
-// need to deleted since we not ising jotai atom
-export const tableData = atom<TableDataType | null>(null);
-
 // get all sheets from the file
 export const sheetAvailable = atom<string[]>([]);
 
@@ -41,6 +36,3 @@ export const columnAvailable = atom<string[]>([]);
 export const vertex1ColumnSelected = atom<string>("");
 export const vertex2ColumnSelected = atom<string>("");
 export const vertexGraphTypeSelected = atom<string>("direct");
-
-export const vertex1ColumnData = atom<string[]>([]);
-export const vertex2ColumnData = atom<string[]>([]);

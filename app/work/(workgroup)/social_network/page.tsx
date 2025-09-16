@@ -1,7 +1,7 @@
 import { Tabs, Tab } from "@heroui/react";
 
-import EdgesHome from "./edges/EdgesHome";
-import VerticesHome from "./vertices/VerticesHome";
+import NetworkHome from "./network/NetworkHome";
+import ChartHome from "./centrality/ChartHome";
 
 import SocialFilterListWrapper from "@/components/workstation/sna/SocialFilterListWrapper";
 
@@ -12,12 +12,17 @@ export default function SocialNetwork() {
         <SocialFilterListWrapper />
       </div>
       <div className="mt-4">
-        <Tabs aria-label="Social Tab" color="primary" variant="underlined">
-          <Tab key="edges" title="Edges">
-            <EdgesHome />
+        <Tabs
+          size="lg"
+          aria-label="Social Tab"
+          color="primary"
+          variant="underlined"
+        >
+          <Tab key="network" title="Network">
+            <NetworkHome />
           </Tab>
-          <Tab key="vertices" title="Vertices">
-            <VerticesHome />
+          <Tab key="centrality" title="Chart">
+            <ChartHome />
           </Tab>
         </Tabs>
       </div>
