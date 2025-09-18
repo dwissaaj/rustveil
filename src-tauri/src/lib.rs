@@ -2,12 +2,14 @@ mod workstation;
 mod database;
 mod global;
 use workstation::social_network;
+use workstation::sentiment_analysis;
 use tauri_plugin_fs::FsExt;
 use global::app_path;
 use app_path::AppFolderPath;
 use std::sync::Mutex;
 use database::lib::state::SqliteDataState;
 use social_network::state::VerticesSelected;
+use workstation::sentiment_analysis::state::ColumnTargetSentimentAnalysis;
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -34,6 +36,7 @@ pub fn run() {
         }))
         .manage(Mutex::new(SqliteDataState { file_url: String::new() }))
         .manage(Mutex::new(VerticesSelected { vertex_1: String::new(), vertex_2: String::new() }))
+        .manage(Mutex::new(ColumnTargetSentimentAnalysis { column_target: String::new()}))
         .setup(|app| {
             app.fs_scope();
             app_path::create_folder_main_app(app);
@@ -42,6 +45,7 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             workstation::data::excel::load_data,
             workstation::data::excel::get_sheet,
+            sentiment_analysis::handler::set_sentiment_analysis_target_column,
             social_network::handler::set_vertices,
             social_network::handler::calculate_centrality,
             social_network::handler::load_centrality_table,

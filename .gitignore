@@ -35,5 +35,5 @@ yarn-error.log*
 next-env.d.ts
 
 # ai model
-/src-tauri/model/
-/src-tauri/model/**
+/src-tauri/models/
+/src-tauri/models/**

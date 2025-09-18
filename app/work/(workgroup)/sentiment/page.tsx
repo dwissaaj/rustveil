@@ -5,7 +5,7 @@ import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { Button } from "@heroui/button";
 import ColumnViewer from "./ColumnViewer";
 import ChartViewer from "./ChartViewer";
-import Filter from "./Filter";
+import Filter from "../../../../components/workstation/sentiment_analysis/SentimentAnalysisFilterWrapper";
 
 export default function NetworkHome() {
   const { theme } = useTheme();
@@ -22,7 +22,9 @@ export default function NetworkHome() {
       direction="horizontal"
     >
       <Panel defaultSize={50}>
-        <ColumnViewer />
+        <div className="max-h-[75vh] overflow-auto">
+          <ColumnViewer />
+        </div>
       </Panel>
       <PanelResizeHandle
         className={`w-2 m-2 ${theme === "dark" ? "bg-gray-600" : "bg-gray-300"} rounded transition-colors duration-200 hover:opacity-100 opacity-40 transition-200`}
