@@ -20,23 +20,20 @@ export default function TabWorkstation() {
       className="border-b p-2"
       disabledKeys={["Relation Extraction", "Topic Classification"]}
     >
-      {/* <Tab key={"home"}>
-          <NextLink className="flex justify-start items-center gap-1" href="/">
-            <p className="font-bold text-inherit">Home</p>
-          </NextLink>
-        </Tab> */}
+
       <Tab key="Data" title="Data">
         <Data />
       </Tab>
       <Tab key="Social Network" title="Social Network">
         <SocialNetwork />
       </Tab>
+            <Tab key="Sentiment Analysis" title="Sentiment Analysis">
+        <SentimentAnalysis />
+      </Tab>
       <Tab key="NER" title="NER">
         <NamedEntityRecognition />
       </Tab>
-      <Tab key="Sentiment Analysis" title="Sentiment Analysis">
-        <SentimentAnalysis />
-      </Tab>
+
 
       <Tab key="Topic Modelling" title="Topic Modelling">
         <TopicModelling />

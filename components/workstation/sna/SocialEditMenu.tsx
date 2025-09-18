@@ -45,6 +45,7 @@ import {
   Button,
 } from "@heroui/react";
 import { VerticesIcon } from "@/components/icon/IconFilter";
+import { EditTabIcon } from "@/components/icon/IconAction";
 
 export default function SocialEditMenu() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -53,7 +54,8 @@ export default function SocialEditMenu() {
       <Dropdown>
         <DropdownTrigger>
           <Button
-            size="lg"
+            startContent={<EditTabIcon className="w-4" />}
+            size="sm"
             className="text-black dark:text-white"
             color="primary"
             variant="light"

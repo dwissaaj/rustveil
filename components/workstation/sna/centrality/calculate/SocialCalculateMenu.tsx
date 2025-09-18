@@ -9,6 +9,7 @@ import {
 } from "@heroui/react";
 import SocialCalculateModal from "@/app/work/(workgroup)/social_network/filter/modal/CalculateModal";
 import { CalculateIcon } from "@/components/icon/IconGraph";
+import { CalculateTabIcon } from "@/components/icon/IconAction";
 
 export default function SocialCalculateMenu() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -17,7 +18,8 @@ export default function SocialCalculateMenu() {
       <Dropdown>
         <DropdownTrigger>
           <Button
-            size="lg"
+          startContent={<CalculateTabIcon />}
+            size="sm"
             className="text-black dark:text-white"
             color="primary"
             variant="light"

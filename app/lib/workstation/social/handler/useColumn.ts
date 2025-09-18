@@ -2,7 +2,6 @@ import { atom, useAtomValue } from "jotai";
 import { useMemo } from "react";
 
 import { dataTable } from "../../data/state";
-// use for getting specific column data from dataTable but rememberd data table is paginated
 
 export function useDataColumn(targetColumn: string) {
   const columnAtom = useMemo(

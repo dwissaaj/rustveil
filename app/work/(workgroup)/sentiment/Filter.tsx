@@ -9,13 +9,11 @@ import {
   Button,
 } from "@heroui/react";
 
-import DataPicker from "../picker/DataPickerModal";
-import DataLoader from "../picker/DataLoadModal";
 
 import { UploadNewData, LoadNewData } from "@/components/icon/IconFilter";
-import { FileTabIcon } from "@/components/icon/IconAction";
+import { EditTabIcon } from "@/components/icon/IconAction";
 
-export default function DataFileDropdown() {
+export default function Filter() {
   const {
     isOpen: isPickerOpen,
     onOpen: onPickerOpen,
@@ -33,13 +31,13 @@ export default function DataFileDropdown() {
       <Dropdown>
         <DropdownTrigger>
           <Button
-          startContent={<FileTabIcon  className="w-4"/>}
+          startContent={<EditTabIcon className="w-4" />}
             size="sm"
             className="text-black dark:text-white"
             color="primary"
             variant="light"
           >
-            File
+            Target
           </Button>
         </DropdownTrigger>
         <DropdownMenu color="primary" variant="flat" aria-label="File actions">
@@ -61,18 +59,7 @@ export default function DataFileDropdown() {
           </DropdownItem>
         </DropdownMenu>
       </Dropdown>
-      <DataPicker
-        fileLoaded={fileLoaded}
-        isOpen={isPickerOpen}
-        setFileLoaded={setFileLoaded}
-        onOpenChange={onPickerOpenChange}
-      />
-      <DataLoader
-        fileLoaded={fileLoaded}
-        isOpen={isLoaderOpen}
-        setFileLoaded={setFileLoaded}
-        onOpenChange={onLoaderOpenChange}
-      />
+      
     </>
   );
 }
