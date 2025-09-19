@@ -22,7 +22,7 @@ export default function NetworkHome() {
       direction="horizontal"
     >
       <Panel defaultSize={50}>
-        <div className="max-h-[75vh] overflow-auto">
+        <div className="max-h-[85vh]">
           <ColumnViewer />
         </div>
       </Panel>

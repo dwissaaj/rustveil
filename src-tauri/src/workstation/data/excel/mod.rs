@@ -77,7 +77,7 @@ pub fn load_data(app: AppHandle, url: String, sheet_name: String) -> ProcessingR
 
     if file_path.file_url.is_empty(){
         return ProcessingResult::Error(ErrorResult {
-            error_code: 401,
+            response_code: 401,
             message: "No Data or file loaded. Go to Data > File > Load or Upload ".to_string(),
         });
     }
@@ -87,7 +87,7 @@ pub fn load_data(app: AppHandle, url: String, sheet_name: String) -> ProcessingR
         Ok(wb) => wb,
         Err(e) => {
             return ProcessingResult::Error(ErrorResult {
-                error_code: 401,
+                response_code: 401,
                 message: format!("Cannot open file: {}", e),
             })
         }
@@ -107,7 +107,7 @@ pub fn load_data(app: AppHandle, url: String, sheet_name: String) -> ProcessingR
         }
         Err(e) => {
             return ProcessingResult::Error(ErrorResult {
-                error_code: 401,
+                response_code: 401,
                 message: format!("Sheet not found {}", e),
             })
         }
@@ -123,7 +123,7 @@ pub fn load_data(app: AppHandle, url: String, sheet_name: String) -> ProcessingR
             },
         );
         return ProcessingResult::Error(ErrorResult {
-            error_code: 401,
+            response_code: 401,
             message: "Rows are empty, no data available".to_string(),
         });
     }
@@ -170,7 +170,7 @@ pub fn load_data(app: AppHandle, url: String, sheet_name: String) -> ProcessingR
         Ok(conn) => conn,
         Err(_) => {
             return ProcessingResult::Error(ErrorResult {
-                error_code: 401,
+                response_code: 401,
                 message: "Load Data Sqlite Error Connection".to_string(),
             })
         }
@@ -203,7 +203,7 @@ pub fn load_data(app: AppHandle, url: String, sheet_name: String) -> ProcessingR
         })
     }
     DatabaseProcess::Error(err) => ProcessingResult::Error(ErrorResult {
-        error_code: err.error_code,
+        response_code: err.response_code,
         message: err.message,
     }),
 }

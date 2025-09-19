@@ -6,7 +6,7 @@ export interface ResponseSuccess {
 }
 
 export interface ResponseError {
-  error_code: number;
+  response_code: number;
   message: string;
 }
 

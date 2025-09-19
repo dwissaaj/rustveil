@@ -32,7 +32,7 @@ pub struct DatabaseComplete {
 #[derive(Serialize)]
 pub struct DatabaseError {
     /// Numeric code representing the error type.
-    pub error_code: u32,
+    pub response_code: u32,
 
     /// Description of the error for logging or UI display.
     pub message: String,

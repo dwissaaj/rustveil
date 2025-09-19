@@ -50,10 +50,10 @@ pub fn run() {
             social_network::handler::calculate_centrality,
             social_network::handler::load_centrality_table,
             database::lib::handler::load_data_sqlite,
-            database::lib::get::get_all_data,
-            database::lib::get::get_paginated_data,
-            database::lib::get::get_all_vertices,
-            
+            database::lib::get::all_data::get_all_data,
+            database::lib::get::all_data::get_paginated_data,
+            database::lib::get::all_data::get_all_vertices,
+            database::lib::get::text_target::get_paginated_sentiment_target,
         ])
         .run(tauri::generate_context!())
         

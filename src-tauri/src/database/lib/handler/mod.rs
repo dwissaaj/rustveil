@@ -46,7 +46,7 @@ pub fn load_data_sqlite(app: AppHandle, pathfile: String) -> DatabaseProcess {
     db.file_url = pathfile.clone();
     if pathfile.is_empty() {
         return DatabaseProcess::Error(DatabaseError {
-            error_code: 404,
+            response_code: 404,
             message: "File path or database is none. Try to load Data > File > Load or Upload".to_string(),
         });
     }
@@ -55,7 +55,7 @@ pub fn load_data_sqlite(app: AppHandle, pathfile: String) -> DatabaseProcess {
         Ok(conn) => conn,
         Err(e) => {
             return DatabaseProcess::Error(DatabaseError {
-                error_code: 404,
+                response_code: 404,
                 message: format!("Failed to open database: {}", e),
             });
         }
@@ -70,7 +70,7 @@ pub fn load_data_sqlite(app: AppHandle, pathfile: String) -> DatabaseProcess {
     Ok(count) => count > 0,
     Err(e) => {
         return DatabaseProcess::Error(DatabaseError {
-            error_code: 404,
+            response_code: 404,
             message: format!("Error checking table existence: {}", e),
         });
     }
@@ -78,7 +78,7 @@ pub fn load_data_sqlite(app: AppHandle, pathfile: String) -> DatabaseProcess {
     
     if !table_exists {
         return DatabaseProcess::Error(DatabaseError {
-            error_code: 404,
+            response_code: 404,
             message: "Table 'rustveil' does not exist in the database".to_string(),
         });
     }
@@ -90,7 +90,7 @@ pub fn load_data_sqlite(app: AppHandle, pathfile: String) -> DatabaseProcess {
             Ok(count) => count,
             Err(e) => {
                 return DatabaseProcess::Error(DatabaseError {
-                    error_code: 500,
+                    response_code: 500,
                     message: format!("Error counting records: {}", e),
                 });
             }
@@ -159,7 +159,7 @@ pub fn data_to_sqlite(
     if let Err(e) = connect.execute(sql.as_str(), []) {
 
         return DatabaseProcess::Error(DatabaseError {
-            error_code: 401,
+            response_code: 401,
             message: format!("Error creating table: {}", e),
         });
     } else {
@@ -218,7 +218,7 @@ pub fn data_to_sqlite(
             }
             Err(e) => {
                 return DatabaseProcess::Error(DatabaseError {
-                    error_code: 401,
+                    response_code: 401,
                     message: format!("Error inserting batch {}: {}", i, e),
                 });
             }

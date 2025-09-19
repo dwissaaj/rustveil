@@ -46,6 +46,7 @@ export default function PickColumnModal({
           variant: "bordered",
           color: "success",
         });
+        onClose();
       }
       else {
         addToast({

@@ -21,7 +21,7 @@ export function useOpenDatabase() {
         };
       } else if ("Error" in response) {
         return {
-          response_code: response.Error.error_code,
+          response_code: response.Error.response_code,
           message: response.Error.message,
         };
       }
