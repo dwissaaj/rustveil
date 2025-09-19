@@ -4,7 +4,7 @@ use crate::workstation::sentiment_analysis::state::{ColumnTargetSentimentAnalysi
 ColumnTargetSelectedResult,
 ColumnTargetSuccess,
 ColumnTargetError};
-
+use rust_bert::pipelines::sentiment::SentimentModel;
 
 #[command]
 pub fn set_sentiment_analysis_target_column(app: AppHandle, target: ColumnTargetSentimentAnalysis) -> ColumnTargetSelectedResult {
@@ -25,4 +25,18 @@ pub fn set_sentiment_analysis_target_column(app: AppHandle, target: ColumnTarget
             message: "Target column is saved".to_string(),
             target: target_column_state.column_target.to_string()
         })
+}
+
+
+#[command]
+pub fn calculate_sentiment_analysis() {
+    let sentiment_model = SentimentModel::new(Default::default())
+        .expect("Failed to load sentiment model");
+
+    let input = ["I love working with Rust, its fast and safe!"];
+
+    let output = sentiment_model.predict(&input);
+
+    // ✅ Directly print the first result (struct has Debug)
+    println!("{:?}", output[0]);
 }

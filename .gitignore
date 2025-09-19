@@ -37,3 +37,9 @@ next-env.d.ts
 # ai model
 /src-tauri/models/
 /src-tauri/models/**
+/src-tauri/models/sentiment_analysis
+/src-tauri/models/sentiment_analysis/**
+/src-tauri/model/
+/src-tauri/model/**
+/src-tauri/model/sentiment_analysis
+/src-tauri/models/sentiment_analysis/**

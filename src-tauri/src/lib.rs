@@ -46,6 +46,7 @@ pub fn run() {
             workstation::data::excel::load_data,
             workstation::data::excel::get_sheet,
             sentiment_analysis::handler::set_sentiment_analysis_target_column,
+            sentiment_analysis::handler::calculate_sentiment_analysis,
             social_network::handler::set_vertices,
             social_network::handler::calculate_centrality,
             social_network::handler::load_centrality_table,

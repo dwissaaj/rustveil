@@ -6,13 +6,25 @@ import { Button } from "@heroui/button";
 import ColumnViewer from "./ColumnViewer";
 import ChartViewer from "./ChartViewer";
 import Filter from "../../../../components/workstation/sentiment_analysis/SentimentAnalysisFilterWrapper";
+import { useSentimentAnalysis } from "./useSentimentAnalysis";
 
 export default function NetworkHome() {
   const { theme } = useTheme();
-
+  const calculate = useSentimentAnalysis()
+  const handlePress = async ()=> {
+    try {
+      const res = await calculate()
+      console.log(res)
+    } catch (error) {
+      console.log(error)
+    }
+  }
   return (
     <div className="w-full h-full p-2 flex flex-col gap-2">
       <div>
+        <Button onPress={handlePress}>
+          click
+        </Button>
         <Filter />
       </div>
       <div>

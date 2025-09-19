@@ -1,11 +1,11 @@
-use tauri::{AppHandle, Manager, command};
-use std::sync::Mutex;
-use serde_json::Value;
-use crate::workstation::sentiment_analysis::state::{ColumnTargetSentimentAnalysis};
 use crate::database::lib::get::all_data::PaginationParams;
 use crate::database::lib::state::{DatabaseComplete, DatabaseError, DatabaseProcess};
-use rusqlite::Connection;
+use crate::workstation::sentiment_analysis::state::ColumnTargetSentimentAnalysis;
 use crate::SqliteDataState;
+use rusqlite::Connection;
+use serde_json::Value;
+use std::sync::Mutex;
+use tauri::{command, AppHandle, Manager};
 
 #[command]
 pub fn get_paginated_sentiment_target(
@@ -60,24 +60,59 @@ pub fn get_paginated_sentiment_target(
         }
     };
 
-    // Count how many rows exist (for pagination)
-    let total_count: usize = match connect.query_row("SELECT COUNT(*) FROM rustveil", [], |row| row.get(0)) {
-        Ok(c) => c,
-        Err(e) => {
-            return DatabaseProcess::Error(DatabaseError {
-                response_code: 402,
-                message: format!("Failed to count records: {}", e),
-            });
+    let _ = connect.execute(
+        &format!(
+            "CREATE TABLE IF NOT EXISTS rust_sentiment (id INTEGER PRIMARY KEY AUTOINCREMENT, \"{}\" TEXT);",
+            target_column_state.column_target
+        ),
+        [],
+    );
+
+    let count: i64 = connect
+        .query_row("SELECT COUNT(*) FROM rust_sentiment;", [], |row| row.get(0))
+        .unwrap_or(0);
+
+    if count == 0 {
+        let mut stmt_old = match connect.prepare(&format!(
+            "SELECT \"{}\" FROM rustveil;",
+            target_column_state.column_target
+        )) {
+            Ok(s) => s,
+            Err(_) => {
+                return DatabaseProcess::Error(DatabaseError {
+                    response_code: 500,
+                    message: "Failed to prepare select from rustveil.".to_string(),
+                })
+            }
+        };
+
+        let old_rows = stmt_old
+            .query_map([], |row| row.get::<_, Option<String>>(0))
+            .unwrap();
+
+        let insert_sql = format!(
+            "INSERT INTO rust_sentiment (\"{}\") VALUES (?1);",
+            target_column_state.column_target
+        );
+        for r in old_rows {
+            if let Ok(val_opt) = r {
+                let val = val_opt.unwrap_or_default();
+                let _ = connect.execute(&insert_sql, [&val]);
+            }
         }
-    };
+    }
+
+    // ✅ Pagination from rust_sentiment
+    let total_count: usize = connect
+        .query_row("SELECT COUNT(*) FROM rust_sentiment;", [], |row| row.get(0))
+        .unwrap_or(0);
 
     let total_pages = (total_count + pagination.page_size - 1) / pagination.page_size;
     let current_page = pagination.page.min(total_pages.max(1));
     let offset = (current_page - 1) * pagination.page_size;
 
-    // ✅ Only fetch the selected column
     let query = format!(
-        "SELECT \"{}\" FROM rustveil LIMIT ? OFFSET ?",
+        "SELECT \"{}\" FROM rust_sentiment LIMIT ? OFFSET ?",
         target_column_state.column_target
     );
 
@@ -87,7 +122,7 @@ pub fn get_paginated_sentiment_target(
             return DatabaseProcess::Error(DatabaseError {
                 response_code: 403,
                 message: format!("Failed to prepare statement: {}", e),
-            });
+            })
         }
     };
 
@@ -97,7 +132,7 @@ pub fn get_paginated_sentiment_target(
             return DatabaseProcess::Error(DatabaseError {
                 response_code: 404,
                 message: format!("Query execution failed: {}", e),
-            });
+            })
         }
     };
 
@@ -118,7 +153,11 @@ pub fn get_paginated_sentiment_target(
     DatabaseProcess::Success(DatabaseComplete {
         response_code: 200,
         message: "Column data fetched successfully".to_string(),
-        data: if page_data.is_empty() { None } else { Some(page_data) },
+        data: if page_data.is_empty() {
+            None
+        } else {
+            Some(page_data)
+        },
         total_count: Some(total_count),
     })
 }
