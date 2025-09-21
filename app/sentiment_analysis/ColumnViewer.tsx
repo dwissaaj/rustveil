@@ -32,6 +32,7 @@ export default function ColumnViewerTable() {
 
   const fetchData = async (showToast: boolean = false) => {
     if (!targetColumn) {
+      
       setData([]);
       setTotalCount(0);
       return;

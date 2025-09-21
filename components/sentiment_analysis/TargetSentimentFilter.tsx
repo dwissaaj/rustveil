@@ -12,8 +12,9 @@ import {
 import { ColumnFilterIcon } from "@/components/icon/IconFilter";
 import { EditTabIcon } from "@/components/icon/IconAction";
 import PickColumnModal from "../../app/sentiment_analysis/modal/PickColumnModal";
+import { SettingViewOutline } from "../icon/IconView";
 
-export default function TargetFilter() {
+export default function TargetSentimentFilter() {
   const {
     isOpen: isTargetPick,
     onOpen: onTargetPick,
@@ -27,13 +28,13 @@ export default function TargetFilter() {
       <Dropdown>
         <DropdownTrigger>
           <Button
-          startContent={<EditTabIcon className="w-4" />}
+          startContent={<SettingViewOutline className="w-2" />}
             size="sm"
             className="text-black dark:text-white"
             color="primary"
             variant="light"
           >
-            Target
+            Setting
           </Button>
         </DropdownTrigger>
         <DropdownMenu color="primary" variant="flat" aria-label="File actions">
@@ -43,7 +44,7 @@ export default function TargetFilter() {
             startContent={<ColumnFilterIcon className="w-6" />}
             onPress={onTargetPick}
           >
-            Column Text
+            Target Column
           </DropdownItem>
           
         </DropdownMenu>

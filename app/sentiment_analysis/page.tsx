@@ -7,12 +7,24 @@ import { Button } from "@heroui/button";
 import ColumnViewerTable from "./ColumnViewer";
 import ChartViewer from "./ChartViewer";
 import SentimentAnalysisFilterWrapper from "@/components/sentiment_analysis/SentimentAnalysisFilterWrapper";
+import { useSentimentAnalysis } from "./useSentimentAnalysis";
 
 export default function page() {
   const { theme } = useTheme();
-
+const sna  = useSentimentAnalysis()
+const handlePress = async () => {
+  try {
+    const response = await sna()
+    console.log(response)
+  } catch (error) {
+    console.log(error)
+  }
+}
   return (
     <div className="w-full h-full p-2 flex flex-col gap-2">
+      <div>
+        <Button onPress={handlePress}>try to calculate</Button>
+      </div>
       <div>
        <SentimentAnalysisFilterWrapper />
       </div>

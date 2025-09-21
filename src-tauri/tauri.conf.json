@@ -25,6 +25,7 @@
   },
 
   "bundle": {
+    "resources": ["models/"],
     "active": true,
     "targets": "all",
     "icon": [

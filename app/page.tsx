@@ -33,9 +33,9 @@ export default function Home() {
             radius: "full",
             variant: "shadow",
           })}
-          href={"/work"}
+          href={"/blog"}
         >
-          Working
+          Blog
         </Link>
       </div>
 

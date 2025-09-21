@@ -1,3 +1,4 @@
+'use client'
 import {
   Navbar as HeroUINavbar,
   NavbarContent,
@@ -11,14 +12,16 @@ import { Link } from "@heroui/link";
 import { link as linkStyles } from "@heroui/theme";
 import NextLink from "next/link";
 import clsx from "clsx";
-
+import { usePathname } from "next/navigation";
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { GithubIcon, Logo } from "@/components/icons";
 
 export const Navbar = () => {
+    const pathname = usePathname();
+
   return (
-    <HeroUINavbar className="mt-4" maxWidth="full" shouldHideOnScroll>
+    <HeroUINavbar  className="mt-4" maxWidth="2xl" shouldHideOnScroll>
       <NavbarBrand as="li" className="">
           <NextLink className="flex justify-start items-center gap-1" href="/">
             {/* <Logo /> */}
@@ -27,22 +30,25 @@ export const Navbar = () => {
         </NavbarBrand>
       <NavbarContent className="basis-1/5 sm:basis-full " justify="center">
         
-        <ul className="hidden lg:flex gap-2 justify-start">
-          {siteConfig.navItems.map((item) => (
-            <NavbarItem key={item.href} >
-              <NextLink
-                className={clsx(
-                  linkStyles({ color: "foreground", size:  "lg" }),
-                  "data-[active=true]:text-primary data-[active=true]:font-medium",
-                )}
-                color="primary"
-                
-                href={item.href}
-              >
-                {item.label}
-              </NextLink>
-            </NavbarItem>
-          ))}
+        <ul className="hidden lg:flex gap-4 justify-start">
+          {siteConfig.navItems.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <NavbarItem key={item.href}>
+                <NextLink
+                  href={item.href}
+                  className={clsx(
+                    linkStyles({ size: "lg" }),
+                    isActive
+                      ? "text-secondary font-bold"
+                      : "text-black/50"
+                  )}
+                >
+                  {item.label}
+                </NextLink>
+              </NavbarItem>
+            );
+          })}
         </ul>
 
       </NavbarContent>
