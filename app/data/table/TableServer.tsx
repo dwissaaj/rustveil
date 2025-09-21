@@ -12,9 +12,9 @@ import {
 } from "@heroui/react";
 import { useAtom } from "jotai";
 
-import NoData from "@/components/workstation/data/NoData";
+import NoData from "@/components/data/NoData";
 import { RefreshIcon } from "@/components/icon/IconView";
-import { columnAvailable } from "@/app/lib/workstation/data/state";
+import { columnAvailable } from "@/app/lib/data/state";
 interface DataTableProps {
   data: Record<string, any>[];
   isLoading?: boolean;

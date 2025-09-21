@@ -8,7 +8,7 @@ import {
 } from "@heroui/react";
 
 import { RefreshIcon } from "@/components/icon/IconView";
-import { useRefreshServer } from "@/app/lib/workstation/data/handler/server/useRefreshServer";
+import { useRefreshServer } from "@/app/lib/data/handler/server/useRefreshServer";
 import { ViewTabIcon } from "@/components/icon/IconAction";
 
 export interface ViewDropdownProps {

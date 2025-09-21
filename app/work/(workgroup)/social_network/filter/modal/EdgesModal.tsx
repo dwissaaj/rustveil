@@ -14,7 +14,7 @@ import {
 import {
   vertex1ColumnSelected,
   vertex2ColumnSelected,
-} from "@/app/lib/workstation/data/state";
+} from "@/app/lib/data/state";
 import { useSetVertices } from "@/app/lib/workstation/social/vertices/useSetVertices";
 import VerticesSelect from "@/components/workstation/sna/centrality/VerticesSelectComponent";
 

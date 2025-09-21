@@ -19,7 +19,7 @@ import {
   vertex1ColumnSelected,
   vertex2ColumnSelected,
   vertexGraphTypeSelected,
-} from "@/app/lib/workstation/data/state";
+} from "@/app/lib/data/state";
 import { InfoIcon } from "@/components/icon/IconFilter";
 import { CloseActionIcon } from "@/components/icon/IconAction";
 import { useCalculateCentrality } from "@/app/lib/workstation/social/calculate/useCalculateCentrality";

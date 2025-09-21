@@ -2,8 +2,9 @@ import { invoke } from "@tauri-apps/api/core";
 import { useAtom, useAtomValue } from "jotai";
 
 import { CalculateCentralityResponse } from "../vertices/response";
-import { vertexGraphTypeSelected } from "../../data/state";
+
 import { centralityData } from "./state";
+import { vertexGraphTypeSelected } from "@/app/lib/data/state";
 
 export function useCalculateCentrality() {
   const graphType = useAtomValue(vertexGraphTypeSelected);

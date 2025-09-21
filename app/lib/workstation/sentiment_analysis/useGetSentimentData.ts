@@ -1,8 +1,8 @@
 import { invoke } from "@tauri-apps/api/core";
 
-import { InvokeResponse } from "@/app/lib/workstation/data/response";
+import { InvokeResponse } from "@/app/lib/data/response";
 import { useAtomValue } from "jotai";
-import { columnTargetSentimentAnalysis } from "@/app/lib/workstation/data/state";
+import { columnTargetSentimentAnalysis } from "@/app/lib/data/state";
 
 export function useGetSentimentDataTarget() {
   const columnTarget = useAtomValue(columnTargetSentimentAnalysis);

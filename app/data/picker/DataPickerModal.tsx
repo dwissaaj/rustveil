@@ -6,16 +6,18 @@ import {
   ModalBody,
   ModalFooter,
   Button,
+  Progress,
   addToast,
-  Tooltip,
 } from "@heroui/react";
 import { useState } from "react";
 
-import { useCloseModal } from "@/app/lib/workstation/data/useCloseModal";
-import { useLoadDatabase } from "@/app/lib/workstation/data/load_data/useLoadDatabase";
-import { useOpenDatabase } from "@/app/lib/workstation/data/load_data/useOpenDatabase";
-import { InfoIconSolid } from "@/components/icon/IconView";
+import { useFileOpener } from "@/app/lib/data/new_data/useFileOpener";
+
+import { useTableOpen } from "@/app/lib/data/new_data/useTableOpen";
+import { useCloseModal } from "@/app/lib/data/useCloseModal";
+import { useDatabaseProgress } from "@/app/lib/data/progress/useDatabaseProgress";
 import { CloseActionIconOutline } from "@/components/icon/IconAction";
+import SheetSelector from "@/components/data/SheetSelect";
 
 type DataPickerModalType = {
   isOpen: boolean;
@@ -24,21 +26,46 @@ type DataPickerModalType = {
   setFileLoaded: (loaded: boolean) => void;
 };
 
-export default function DataLoader({
+export default function DataPicker({
   isOpen,
   onOpenChange,
   fileLoaded,
+  setFileLoaded,
 }: DataPickerModalType) {
+  const fileOpener = useFileOpener();
+  const tableOpener = useTableOpen();
+  const progress = useDatabaseProgress();
+  const [openProgress, setopenProgress] = useState(false);
   const [openButtonState, setopenButtonState] = useState(true);
   const { closeModal } = useCloseModal(onOpenChange, addToast);
   const [isLoading, setIsLoading] = useState(false);
-  const loadDatabase = useLoadDatabase();
-  const databaseOpener = useOpenDatabase();
-  const openDatabase = async () => {
+
+  const openFile = async () => {
     try {
-      const result = await databaseOpener();
+      setIsLoading(true);
+      const file = await fileOpener();
+
+      if (file?.isSelected === true) {
+        setopenButtonState(false);
+      }
+    } catch (error) {
+      addToast({
+        title: "Operation Error",
+        description: `${error}`,
+        color: "danger",
+      });
+      setFileLoaded(false);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const openTable = async () => {
+    try {
+      const result = await tableOpener();
 
       setIsLoading(true);
+      setopenProgress(true);
       if (result?.response_code === 200) {
         addToast({
           title: "Table Opened",
@@ -52,6 +79,7 @@ export default function DataLoader({
           description: `${result?.message}`,
           color: "danger",
         });
+        setopenProgress(false);
       }
     } catch (error) {
       addToast({
@@ -59,25 +87,7 @@ export default function DataLoader({
         description: `${error}`,
         color: "danger",
       });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleOpenFile = async () => {
-    setIsLoading(true);
-    try {
-      const result = await loadDatabase();
-
-      if (result?.isSelected === true) {
-        setopenButtonState(false);
-      }
-    } catch (error) {
-      addToast({
-        title: "Operation Error",
-        description: `${error}`,
-        color: "danger",
-      });
+      setopenProgress(false);
     } finally {
       setIsLoading(false);
     }
@@ -101,32 +111,43 @@ export default function DataLoader({
       >
         <ModalContent>
           <ModalHeader className="flex flex-col gap-1">
-            <div className="flex items-center gap-2">
-              <p className="text-2xl font-medium">Load A Sqlite Database</p>
-              <Tooltip content="Only Generated Sqlite database by Rust Veil is supported for now">
-                <Button
-                  isIconOnly
-                  color="warning"
-                  size="sm"
-                  startContent={<InfoIconSolid />}
-                  variant="light"
-                />
-              </Tooltip>
-            </div>
+            Data & Sheet
           </ModalHeader>
           <ModalBody className="flex flex-col gap-2">
             <div>
               <div className="flex flex-col gap-2">
+                <p>Pick a .xlsx file</p>
                 <Button
                   color="secondary"
                   isDisabled={fileLoaded}
                   isLoading={isLoading}
                   variant="light"
-                  onPress={handleOpenFile}
+                  onPress={openFile}
                 >
-                  Pick the sqlite
+                  {isLoading
+                    ? "Loading..."
+                    : fileLoaded
+                      ? "File Loaded"
+                      : "Get File"}
                 </Button>
               </div>
+              <div className="my-4">
+                <SheetSelector />
+              </div>
+            </div>
+            <div>
+              {openProgress && (
+                <div className="w-full flex-col gap-1 flex p-4">
+                  <Progress
+                    className="max-w-md"
+                    color="primary"
+                    label={`Process ${progress?.count}/${progress?.total_rows}`}
+                    maxValue={progress?.total_rows}
+                    showValueLabel={true}
+                    value={progress?.count}
+                  />
+                </div>
+              )}
             </div>
           </ModalBody>
           <ModalFooter>
@@ -137,9 +158,9 @@ export default function DataLoader({
               color="primary"
               isDisabled={openButtonState}
               isLoading={isLoading}
-              onPress={openDatabase}
+              onPress={openTable}
             >
-              Open Database
+              Open Table
             </Button>
           </ModalFooter>
         </ModalContent>

@@ -1,7 +1,7 @@
 import {
   sheetAvailable,
   sheetSelected,
-} from "@/app/lib/workstation/data/state";
+} from "@/app/lib/data/state";
 import { Select, SelectItem } from "@heroui/react";
 import { useAtom } from "jotai";
 

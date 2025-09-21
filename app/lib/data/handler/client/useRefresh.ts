@@ -1,6 +1,6 @@
 import { addToast } from "@heroui/react";
+import { useGetAllData } from "./useGetAllData";
 
-import { useGetAllData } from "@/app/lib/workstation/data/handler/client/useGetAllData";
 
 export function useRefresh(onDataFetched?: (data: any[]) => void) {
   const getData = useGetAllData();

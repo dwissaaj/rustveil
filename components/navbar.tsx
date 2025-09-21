@@ -18,23 +18,25 @@ import { GithubIcon, Logo } from "@/components/icons";
 
 export const Navbar = () => {
   return (
-    <HeroUINavbar maxWidth="xl" shouldHideOnScroll>
-      <NavbarContent className="basis-1/5 sm:basis-full " justify="start">
-        <NavbarBrand as="li" className="gap-3 max-w-fit">
+    <HeroUINavbar className="mt-4" maxWidth="full" shouldHideOnScroll>
+      <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href="/">
             <Logo />
             <p className="font-bold text-inherit">RUSTVEIL</p>
           </NextLink>
         </NavbarBrand>
-        <ul className="hidden lg:flex gap-4 justify-start ml-2">
+      <NavbarContent className="basis-1/5 sm:basis-full " justify="center">
+        
+        <ul className="hidden lg:flex gap-4 justify-start">
           {siteConfig.navItems.map((item) => (
-            <NavbarItem key={item.href}>
+            <NavbarItem key={item.href} >
               <NextLink
                 className={clsx(
-                  linkStyles({ color: "foreground" }),
+                  linkStyles({ color: "foreground", size:  "lg" }),
                   "data-[active=true]:text-primary data-[active=true]:font-medium",
                 )}
-                color="foreground"
+                color="primary"
+                
                 href={item.href}
               >
                 {item.label}
@@ -42,6 +44,7 @@ export const Navbar = () => {
             </NavbarItem>
           ))}
         </ul>
+
       </NavbarContent>
 
       <NavbarContent
@@ -65,7 +68,7 @@ export const Navbar = () => {
       </NavbarContent>
 
       <NavbarMenu>
-        <div className="mx-4 mt-2 flex flex-col gap-2">
+        <div className="flex flex-col gap-2">
           {siteConfig.navMenuItems.map((item, index) => (
             <NavbarMenuItem key={`${item}-${index}`}>
               <Link color="primary" href={item.href} size="lg">
@@ -73,6 +76,7 @@ export const Navbar = () => {
               </Link>
             </NavbarMenuItem>
           ))}
+         
         </div>
       </NavbarMenu>
     </HeroUINavbar>

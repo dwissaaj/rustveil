@@ -1,7 +1,7 @@
 "use client";
 
-import DataFileDropdown from "@/app/work/(workgroup)/data/dropdown/DataFileDropdown";
-import { ViewDropdown } from "@/app/work/(workgroup)/data/dropdown/ViewDropdown";
+import DataFileDropdown from "@/app/data/dropdown/DataFileDropdown";
+import { ViewDropdown } from "@/app/data/dropdown/ViewDropdown";
 
 interface FilterListWrapperProps {
   onDataFetched?: (data: any[], totalCount?: number) => void; // 👈 ADD TOTAL COUNT PARAM

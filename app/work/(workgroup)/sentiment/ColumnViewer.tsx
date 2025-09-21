@@ -13,9 +13,10 @@ import {
   addToast,
 } from "@heroui/react";
 import { useAtomValue } from "jotai";
-import { columnTargetSentimentAnalysis } from "@/app/lib/workstation/data/state";
+
 import { useGetSentimentDataTarget } from "../../../lib/workstation/sentiment_analysis/useGetSentimentData";
 import { RefreshIcon } from "@/components/icon/IconView";
+import { columnTargetSentimentAnalysis } from "@/app/lib/data/state";
 
 export default function ColumnViewerTable() {
   const targetColumn = useAtomValue(columnTargetSentimentAnalysis);

@@ -4,7 +4,7 @@ import {
   vertex1ColumnSelected,
   vertex2ColumnSelected,
   vertexGraphTypeSelected,
-} from "@/app/lib/workstation/data/state";
+} from "@/app/lib/data/state";
 
 import { TooltipIcon, VerticesIcon } from "@/components/icon/IconFilter";
 import {

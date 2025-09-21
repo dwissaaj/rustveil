@@ -1,16 +1,14 @@
 "use client";
 import { useAtom } from "jotai";
-
-import TableServer from "./table/TableServer";
-
-import { useRefreshServer } from "@/app/lib/workstation/data/handler/server/useRefreshServer";
-import FilterListWrapper from "@/components/workstation/data/FilterListWrapper";
+import { useRefreshServer } from "@/app/lib/data/handler/server/useRefreshServer";
+import FilterListWrapper from "@/components/data/FilterListWrapper";
 import {
   currentPageTable,
   dataTable,
   loadingTable,
   totalCountTable,
-} from "@/app/lib/workstation/data/state";
+} from "@/app/lib/data/state";
+import TableServer from "./table/TableServer";
 export default function Page() {
   const [data, setData] = useAtom(dataTable);
   const [loading, setLoading] = useAtom(loadingTable);

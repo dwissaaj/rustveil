@@ -1,6 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 
-import { InvokeResponse } from "@/app/lib/workstation/data/response";
+import { InvokeResponse } from "@/app/lib/data/response";
 
 export function useGetDataServer() {
   const getDataServer = async (page: number = 1, pageSize: number = 100) => {

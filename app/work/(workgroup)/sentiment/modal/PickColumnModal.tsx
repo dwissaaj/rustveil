@@ -15,7 +15,7 @@ import { useAtom } from "jotai";
 import {
   columnAvailable,
   columnTargetSentimentAnalysis,
-} from "@/app/lib/workstation/data/state";
+} from "@/app/lib/data/state";
 import { useSetTargetColumn } from "../../../../lib/workstation/sentiment_analysis/useSetTargetColumn";
 
 type PickColumnModalType = {
