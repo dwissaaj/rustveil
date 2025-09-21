@@ -11,7 +11,7 @@ import {
 
 import { ColumnFilterIcon } from "@/components/icon/IconFilter";
 import { EditTabIcon } from "@/components/icon/IconAction";
-import PickColumnModal from "../../../app/work/(workgroup)/sentiment/modal/PickColumnModal";
+import PickColumnModal from "../../app/sentiment_analysis/modal/PickColumnModal";
 
 export default function TargetFilter() {
   const {
