@@ -23,7 +23,7 @@ import NetworkCanvasReagraph, {
   NetworkCanvasHandle,
   LAYOUT_OPTIONS,
   CENTRALITY_OPTIONS,
-} from "../../../../../components/workstation/sna/network/reagraph/NetworkCanvasReagraph";
+} from "../../../components/sna/network/reagraph/NetworkCanvasReagraph";
 import { useRefreshGraph } from "@/app/lib/workstation/social/network/reagraph/useRefresh";
 import { CentralityKey } from "@/app/lib/workstation/social/centrality/state";
 

@@ -7,7 +7,7 @@ import {
   DropdownItem,
   Button,
 } from "@heroui/react";
-import SocialCalculateModal from "@/app/work/(workgroup)/social_network/filter/modal/CalculateModal";
+import SocialCalculateModal from "@/app/social_network/filter/modal/CalculateModal";
 import { CalculateIcon } from "@/components/icon/IconGraph";
 import { CalculateTabIcon } from "@/components/icon/IconAction";
 

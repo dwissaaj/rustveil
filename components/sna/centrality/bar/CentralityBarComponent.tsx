@@ -1,10 +1,8 @@
 import { ColorSchemeId } from "@nivo/colors";
-import {
-  BarFilterStateType,
-  NivoBarType,
-} from "../../../../../app/work/(workgroup)/social_network/centrality/state";
+
 import { ResponsiveBar } from "@nivo/bar";
 import { useTheme } from "next-themes";
+import { BarFilterStateType, NivoBarType } from "@/app/social_network/centrality/state";
 
 export function CentralityBarComponent({
   data,

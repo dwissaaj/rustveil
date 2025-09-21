@@ -1,5 +1,5 @@
 "use client";
-import { writeFile, BaseDirectory } from "@tauri-apps/plugin-fs";
+
 import { CalculateCentralityType } from "@/app/lib/workstation/social/calculate/state";
 import { FilterIcon, InfoIcon } from "@/components/icon/IconFilter";
 import { FullScreenIcon } from "@/components/icon/IconView";
@@ -15,19 +15,20 @@ import {
 } from "@heroui/react";
 import { useAtom, useAtomValue } from "jotai";
 import { useMemo, useRef, useState } from "react";
-import { BarFilterState, showFilterAtom, topShowDataBar } from "./state";
+import { PieFilterState, showFilterAtom, topShowDataPie } from "./state";
 import {
   selectedCentrality,
   selectedChart,
 } from "@/app/lib/workstation/social/centrality/state";
-import { FilterPanelBarChart } from "../../../../../components/workstation/sna/centrality/bar/FilterControlBarChart";
-import { CentralityBarComponent } from "../../../../../components/workstation/sna/centrality/bar/CentralityBarComponent";
-import { useExportToImage } from "../../../../lib/workstation/social/useExportToImage";
-import { useTheme } from "next-themes";
-import NoDataChartComponent from "@/components/workstation/sna/centrality/NoDataChartComponent";
-import AllZeroComponent from "@/components/workstation/sna/centrality/AllZeroComponent";
 
-export function CentralityBarChart({
+import { useTheme } from "next-themes";
+import NoDataChartComponent from "@/components/sna/centrality/NoDataChartComponent";
+import AllZeroComponent from "@/components/sna/centrality/AllZeroComponent";
+import { useExportToImage } from "@/app/lib/workstation/social/useExportToImage";
+import { CentralityPieComponent } from "@/components/sna/centrality/pie/CentralityPieComponent";
+import { FilterPanelPieChart } from "@/components/sna/centrality/pie/FilterPanelPieChart";
+
+export function CentralityPieChart({
   graphData,
   centralityKey,
 }: {
@@ -35,13 +36,12 @@ export function CentralityBarChart({
   centralityKey: keyof Omit<CalculateCentralityType, "node_map">;
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const chartFilter = useAtomValue(BarFilterState);
+  const chartFilter = useAtomValue(PieFilterState);
   const [showFilter, setshowFilter] = useAtom(showFilterAtom);
   const chart = useAtomValue(selectedChart);
   const centrality = useAtomValue(selectedCentrality);
   const nodes = graphData?.node_map ?? {};
   const values = graphData?.[centralityKey] ?? [];
-  const topN = useAtomValue(topShowDataBar);
   const chartRef = useRef<HTMLDivElement>(null);
   const { theme } = useTheme();
   const exportImage = useExportToImage({
@@ -76,24 +76,22 @@ export function CentralityBarChart({
       });
     }
   };
-
+  const topN = useAtomValue(topShowDataPie);
   const data = useMemo(() => {
-    const mapped = values.map((value, index) => ({
-      node: nodes[index] ?? `Node ${index}`,
-      centrality: Number(value.toPrecision(3)), // max 3 significant digits
-    }));
+    const mapped = values
+      .map((value, index) => ({
+        id: nodes[index] ?? `Node ${index}`,
+        label: nodes[index] ?? `Node ${index}`,
+        value: Number(value.toPrecision(3)),
+      }))
+      .filter((d) => d.value > 0)
+      .sort((a, b) => b.value - a.value);
 
-    // sort descending
-    const sorted = mapped.sort((a, b) => b.centrality - a.centrality);
-
-    // slice topN
-    let topCount = topN ?? 10;
-    if (topCount > sorted.length) topCount = sorted.length;
-
-    return sorted.slice(0, topCount);
+    const safeTopN = Math.min(topN ?? mapped.length, mapped.length);
+    return mapped.slice(0, safeTopN);
   }, [values, nodes, topN]);
 
-  const hasData = data.some((d) => d.centrality > 0);
+  const hasData = data.some((d) => d.value > 0);
 
   return (
     <div className="w-full flex flex-col gap-10 border rounded-xl p-4">
@@ -121,21 +119,21 @@ export function CentralityBarChart({
         ) : hasData ? (
           <div className="flex-1 w-full ">
             <div className="min-w-[1200px] h-[75vh]">
-              <CentralityBarComponent
+              <CentralityPieComponent
                 data={data}
                 chartFilter={{
                   ...chartFilter,
-                  topMargin: 40,
-                  rightMargin: 40,
-                  bottomMargin: 120,
-                  leftMargin: 150,
+                  topMargin: 50,
+                  rightMargin: 50,
+                  bottomMargin: 50,
+                  leftMargin: 50,
                 }}
               />
             </div>
           </div>
         ) : (
-          <div className="w-full h-full">
-           <AllZeroComponent />
+          <div className="">
+            <AllZeroComponent />
           </div>
         )}
       </div>
@@ -159,7 +157,7 @@ export function CentralityBarChart({
           </ModalHeader>
 
           <ModalBody>
-            <div className="flex gap-4">
+            <div className="flex gap-2">
               <div className={showFilter ? "w-3/4" : "w-full"}>
                 <div
                   ref={chartRef}
@@ -167,7 +165,7 @@ export function CentralityBarChart({
                     background: theme === "dark" ? "#18181b" : "#ffffff",
                   }}
                 >
-                  <div className="flex flex-col gap-2 text-center mb-4">
+                  <div className="flex flex-col gap-2 text-center">
                     <p className="text-lg font-bold">{chartFilter.title}</p>
                     <p className="text-sm font-light">
                       {chartFilter.description}
@@ -176,26 +174,16 @@ export function CentralityBarChart({
                       {chartFilter.author}
                     </p>
                   </div>
-
-                  <CentralityBarComponent
+                  <CentralityPieComponent
                     data={data}
-                    chartFilter={{
-                      ...chartFilter,
-                      topMargin: 40,
-                      leftMargin: 120,
-                      rightMargin: 40,
-                      bottomMargin: 100,
-                    }}
+                    chartFilter={chartFilter}
                   />
                 </div>
               </div>
 
               {showFilter && (
-                <div
-                  className="w-1/4 "
-                  style={{ maxHeight: "75vh" }}
-                >
-                  <FilterPanelBarChart
+                <div className="w-1/4 " style={{ maxHeight: "75vh" }}>
+                  <FilterPanelPieChart
                     exportImage={handletoImage}
                     maxNodes={Object.keys(graphData?.node_map ?? {}).length}
                   />

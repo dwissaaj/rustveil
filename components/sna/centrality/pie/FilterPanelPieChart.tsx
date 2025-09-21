@@ -1,9 +1,5 @@
 import { useAtom } from "jotai";
-import {
-  PieFilterState,
-  ColorSchema,
-  topShowDataPie,
-} from "../../../../../app/work/(workgroup)/social_network/centrality/state";
+
 import {
   Select,
   SelectItem,
@@ -15,6 +11,9 @@ import {
   Button,
 } from "@heroui/react";
 import { DownloadActionIconSolid } from "@/components/icon/IconAction";
+import {   PieFilterState,
+  ColorSchema,
+  topShowDataPie, } from "@/app/social_network/centrality/state";
 interface FilterType {
   maxNodes: number;
   exportImage: () => void;

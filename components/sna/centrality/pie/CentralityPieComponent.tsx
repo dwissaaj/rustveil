@@ -1,10 +1,8 @@
 import { ResponsivePie } from "@nivo/pie";
 import { ColorSchemeId } from "@nivo/colors";
-import {
-  PieFilterStateType,
-  NivoPieType,
-} from "../../../../../app/work/(workgroup)/social_network/centrality/state";
+
 import { useTheme } from "next-themes";
+import { NivoPieType, PieFilterStateType } from "@/app/social_network/centrality/state";
 
 export function CentralityPieComponent({
   data,

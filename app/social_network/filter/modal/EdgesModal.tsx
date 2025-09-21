@@ -16,7 +16,7 @@ import {
   vertex2ColumnSelected,
 } from "@/app/lib/data/state";
 import { useSetVertices } from "@/app/lib/workstation/social/vertices/useSetVertices";
-import VerticesSelect from "@/components/workstation/sna/centrality/VerticesSelectComponent";
+import VerticesSelect from "@/components/sna/centrality/VerticesSelectComponent";
 
 type VerticesModalProps = {
   isOpen: boolean;

@@ -19,15 +19,15 @@ import { GithubIcon, Logo } from "@/components/icons";
 export const Navbar = () => {
   return (
     <HeroUINavbar className="mt-4" maxWidth="full" shouldHideOnScroll>
-      <NavbarBrand as="li" className="gap-3 max-w-fit">
+      <NavbarBrand as="li" className="">
           <NextLink className="flex justify-start items-center gap-1" href="/">
-            <Logo />
+            {/* <Logo /> */}
             <p className="font-bold text-inherit">RUSTVEIL</p>
           </NextLink>
         </NavbarBrand>
       <NavbarContent className="basis-1/5 sm:basis-full " justify="center">
         
-        <ul className="hidden lg:flex gap-4 justify-start">
+        <ul className="hidden lg:flex gap-2 justify-start">
           {siteConfig.navItems.map((item) => (
             <NavbarItem key={item.href} >
               <NextLink
@@ -59,7 +59,7 @@ export const Navbar = () => {
         </NavbarItem>
       </NavbarContent>
 
-      <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
+      <NavbarContent className="sm:hidden basis-1 " justify="end">
         <Link isExternal aria-label="Github" href={siteConfig.links.github}>
           <GithubIcon className="text-default-500" />
         </Link>

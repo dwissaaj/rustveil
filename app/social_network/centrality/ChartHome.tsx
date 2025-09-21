@@ -1,6 +1,6 @@
 "use client";
 
-import CentralitySelectGraph from "../../../../../components/workstation/sna/centrality/pie/CentralitySelectGraph";
+
 import {
   selectedChart,
   selectedCentrality,
@@ -9,6 +9,7 @@ import { centralityData } from "@/app/lib/workstation/social/calculate/state";
 import { useAtomValue } from "jotai";
 import { CentralityPieChart } from "./CentralityPieChart";
 import { CentralityBarChart } from "./CentralityBarChart";
+import CentralitySelectGraph from "@/components/sna/centrality/CentralitySelectGraph";
 
 export default function ChartHome() {
   const data = useAtomValue(centralityData);
