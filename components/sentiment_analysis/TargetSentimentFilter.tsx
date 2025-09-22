@@ -8,7 +8,6 @@ import {
   Button,
 } from "@heroui/react";
 
-
 import { ColumnFilterIcon } from "@/components/icon/IconFilter";
 import { EditTabIcon } from "@/components/icon/IconAction";
 import PickColumnModal from "../../app/sentiment_analysis/modal/PickColumnModal";
@@ -19,16 +18,15 @@ export default function TargetSentimentFilter() {
     isOpen: isTargetPick,
     onOpen: onTargetPick,
     onOpenChange: onTargetPickChange,
-    onClose: onTargetCloseModal
+    onClose: onTargetCloseModal,
   } = useDisclosure();
-  
 
   return (
     <>
       <Dropdown>
         <DropdownTrigger>
           <Button
-          startContent={<SettingViewOutline className="w-2" />}
+            startContent={<SettingViewOutline className="w-2" />}
             size="sm"
             className="text-black dark:text-white"
             color="primary"
@@ -46,10 +44,13 @@ export default function TargetSentimentFilter() {
           >
             Target Column
           </DropdownItem>
-          
         </DropdownMenu>
       </Dropdown>
-      <PickColumnModal onClose={onTargetCloseModal} isOpen={isTargetPick} onOpenChange={onTargetPickChange} />
+      <PickColumnModal
+        onClose={onTargetCloseModal}
+        isOpen={isTargetPick}
+        onOpenChange={onTargetPickChange}
+      />
     </>
   );
 }

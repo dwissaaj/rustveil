@@ -14,6 +14,5 @@ export function useGetDataByColumn(targetColumn: string) {
     [targetColumn],
   );
 
-
   return useAtomValue(columnData);
 }

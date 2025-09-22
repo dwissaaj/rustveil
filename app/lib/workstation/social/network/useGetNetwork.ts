@@ -10,12 +10,12 @@ export function useGetEdges() {
   const getEdges = async () => {
     try {
       const response = await invoke<GetEdgesResponse>("get_all_vertices");
-     
+
       if ("Success" in response) {
         const transformData = transformEdgesToGraph(
           response.Success.data || [],
         );
-      console.log("resat", response.Success.data)
+        console.log("resat", response.Success.data);
         setGraphAtom(transformData);
 
         return {

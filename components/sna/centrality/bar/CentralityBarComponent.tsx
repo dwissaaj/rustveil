@@ -2,7 +2,10 @@ import { ColorSchemeId } from "@nivo/colors";
 
 import { ResponsiveBar } from "@nivo/bar";
 import { useTheme } from "next-themes";
-import { BarFilterStateType, NivoBarType } from "@/app/social_network/centrality/state";
+import {
+  BarFilterStateType,
+  NivoBarType,
+} from "@/app/social_network/centrality/state";
 
 export function CentralityBarComponent({
   data,
@@ -74,12 +77,11 @@ export function CentralityBarComponent({
               text: {
                 fill: textColor,
                 fontSize: 16,
-                fontWeight: 700
-
+                fontWeight: 700,
               },
             },
           },
-          
+
           legends: {
             text: {
               fill: textColor,

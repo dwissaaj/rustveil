@@ -135,7 +135,7 @@ export function CentralityBarChart({
           </div>
         ) : (
           <div className="w-full h-full">
-           <AllZeroComponent />
+            <AllZeroComponent />
           </div>
         )}
       </div>
@@ -191,10 +191,7 @@ export function CentralityBarChart({
               </div>
 
               {showFilter && (
-                <div
-                  className="w-1/4 "
-                  style={{ maxHeight: "75vh" }}
-                >
+                <div className="w-1/4 " style={{ maxHeight: "75vh" }}>
                   <FilterPanelBarChart
                     exportImage={handletoImage}
                     maxNodes={Object.keys(graphData?.node_map ?? {}).length}

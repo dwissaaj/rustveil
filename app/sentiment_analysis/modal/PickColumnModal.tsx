@@ -27,19 +27,17 @@ type PickColumnModalType = {
 export default function PickColumnModal({
   isOpen,
   onOpenChange,
-  onClose
+  onClose,
 }: PickColumnModalType) {
-
-
   const [column] = useAtom(columnAvailable);
   const [textTargetSentiment, seTextTargetSentiment] = useAtom(
-    columnTargetSentimentAnalysis
+    columnTargetSentimentAnalysis,
   );
-  const setcolumn = useSetTargetColumn()
+  const setcolumn = useSetTargetColumn();
   const handleColumn = async () => {
     try {
-      const result = await setcolumn()
-      if(result?.response_code === 200) {
+      const result = await setcolumn();
+      if (result?.response_code === 200) {
         addToast({
           title: "Set Column Success",
           description: `Target Column saved at ${result.target}`,
@@ -47,8 +45,7 @@ export default function PickColumnModal({
           color: "success",
         });
         onClose();
-      }
-      else {
+      } else {
         addToast({
           title: "Set Column Error",
           description: `Error at ${result?.message}`,
@@ -58,13 +55,13 @@ export default function PickColumnModal({
       }
     } catch (error) {
       addToast({
-          title: "Set Column Error",
-          description: `Error at ${error}`,
-          variant: "bordered",
-          color: "danger",
-        });
+        title: "Set Column Error",
+        description: `Error at ${error}`,
+        variant: "bordered",
+        color: "danger",
+      });
     }
-  }
+  };
   return (
     <>
       <Modal

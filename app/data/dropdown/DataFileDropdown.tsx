@@ -9,8 +9,6 @@ import {
   Button,
 } from "@heroui/react";
 
-
-
 import { UploadNewData, LoadNewData } from "@/components/icon/IconFilter";
 import { FileTabIcon } from "@/components/icon/IconAction";
 import DataPicker from "../picker/DataPickerModal";
@@ -34,7 +32,7 @@ export default function DataFileDropdown() {
       <Dropdown>
         <DropdownTrigger>
           <Button
-          startContent={<FileTabIcon  className="w-4"/>}
+            startContent={<FileTabIcon className="w-4" />}
             size="sm"
             className="text-black dark:text-white"
             color="primary"

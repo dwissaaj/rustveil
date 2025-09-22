@@ -18,7 +18,7 @@ export function useGetSentimentDataTarget() {
           target: {
             column_target: columnTarget,
           },
-        }
+        },
       );
 
       if ("Success" in response) {
@@ -28,8 +28,7 @@ export function useGetSentimentDataTarget() {
           data: response.Success.data,
           total_count: response.Success.total_count,
         };
-      }
-      else if ("Error" in response) {
+      } else if ("Error" in response) {
         return {
           response_code: response.Error.response_code,
           message: response.Error.message,
@@ -37,9 +36,9 @@ export function useGetSentimentDataTarget() {
       }
     } catch (error) {
       return {
-          response_code: 500,
-          message: `Error at hook get sentiment data ${error}`,
-        };
+        response_code: 500,
+        message: `Error at hook get sentiment data ${error}`,
+      };
     }
   };
 

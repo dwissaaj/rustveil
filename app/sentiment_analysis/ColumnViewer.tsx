@@ -29,10 +29,8 @@ export default function ColumnViewerTable() {
   const rowsPerPage = 100;
   const totalPages = Math.ceil(totalCount / rowsPerPage);
 
-
   const fetchData = async (showToast: boolean = false) => {
     if (!targetColumn) {
-      
       setData([]);
       setTotalCount(0);
       return;
@@ -89,7 +87,7 @@ export default function ColumnViewerTable() {
   return (
     <div className="flex flex-col gap-4">
       <Table
-        className="p-2"
+        className=""
         isHeaderSticky
         isStriped
         isVirtualized
@@ -97,7 +95,8 @@ export default function ColumnViewerTable() {
         bottomContent={
           totalCount > 0 && (
             <div className="text-sm">
-              Showing {data.length} of {totalCount} records (Page {page} of {totalPages})
+              Showing {data.length} of {totalCount} records (Page {page} of{" "}
+              {totalPages})
             </div>
           )
         }
@@ -109,7 +108,8 @@ export default function ColumnViewerTable() {
             color="primary"
             startContent={<RefreshIcon className="w-6" />}
             variant="light"
-            onPress={() => fetchData(true)}           />
+            onPress={() => fetchData(true)}
+          />
         }
       >
         <TableHeader>

@@ -22,7 +22,7 @@ export function ViewDropdown({ onDataFetched }: ViewDropdownProps) {
     <Dropdown>
       <DropdownTrigger>
         <Button
-        startContent={<ViewTabIcon className="w-4" />}
+          startContent={<ViewTabIcon className="w-4" />}
           size="sm"
           className="text-black dark:text-white"
           color="primary"
@@ -36,7 +36,7 @@ export function ViewDropdown({ onDataFetched }: ViewDropdownProps) {
           key="refresh"
           description="Check new data"
           startContent={<RefreshIcon className="w-6" />}
-          onPress={() => refresh(1)} 
+          onPress={() => refresh(1)}
         >
           Refresh
         </DropdownItem>

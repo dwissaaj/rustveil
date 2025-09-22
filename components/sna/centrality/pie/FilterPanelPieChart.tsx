@@ -11,9 +11,11 @@ import {
   Button,
 } from "@heroui/react";
 import { DownloadActionIconSolid } from "@/components/icon/IconAction";
-import {   PieFilterState,
+import {
+  PieFilterState,
   ColorSchema,
-  topShowDataPie, } from "@/app/social_network/centrality/state";
+  topShowDataPie,
+} from "@/app/social_network/centrality/state";
 interface FilterType {
   maxNodes: number;
   exportImage: () => void;
@@ -71,24 +73,26 @@ export function FilterPanelPieChart({ maxNodes, exportImage }: FilterType) {
               ))}
             </Select>
             <Slider
-            size="sm"
-            label="Start Angle"
-            minValue={-180}
-            maxValue={360}
-            value={filter.startAngle}
-            onChange={(val) =>
-              setFilter({ ...filter, startAngle: Number(val) })
-            }
-          />
+              size="sm"
+              label="Start Angle"
+              minValue={-180}
+              maxValue={360}
+              value={filter.startAngle}
+              onChange={(val) =>
+                setFilter({ ...filter, startAngle: Number(val) })
+              }
+            />
 
-          <Slider
-            size="sm"
-            label="End Angle"
-            minValue={-360}
-            maxValue={360}
-            value={filter.endAngle}
-            onChange={(val) => setFilter({ ...filter, endAngle: Number(val) })}
-          />
+            <Slider
+              size="sm"
+              label="End Angle"
+              minValue={-360}
+              maxValue={360}
+              value={filter.endAngle}
+              onChange={(val) =>
+                setFilter({ ...filter, endAngle: Number(val) })
+              }
+            />
           </div>
         </AccordionItem>
         <AccordionItem key="2" aria-label="title tab" title="Title">
@@ -182,9 +186,7 @@ export function FilterPanelPieChart({ maxNodes, exportImage }: FilterType) {
             minValue={0}
             maxValue={45}
             value={filter.labelSkip}
-            onChange={(val) =>
-              setFilter({ ...filter, labelSkip: Number(val) })
-            }
+            onChange={(val) => setFilter({ ...filter, labelSkip: Number(val) })}
           />
           <Slider
             size="sm"

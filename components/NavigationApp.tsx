@@ -1,14 +1,20 @@
-'use client'
+"use client";
 import {
-  Navbar as HeroUINavbar,
-  NavbarContent,
-  NavbarMenu,
-  NavbarMenuToggle,
+  Navbar,
   NavbarBrand,
+  NavbarContent,
   NavbarItem,
+  Link,
+  Button,
+  DropdownItem,
+  DropdownTrigger,
+  Dropdown,
+  DropdownMenu,
+  NavbarMenu,
   NavbarMenuItem,
-} from "@heroui/navbar";
-import { Link } from "@heroui/link";
+  NavbarMenuToggle,
+} from "@heroui/react";
+
 import { link as linkStyles } from "@heroui/theme";
 import NextLink from "next/link";
 import clsx from "clsx";
@@ -16,41 +22,29 @@ import { usePathname } from "next/navigation";
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { GithubIcon, Logo } from "@/components/icons";
+import TextUnderstandingList from "./navigation/TextUnderstandingList";
+import DataList from "./navigation/DataList";
+import SocialNetworkList from "./navigation/SocialNetworkList";
+import EntityList from "./navigation/EntityList";
+import SpeechAudioList from "./navigation/SpeechAudio";
 
-export const Navbar = () => {
-    const pathname = usePathname();
+export const NavigationApp = () => {
+  const pathname = usePathname();
 
   return (
-    <HeroUINavbar  className="mt-4" maxWidth="2xl" shouldHideOnScroll>
+    <Navbar className="mt-4" maxWidth="2xl" shouldHideOnScroll>
       <NavbarBrand as="li" className="">
-          <NextLink className="flex justify-start items-center gap-1" href="/">
-            {/* <Logo /> */}
-            <p className="font-bold text-inherit">RUSTVEIL</p>
-          </NextLink>
-        </NavbarBrand>
+        <NextLink className="flex justify-start items-center gap-1" href="/">
+          {/* <Logo /> */}
+          <p className="font-bold text-inherit">RUSTVEIL</p>
+        </NextLink>
+      </NavbarBrand>
       <NavbarContent className="basis-1/5 sm:basis-full " justify="center">
-        
-        <ul className="hidden lg:flex gap-4 justify-start">
-          {siteConfig.navItems.map((item) => {
-            const isActive = pathname === item.href;
-            return (
-              <NavbarItem key={item.href}>
-                <NextLink
-                  href={item.href}
-                  className={clsx(
-                    linkStyles({ size: "lg" }),
-                    isActive
-                      ? "text-secondary font-bold"
-                      : "text-black/50"
-                  )}
-                >
-                  {item.label}
-                </NextLink>
-              </NavbarItem>
-            );
-          })}
-        </ul>
-
+        <DataList />
+        <SocialNetworkList />
+        <TextUnderstandingList />
+        <EntityList />
+        <SpeechAudioList />
       </NavbarContent>
 
       <NavbarContent
@@ -73,7 +67,7 @@ export const Navbar = () => {
         <NavbarMenuToggle />
       </NavbarContent>
 
-      <NavbarMenu>
+      {/* <NavbarMenu>
         <div className="flex flex-col gap-2">
           {siteConfig.navMenuItems.map((item, index) => (
             <NavbarMenuItem key={`${item}-${index}`}>
@@ -84,7 +78,7 @@ export const Navbar = () => {
           ))}
          
         </div>
-      </NavbarMenu>
-    </HeroUINavbar>
+      </NavbarMenu> */}
+    </Navbar>
   );
 };

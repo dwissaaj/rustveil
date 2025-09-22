@@ -92,10 +92,10 @@ export default function NetworkTableViewer() {
       }
     } catch (err) {
       addToast({
-          title: "Error at Fetch 2",
-          description: `${err}`,
-          color: "danger",
-        });
+        title: "Error at Fetch 2",
+        description: `${err}`,
+        color: "danger",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -104,7 +104,6 @@ export default function NetworkTableViewer() {
   return (
     <div className="flex flex-col gap-2">
       <Table
-
         aria-label="Centrality table"
         sortDescriptor={list.sortDescriptor}
         onSortChange={list.sort}
@@ -119,7 +118,6 @@ export default function NetworkTableViewer() {
             </div>
           )
         }
-
         bottomContentPlacement="inside"
         topContent={
           <Button

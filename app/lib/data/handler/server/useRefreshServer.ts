@@ -24,7 +24,7 @@ export function useRefreshServer(
             description: result.Success.message || "Data fetched successfully",
             color: "success",
           });
-          lastToastRef.current = true; 
+          lastToastRef.current = true;
         }
       } else if ("Error" in result) {
         addToast({

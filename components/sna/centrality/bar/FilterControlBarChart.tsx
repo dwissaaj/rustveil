@@ -12,7 +12,11 @@ import {
   Button,
 } from "@heroui/react";
 import { DownloadActionIconSolid } from "@/components/icon/IconAction";
-import { BarFilterState,topShowDataBar, ColorSchema } from "@/app/social_network/centrality/state";
+import {
+  BarFilterState,
+  topShowDataBar,
+  ColorSchema,
+} from "@/app/social_network/centrality/state";
 
 interface FilterType {
   maxNodes: number;

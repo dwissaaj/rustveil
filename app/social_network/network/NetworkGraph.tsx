@@ -32,7 +32,7 @@ export default function NetworkGraph() {
   const canvasRef = useRef<NetworkCanvasHandle>(null);
   const [layout, setLayout] = useState("forceDirected2d");
   const [centrality, setCentrality] = useState<CentralityKey>(
-    "betweenness_centrality"
+    "betweenness_centrality",
   );
   const handleRefreshGraph = useRefreshGraph();
   return (

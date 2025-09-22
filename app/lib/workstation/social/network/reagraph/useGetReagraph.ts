@@ -4,7 +4,6 @@ import { invoke } from "@tauri-apps/api/core";
 import { ReagraphData, ReagraphNode, ReagraphEdge } from "./state";
 import { GetEdgesResponse } from "@/app/lib/workstation/social/network/response";
 
-
 // Utility to transform Tauri edges to Reagraph nodes & edges
 function transformEdgesToReagraph(edges: { source: string; target: string }[]) {
   const nodesMap: Record<string, ReagraphNode> = {};
@@ -43,9 +42,10 @@ export function GetReagraph() {
       const response = await invoke<GetEdgesResponse>("get_all_vertices");
 
       if ("Success" in response) {
-        const reagraphData = transformEdgesToReagraph(response.Success.data || []);
+        const reagraphData = transformEdgesToReagraph(
+          response.Success.data || [],
+        );
         console.log("resat", response.Success.data);
-
 
         setReagraphData(reagraphData);
 

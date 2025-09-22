@@ -77,7 +77,7 @@ export default function NetworkGraphViewer() {
   const data = { nodes, links };
 
   return (
-    <div style={{ height: "75vh", width: "100%"}}>
+    <div style={{ height: "75vh", width: "100%" }}>
       <ResponsiveNetwork
         data={data}
         margin={{ top: 50, right: 50, bottom: 50, left: 50 }}

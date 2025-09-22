@@ -52,12 +52,12 @@ export default function CentralitySelectGraph() {
       </Select>
 
       <Button
-      color="primary"
-      variant="light"
+        color="primary"
+        variant="light"
         isIconOnly
         startContent={<RefreshIcon className="w-6" />}
         onPress={() => {
-          setCentrality(pendingCentrality); 
+          setCentrality(pendingCentrality);
         }}
       />
     </div>

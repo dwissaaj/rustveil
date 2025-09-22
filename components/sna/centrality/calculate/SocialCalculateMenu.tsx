@@ -18,7 +18,7 @@ export default function SocialCalculateMenu() {
       <Dropdown>
         <DropdownTrigger>
           <Button
-          startContent={<CalculateTabIcon />}
+            startContent={<CalculateTabIcon />}
             size="sm"
             className="text-black dark:text-white"
             color="primary"

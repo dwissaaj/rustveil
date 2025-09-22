@@ -1,12 +1,10 @@
-'use client'
+"use client";
 import { Tabs, Tab } from "@heroui/react";
 import NetworkHome from "./network/NetworkHome";
 import ChartHome from "./centrality/ChartHome";
 import SocialFilterListWrapper from "@/components/sna/SocialFilterListWrapper";
 
-
-
-export default function SocialNetwork() {
+export default function page() {
   return (
     <div className="">
       <div>

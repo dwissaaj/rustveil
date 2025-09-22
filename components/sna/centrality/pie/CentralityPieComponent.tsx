@@ -2,7 +2,10 @@ import { ResponsivePie } from "@nivo/pie";
 import { ColorSchemeId } from "@nivo/colors";
 
 import { useTheme } from "next-themes";
-import { NivoPieType, PieFilterStateType } from "@/app/social_network/centrality/state";
+import {
+  NivoPieType,
+  PieFilterStateType,
+} from "@/app/social_network/centrality/state";
 
 export function CentralityPieComponent({
   data,
@@ -35,13 +38,12 @@ export function CentralityPieComponent({
         arcLinkLabelsOffset={chartFilter.labelsOffset}
         arcLinkLabelsTextOffset={chartFilter.textOffset}
         colors={{ scheme: chartFilter.colorSchema as ColorSchemeId }}
-        arcLinkLabelsColor={{ from: "color" }} 
+        arcLinkLabelsColor={{ from: "color" }}
         enableArcLinkLabels={true}
         arcLinkLabelsThickness={2}
         arcLabelsSkipAngle={chartFilter.labelSkip}
         arcLinkLabelsDiagonalLength={chartFilter.labelDiagonalLength}
         arcLinkLabelsStraightLength={chartFilter.labelStraightLength}
-        
         theme={{
           labels: {
             text: {
@@ -62,7 +64,6 @@ export function CentralityPieComponent({
             },
           },
         }}
-        
       />
     </div>
   );

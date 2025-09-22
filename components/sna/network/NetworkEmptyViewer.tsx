@@ -6,14 +6,17 @@ import { InfoIconSolid, RefreshIcon } from "@/components/icon/IconView";
 import { Button } from "@heroui/react";
 
 export default function NetworkEmptyViewer() {
- 
   const handleRefreshGraph = useRefreshGraph();
-  
 
   return (
     <div className="flex flex-1 items-center justify-center h-full">
       <div className="flex items-center gap-2">
-        <Button variant="flat" isDisabled startContent={<InfoIconSolid />} color="warning">
+        <Button
+          variant="flat"
+          isDisabled
+          startContent={<InfoIconSolid />}
+          color="warning"
+        >
           Calculate Centrality First to show Graph
         </Button>
 
