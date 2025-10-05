@@ -63,7 +63,8 @@ export default function TableServer({
         }
         bottomContentPlacement="outside"
         topContent={
-          <Button
+          <div>
+            <Button
             isIconOnly
             className="m-2"
             color="primary"
@@ -71,6 +72,8 @@ export default function TableServer({
             variant="light"
             onPress={onRefresh}
           />
+          
+          </div>
         }
       >
         <TableHeader>

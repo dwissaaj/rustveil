@@ -166,6 +166,7 @@ pub fn load_data(app: AppHandle, url: String, sheet_name: String) -> ProcessingR
     // SQLite file path inside the app's folder.
     let db_path = file_path.file_url.as_str().to_owned();
     let full_db_path = format!("{}/database.sqlite", db_path); 
+    println!("{:#?}", full_db_path);
     let connect = match open_or_create_sqlite(&app, &full_db_path) {
         Ok(conn) => conn,
         Err(_) => {

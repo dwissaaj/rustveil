@@ -131,7 +131,7 @@ pub fn get_paginated_data(app: AppHandle, pagination: PaginationParams) -> Datab
     
     // Validate pagination parameters
     if pagination.page == 0 || pagination.page_size == 0 {
-        println!("❌ Invalid pagination: page or page_size is 0");
+        println!("Invalid pagination: page or page_size is 0");
         return DatabaseProcess::Error(DatabaseError {
             response_code: 400,
             message: "Page and page_size must be greater than 0".to_string(),
@@ -139,7 +139,7 @@ pub fn get_paginated_data(app: AppHandle, pagination: PaginationParams) -> Datab
     }
 
     if pagination.page_size > 1000 {
-        println!("❌ Invalid pagination: page_size exceeds 1000");
+        println!("Invalid pagination: page_size exceeds 1000");
         return DatabaseProcess::Error(DatabaseError {
             response_code: 400,
             message: "Page size cannot exceed 1000".to_string(),
@@ -153,7 +153,7 @@ pub fn get_paginated_data(app: AppHandle, pagination: PaginationParams) -> Datab
     // println!("📁 Database path: {}", db_path);
     
     if db_path.is_empty() {
-        println!("❌ No database path found");
+        println!("No database path found");
         return DatabaseProcess::Error(DatabaseError {
             response_code: 404,
             message: "File path or database is unknown. Try to load Data > File > Load or Upload".to_string(),
@@ -161,7 +161,7 @@ pub fn get_paginated_data(app: AppHandle, pagination: PaginationParams) -> Datab
     }
     
     if !std::path::Path::new(&db_path).exists() {
-        println!("❌ Database file does not exist: {}", db_path);
+        println!("Database file does not exist: {}", db_path);
         return DatabaseProcess::Error(DatabaseError {
             response_code: 404,
             message: "SQLite database not found. Import Data > File > Load or Upload".to_string(),
@@ -171,7 +171,7 @@ pub fn get_paginated_data(app: AppHandle, pagination: PaginationParams) -> Datab
     let connect = match Connection::open(&db_path) {
         Ok(conn) => conn,
         Err(e) => {
-            println!("❌ Database connection failed: {}", e);
+            println!("Database connection failed: {}", e);
             return DatabaseProcess::Error(DatabaseError {
                 response_code: 401,
                 message: format!("Error at SQLite connection: {}", e),
@@ -183,7 +183,7 @@ pub fn get_paginated_data(app: AppHandle, pagination: PaginationParams) -> Datab
     let total_count: usize = match connect.query_row("SELECT COUNT(*) FROM rustveil", [], |row| row.get(0)) {
         Ok(c) => c,
         Err(e) => {
-            println!("❌ Count query failed: {}", e);
+            println!("Count query failed: {}", e);
             return DatabaseProcess::Error(DatabaseError {
                 response_code: 402,
                 message: format!("Failed to count records: {}", e),
@@ -204,7 +204,7 @@ pub fn get_paginated_data(app: AppHandle, pagination: PaginationParams) -> Datab
     let mut stmt = match connect.prepare("SELECT * FROM rustveil LIMIT ? OFFSET ?") {
         Ok(s) => s,
         Err(e) => {
-            println!("❌ Prepare statement failed: {}", e);
+            println!("Prepare statement failed: {}", e);
             return DatabaseProcess::Error(DatabaseError {
                 response_code: 403,
                 message: format!("Failed to prepare statement: {}", e),
@@ -223,7 +223,7 @@ pub fn get_paginated_data(app: AppHandle, pagination: PaginationParams) -> Datab
     let mut rows = match stmt.query([pagination.page_size as i64, offset as i64]) {
         Ok(r) => r,
         Err(e) => {
-            println!("❌ Query execution failed: {}", e);
+            println!("Query execution failed: {}", e);
             return DatabaseProcess::Error(DatabaseError {
                 response_code: 404,
                 message: format!("Error executing query: {}", e),
