@@ -1,11 +1,11 @@
 
 import Image from "next/image";
 
-export default function MultiLangInfo() {
+export default function EuropeModelInfo() {
   return (
     <div className="space-y-4">
       <Image
-        src="/models/english.png"
+        src="/model/bert-base-europe.png"
         alt="English Model"
         width={300}
         height={150}

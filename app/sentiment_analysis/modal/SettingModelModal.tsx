@@ -16,9 +16,10 @@ import { CloseActionIconOutline } from "@/components/icon/IconAction";
 import { useAtom, useAtomValue } from "jotai";
 import {
   columnAvailable,
-  columnTargetSentimentAnalysis,
 } from "@/app/lib/data/state";
 import ListLang from "./ListLang";
+import { InfoIconSolid } from "@/components/icon/IconView";
+import { InfoIcon } from "@/components/icon/IconFilter";
 
 type PickColumnModalType = {
   isOpen: boolean;
@@ -31,12 +32,10 @@ export default function SettingModel({
   onOpenChange,
   onClose,
 }: PickColumnModalType) {
-
-
   return (
     <>
       <Modal
-      size="xl"
+        size="xl"
         closeButton={
           <Button
             isIconOnly
@@ -58,13 +57,23 @@ export default function SettingModel({
           </ModalHeader>
           <ModalBody className="flex flex-col gap-2">
             <div>
-              <div className="flex flex-col gap-2">
-                
-              </div>
+              <div className="flex flex-col gap-2"></div>
             </div>
             <div className="flex flex-col gap-2">
               <div>
-                <h2 className="text-lg">Pick a suitable language</h2>
+                <Tooltip
+                  color="primary"
+                  content="Click model For explanation"
+                  placement="top"
+                >
+                  <Button
+                    variant="light"
+                    endContent={<InfoIcon className="w-6" color="secondary" />}
+                    className="text-lg"
+                  >
+                    Pick a suitable language
+                  </Button>
+                </Tooltip>
               </div>
               <div>
                 <ListLang />

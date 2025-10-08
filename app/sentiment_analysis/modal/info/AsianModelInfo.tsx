@@ -1,11 +1,11 @@
 
 import Image from "next/image";
 
-export default function NlpMultiInfo() {
+export default function AsianModelInfo() {
   return (
     <div className="space-y-4">
       <Image
-        src="/models/english.png"
+        src="/model/distillbert-asia.png"
         alt="English Model"
         width={300}
         height={150}

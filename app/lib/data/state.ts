@@ -36,5 +36,5 @@ export const columnAvailable = atom<string[]>([]);
 export const vertex1ColumnSelected = atom<string>("");
 export const vertex2ColumnSelected = atom<string>("");
 export const vertexGraphTypeSelected = atom<string>("direct");
-export const columnTargetSentimentAnalysis = atom<string>("");
+
 export const tableAvailable = atom<string[]>([]);

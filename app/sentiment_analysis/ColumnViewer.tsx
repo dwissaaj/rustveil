@@ -14,9 +14,10 @@ import {
 } from "@heroui/react";
 import { useAtomValue } from "jotai";
 
-import { useGetSentimentDataTarget } from "../lib/workstation/sentiment_analysis/useGetSentimentData";
+import { useGetSentimentDataTarget } from "../lib/sentiment_analysis/useGetSentimentData";
 import { RefreshIcon } from "@/components/icon/IconView";
-import { columnTargetSentimentAnalysis } from "@/app/lib/data/state";
+import { columnTargetSentimentAnalysis } from "./state";
+
 
 export default function ColumnViewerTable() {
   const targetColumn = useAtomValue(columnTargetSentimentAnalysis);

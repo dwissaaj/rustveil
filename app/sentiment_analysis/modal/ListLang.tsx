@@ -12,17 +12,21 @@ import {
   DrawerBody,
   Button,
   useDisclosure,
+  DrawerFooter,
 } from "@heroui/react";
-import { useAtomValue } from "jotai";
-import { columnTargetSentimentAnalysis } from "@/app/lib/data/state";
+import { useAtom, useAtomValue } from "jotai";
+
 import { modelComponents, modelMap, supportedLang } from "./supportedLang";
+import { columnTargetSentimentAnalysis, selectedLang } from "../state";
+import { ModelAiOutline } from "@/components/icon/IconView";
+import { ColumnFilterOutline, ColumnFilterSolid } from "@/components/icon/IconFilter";
 
 
 
 export default function ListLang() {
-  const [selectedLang, setSelectedLang] = useState("en");
+  const [selectedLanguage, setselectedLanguage] = useAtom(selectedLang)
 
-  const selectedModel = modelMap[selectedLang] || modelMap.default;
+  const selectedModel = modelMap[selectedLanguage] || modelMap.default;
   const columnTarget = useAtomValue(columnTargetSentimentAnalysis);
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -37,7 +41,7 @@ export default function ListLang() {
           color="primary"
           content="If You want to change target go to Setting > Pick Column Target"
         >
-          <Chip color="primary" variant="dot">
+          <Chip startContent={<ColumnFilterOutline className="w-1 "  />} color="primary" variant="flat">
             {columnTarget}
           </Chip>
         </Tooltip>
@@ -46,7 +50,7 @@ export default function ListLang() {
           color="primary"
           content="This is the model currently used for sentiment analysis"
         >
-          <Chip color="primary" variant="dot" onClick={onOpen}>
+          <Chip startContent={<ModelAiOutline className="w-1 "  />} className="cursor-pointer" color="primary" variant="flat" onClick={onOpen}>
             {selectedModel}
           </Chip>
         </Tooltip>
@@ -56,8 +60,8 @@ export default function ListLang() {
         <Select
           label="Favorite Lang"
           placeholder="Select a Language"
-          selectedKeys={[selectedLang]}
-          onChange={(e) => setSelectedLang(e.target.value)}
+          selectedKeys={[selectedLanguage]}
+          onChange={(e) => setselectedLanguage(e.target.value)}
         >
           {supportedLang.map((lang) => (
             <SelectItem key={lang.key}>{lang.label}</SelectItem>
@@ -65,15 +69,21 @@ export default function ListLang() {
         </Select>
       </div>
 
-      {/* Drawer for model explanation */}
+
       <Drawer isOpen={isOpen} onOpenChange={onOpenChange} size="lg">
         <DrawerContent>
-          {() => (
+          {(onClose) => (
             <>
-              <DrawerHeader>{selectedModel}</DrawerHeader>
+              <DrawerHeader className="text-2xl">Model Information</DrawerHeader>
               <DrawerBody>
                 <ModelComponent />
               </DrawerBody>
+              <DrawerFooter>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  Close
+                </Button>
+                
+              </DrawerFooter>
             </>
           )}
         </DrawerContent>

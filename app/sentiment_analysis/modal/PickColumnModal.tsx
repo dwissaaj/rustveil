@@ -14,9 +14,9 @@ import { CloseActionIconOutline } from "@/components/icon/IconAction";
 import { useAtom } from "jotai";
 import {
   columnAvailable,
-  columnTargetSentimentAnalysis,
 } from "@/app/lib/data/state";
-import { useSetTargetColumn } from "../../lib/workstation/sentiment_analysis/useSetTargetColumn";
+import { useSetTargetColumn } from "../../lib/sentiment_analysis/useSetTargetColumn";
+import { columnTargetSentimentAnalysis } from "../state";
 
 type PickColumnModalType = {
   isOpen: boolean;
