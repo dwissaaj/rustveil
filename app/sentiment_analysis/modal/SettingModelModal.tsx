@@ -17,7 +17,7 @@ import { useAtom, useAtomValue } from "jotai";
 import {
   columnAvailable,
 } from "@/app/lib/data/state";
-import ListLang from "./ListLang";
+import ListLang from "./component/ListLang";
 import { InfoIconSolid } from "@/components/icon/IconView";
 import { InfoIcon } from "@/components/icon/IconFilter";
 
@@ -84,7 +84,7 @@ export default function SettingModel({
             <Button color="danger" variant="light" onPress={onClose}>
               Close
             </Button>
-            <Button color="primary">Choose Column</Button>
+            <Button color="primary">Choose Model</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

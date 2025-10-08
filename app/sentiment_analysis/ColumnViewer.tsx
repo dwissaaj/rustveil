@@ -16,7 +16,7 @@ import { useAtomValue } from "jotai";
 
 import { useGetSentimentDataTarget } from "../lib/sentiment_analysis/useGetSentimentData";
 import { RefreshIcon } from "@/components/icon/IconView";
-import { columnTargetSentimentAnalysis } from "./state";
+import { columnTargetSentimentAnalysis } from "../lib/sentiment_analysis/state";
 
 
 export default function ColumnViewerTable() {

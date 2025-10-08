@@ -16,7 +16,7 @@ import {
   columnAvailable,
 } from "@/app/lib/data/state";
 import { useSetTargetColumn } from "../../lib/sentiment_analysis/useSetTargetColumn";
-import { columnTargetSentimentAnalysis } from "../state";
+import { columnTargetSentimentAnalysis } from "../../lib/sentiment_analysis/state";
 
 type PickColumnModalType = {
   isOpen: boolean;

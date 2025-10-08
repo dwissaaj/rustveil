@@ -1,7 +1,7 @@
-import EnglishModelInfo from "./info/EnglishModelInfo";
-import IndoModelInfo from "./info/IndoModelInfo";
-import AsianModelInfo from "./info/AsianModelInfo";
-import EuropeModelInfo from "./info/EuropeModelInfo";
+import EnglishModelInfo from "../../sentiment_analysis/modal/info/EnglishModelInfo";
+import IndoModelInfo from "../../sentiment_analysis/modal/info/IndoModelInfo";
+import EuropeModelInfo from "../../sentiment_analysis/modal/info/EuropeModelInfo";
+import MultiLangModelInfo from "../../sentiment_analysis/modal/info/MultiLangModelInfo";
 
 export const supportedLang = [
   { key: "en", label: "English" },
@@ -19,10 +19,10 @@ export const supportedLang = [
 ];
 export const modelMap: Record<string, string> = {
   en: "distilbert-base-uncased-finetuned-sst-2-english",
-  id: "cahya/bert-base-indonesian-sentiment",
-  de: "nlptown/bert-base-multilingual-uncased-sentiment",
-  es: "nlptown/bert-base-multilingual-uncased-sentiment",
-  fr: "nlptown/bert-base-multilingual-uncased-sentiment",
+  id: "agufsamudra/indo-sentiment-analysis",
+  de: "tabularisai/multilingual-sentiment-analysis",
+  es: "tabularisai/multilingual-sentiment-analysis",
+  fr: "tabularisai/multilingual-sentiment-analysis",
   jp: "tabularisai/multilingual-sentiment-analysis",
   zh: "tabularisai/multilingual-sentiment-analysis",
   ko: "tabularisai/multilingual-sentiment-analysis",
@@ -34,8 +34,8 @@ export const modelMap: Record<string, string> = {
 };
 export const modelComponents: Record<string, React.FC> = {
   "distilbert-base-uncased-finetuned-sst-2-english": EnglishModelInfo,
-  "cahya/bert-base-indonesian-sentiment": IndoModelInfo,
-  "ltabularisai/multilingual-sentiment-analysis": AsianModelInfo,
+  "agufsamudra/indo-sentiment-analysis": IndoModelInfo,
+  "tabularisai/multilingual-sentiment-analysis": MultiLangModelInfo,
   "nlptown/bert-base-multilingual-uncased-sentiment": EuropeModelInfo,
-  default: AsianModelInfo,
+  default: MultiLangModelInfo,
 };

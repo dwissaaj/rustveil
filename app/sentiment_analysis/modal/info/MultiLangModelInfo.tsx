@@ -3,19 +3,17 @@ import Image from "next/image";
 import { columnTargetSentimentAnalysis, selectedLang } from "../../../lib/sentiment_analysis/state";
 import { Chip } from "@heroui/react";
 
-import { ColumnFilterOutline, LanguageIcon, StarIconOutline } from "@/components/icon/IconSA";
+import { ColumnFilterOutline, LanguageIcon } from "@/components/icon/IconSA";
 import Link from "next/link";
 
-export default function EuropeModelInfo() {
+export default function MultiLangModelInfo() {
   const selectedLanguage = useAtomValue(selectedLang);
   const columnTarget = useAtomValue(columnTargetSentimentAnalysis);
   return (
     <div className="p-2 space-y-4">
       <div className="space-y-4">
         <div>
-          <strong>
-            Nlptown/bert-base-multilingual-uncased-sentiment
-          </strong>
+          <strong>Tabularisai/multilingual-sentiment-analysis</strong>
         </div>
         <div className="flex flex-row gap-4">
           <Chip
@@ -39,7 +37,7 @@ export default function EuropeModelInfo() {
       </div>
       <div>
         <Image
-          src="/model/bert-base-multilingual-uncased-sentiment.png"
+          src="/model/multilingual-sentiment-analysis.png"
           alt="Europe Model"
           width={500}
           height={150}
@@ -49,41 +47,58 @@ export default function EuropeModelInfo() {
       <div>
         <strong className="text-xl">Description</strong>
         <p>
-          bert-base-multilingual-uncased model finetuned for sentiment analysis created by
-          nlptown best is train from review data, best used for product review
+          Multi language sentiment analysis created by tabularisai derived from
+          distilbert/distilbert-base-multilingual-cased
         </p>
       </div>
       <div className="">
         <strong className="text-xl">Model Details</strong>
         <ul className="list-disc">
-          <li><strong>Developed by:</strong> Nlptown</li>
-          <li><strong>Model Type:</strong> Text Classification</li>
-          <li><strong>Language(s):</strong> Dutch, Germany, French</li>
-          <li><strong>License:</strong> Mit</li>
+          <li>
+            <strong>Developed by:</strong> tabularisai
+          </li>
+          <li>
+            <strong>Model Type:</strong> Text Classification
+          </li>
+          <li>
+            <strong>Language(s):</strong> Chinese (中文), Spanish (Español),
+            Arabic (العربية), Japanese (日本語), German (Deutsch), Malay (Bahasa
+            Melayu), Vietnamese (Tiếng Việt), Korean (한국어), French
+            (Français), Tagalog
+          </li>
+          <li>
+            <strong>License:</strong> Mit
+          </li>
         </ul>
       </div>
       <div className="space-y-2">
         <strong className="text-xl">Label</strong>
-        <div className="space-x-2">
-          <Chip variant="flat" color="danger" size="md" endContent={<StarIconOutline  className="size-4"/>}>
-            0
+        <div className="flex flex-col gap-2 ">
+          <Chip variant="flat" size="md">
+            0: Very Negative
           </Chip>
-          <Chip variant="flat" color="danger" size="md" endContent={<StarIconOutline  className="size-4"/>}>
-            1
+          <Chip variant="flat" size="md">
+            1: Negative
           </Chip>
-          <Chip variant="flat" color="danger" size="md" endContent={<StarIconOutline  className="size-4"/>}>
-            2
+          <Chip variant="flat" size="md">
+            2: Neutral
           </Chip>
-          <Chip variant="flat" color="danger" size="md" endContent={<StarIconOutline  className="size-4"/>}>
-            3
+          <Chip variant="flat" size="md">
+            3: Positive
           </Chip>
-          <Chip variant="flat" color="danger" size="md" endContent={<StarIconOutline  className="size-4"/>}>
-            4
+          <Chip variant="flat" size="md">
+            4: Very Positive
           </Chip>
         </div>
       </div>
 
-     
+      <div>
+        <strong className="text-xl">Training Procedure</strong>
+        <ul className="list-disc">
+          <li>train_acc_off_by_one = 0.93</li>
+          <li>num_train_epochs = 3.5</li>
+        </ul>
+      </div>
       <div>
         <strong className="text-xl">Resources</strong>
         <div className="flex flex-col gap-2">
@@ -93,22 +108,21 @@ export default function EuropeModelInfo() {
                 color="foreground"
                 rel="noopener noreferrer"
                 target="_blank"
-                href="https://www.nlp.town/"
+                href="https://discord.com/invite/sznxwdqBXj"
               >
-                Nlp Town Website
+                Tabularisai discord
               </Link>
             </li>
-<li>
+            <li>
               <Link
                 color="foreground"
                 rel="noopener noreferrer"
                 target="_blank"
-                href="https://huggingface.co/nlptown/bert-base-multilingual-uncased-sentiment"
+                href="https://huggingface.co/tabularisai/multilingual-sentiment-analysis"
               >
                 Huggingface Documentation
               </Link>
             </li>
-            
           </ul>
         </div>
       </div>

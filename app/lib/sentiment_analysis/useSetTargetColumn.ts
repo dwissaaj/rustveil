@@ -1,7 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { ColumnTargetSelectedResult } from "./response";
 import { useAtomValue } from "jotai";
-import { columnTargetSentimentAnalysis } from "@/app/sentiment_analysis/state";
+import { columnTargetSentimentAnalysis } from "@/app/lib/sentiment_analysis/state";
 
 export function useSetTargetColumn() {
   const columnTarget = useAtomValue(columnTargetSentimentAnalysis);

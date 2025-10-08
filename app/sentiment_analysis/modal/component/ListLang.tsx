@@ -16,10 +16,11 @@ import {
 } from "@heroui/react";
 import { useAtom, useAtomValue } from "jotai";
 
-import { modelComponents, modelMap, supportedLang } from "./supportedLang";
-import { columnTargetSentimentAnalysis, selectedLang } from "../state";
-import { ModelAiOutline } from "@/components/icon/IconView";
-import { ColumnFilterOutline, ColumnFilterSolid } from "@/components/icon/IconFilter";
+import { modelComponents, modelMap, supportedLang } from "../../../lib/sentiment_analysis/supportedLang";
+import { columnTargetSentimentAnalysis, selectedLang } from "../../../lib/sentiment_analysis/state";
+import { ModelAiOutline ,ColumnFilterOutline} from "@/components/icon/IconSA";
+
+
 
 
 
@@ -41,7 +42,7 @@ export default function ListLang() {
           color="primary"
           content="If You want to change target go to Setting > Pick Column Target"
         >
-          <Chip startContent={<ColumnFilterOutline className="w-1 "  />} color="primary" variant="flat">
+          <Chip startContent={<ColumnFilterOutline className="size-6 "  />} color="primary" variant="flat">
             {columnTarget}
           </Chip>
         </Tooltip>
@@ -50,7 +51,7 @@ export default function ListLang() {
           color="primary"
           content="This is the model currently used for sentiment analysis"
         >
-          <Chip startContent={<ModelAiOutline className="w-1 "  />} className="cursor-pointer" color="primary" variant="flat" onClick={onOpen}>
+          <Chip startContent={<ModelAiOutline className="size-6 "  />} className="cursor-pointer" color="primary" variant="flat" onClick={onOpen}>
             {selectedModel}
           </Chip>
         </Tooltip>

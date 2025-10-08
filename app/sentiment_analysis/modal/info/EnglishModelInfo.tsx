@@ -1,13 +1,11 @@
 import { useAtomValue } from "jotai";
 import Image from "next/image";
-import { columnTargetSentimentAnalysis, selectedLang } from "../../state";
+import { columnTargetSentimentAnalysis, selectedLang } from "../../../lib/sentiment_analysis/state";
 import { Chip } from "@heroui/react";
-import {
-  ColumnFilterOutline,
-  ColumnFilterSolid,
-} from "@/components/icon/IconFilter";
-import { LanguageIcon } from "@/components/icon/IconView";
+
+
 import Link from "next/link";
+import { LanguageIcon ,ColumnFilterOutline} from "@/components/icon/IconSA";
 
 export default function EnglishModelInfo() {
   const selectedLanguage = useAtomValue(selectedLang);
@@ -24,7 +22,7 @@ export default function EnglishModelInfo() {
         <div className="flex flex-row gap-4">
           <Chip
             className="p-2"
-            startContent={<LanguageIcon className="w-2" />}
+            startContent={<LanguageIcon className="size-6" />}
             color="primary"
             radius="lg"
             variant="flat"
@@ -32,7 +30,7 @@ export default function EnglishModelInfo() {
             <p className="text-md">{selectedLanguage}</p>
           </Chip>
           <Chip
-            startContent={<ColumnFilterOutline className="w-2" />}
+            startContent={<ColumnFilterOutline className="size-6" />}
             color="primary"
             radius="lg"
             variant="flat"
@@ -62,19 +60,24 @@ export default function EnglishModelInfo() {
       <div className="">
         <strong className="text-xl">Model Details</strong>
         <ul className="list-disc">
-          <li>Developed by: Hugging Face</li>
-          <li>Model Type: Text Classification</li>
-          <li>Language(s): English</li>
-          <li>License: Apache-2.0</li>
-          
+          <li><strong>Developed by:</strong> Hugging Face</li>
+          <li><strong>Model Type:</strong> Text Classification</li>
+          <li><strong>Language(s):</strong> English</li>
+          <li><strong>License:</strong> Apache-2.0</li>
         </ul>
       </div>
-      <div>
-        <strong className="text-xl">Resources</strong>
-        <Link href="https://huggingface.co/docs/transformers/main/en/model_doc/distilbert#transformers.DistilBertForSequenceClassification">
-          Model Documentation
-        </Link>
+      <div className="space-y-2">
+        <strong className="text-xl">Label</strong>
+        <div className="space-x-2">
+          <Chip variant="flat" color="danger" size="md">
+            0: Negative
+          </Chip>
+          <Chip variant="flat" color="success" size="md">
+            1: Positive
+          </Chip>
+        </div>
       </div>
+
       <div>
         <strong className="text-xl">Training Procedure</strong>
 
@@ -85,6 +88,34 @@ export default function EnglishModelInfo() {
           <li>max_seq_length = 128</li>
           <li>num_train_epochs = 3.0</li>
         </ul>
+      </div>
+      <div>
+        <strong className="text-xl">Resources</strong>
+        <div className="flex flex-col gap-2">
+          <ul className="list-disc">
+            <li>
+              <Link
+                color="foreground"
+                rel="noopener noreferrer"
+                target="_blank"
+                href="https://huggingface.co/docs/transformers/main/en/model_doc/distilbert#transformers.DistilBertForSequenceClassification"
+              >
+                Model Documentation
+              </Link>
+            </li>
+
+            <li>
+              <Link
+                color="foreground"
+                rel="noopener noreferrer"
+                target="_blank"
+                href="https://arxiv.org/abs/1910.01108"
+              >
+                DistilBERT paper
+              </Link>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   );
