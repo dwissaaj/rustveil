@@ -36,6 +36,5 @@ export const modelComponents: Record<string, React.FC> = {
   "distilbert-base-uncased-finetuned-sst-2-english": EnglishModelInfo,
   "agufsamudra/indo-sentiment-analysis": IndoModelInfo,
   "tabularisai/multilingual-sentiment-analysis": MultiLangModelInfo,
-  "nlptown/bert-base-multilingual-uncased-sentiment": EuropeModelInfo,
   default: MultiLangModelInfo,
 };

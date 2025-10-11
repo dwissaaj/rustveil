@@ -20,6 +20,7 @@ import {
 import ListLang from "./component/ListLang";
 import { InfoIconSolid } from "@/components/icon/IconView";
 import { InfoIcon } from "@/components/icon/IconFilter";
+import { useSentimentAnalysis, useSentimentAnalysisDefault, useSentimentAnalysisEng, useSentimentAnalysisMulti } from "../useSentimentAnalysis";
 
 type PickColumnModalType = {
   isOpen: boolean;
@@ -32,6 +33,18 @@ export default function SettingModel({
   onOpenChange,
   onClose,
 }: PickColumnModalType) {
+  const senindo = useSentimentAnalysis()
+    const senmulti = useSentimentAnalysisMulti()
+const seneng = useSentimentAnalysisEng()
+const sendef = useSentimentAnalysisDefault()
+  const handlePress = async () => {
+    try {
+      const res = await seneng()
+      console.log(res)
+    } catch (error) {
+      console.log(error)
+    }
+  }
   return (
     <>
       <Modal
@@ -84,7 +97,7 @@ export default function SettingModel({
             <Button color="danger" variant="light" onPress={onClose}>
               Close
             </Button>
-            <Button color="primary">Choose Model</Button>
+            <Button onPress={handlePress} color="primary">Analyze</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
