@@ -18,7 +18,6 @@ import { useGetSentimentDataTarget } from "../lib/sentiment_analysis/useGetSenti
 import { RefreshIcon } from "@/components/icon/IconView";
 import { columnTargetSentimentAnalysis } from "../lib/sentiment_analysis/state";
 
-
 export default function ColumnViewerTable() {
   const targetColumn = useAtomValue(columnTargetSentimentAnalysis);
   const getTargetData = useGetSentimentDataTarget();
@@ -26,7 +25,7 @@ export default function ColumnViewerTable() {
   const [data, setData] = useState<Record<string, any>[]>([]);
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
-
+  const columns = data.length > 0 ? Object.keys(data[0]) : [targetColumn];
   const rowsPerPage = 100;
   const totalPages = Math.ceil(totalCount / rowsPerPage);
 
@@ -116,12 +115,21 @@ export default function ColumnViewerTable() {
         <TableHeader>
           <TableColumn>No</TableColumn>
           <TableColumn>{targetColumn}</TableColumn>
+          <TableColumn>Polarity</TableColumn>
+          <TableColumn>Score</TableColumn>
         </TableHeader>
+
         <TableBody emptyContent={"No Data Available, Target > Pick A Column"}>
           {data.map((row, idx) => (
             <TableRow key={idx}>
               <TableCell>{(page - 1) * rowsPerPage + idx + 1}</TableCell>
               <TableCell>{row[targetColumn] ?? "—"}</TableCell>
+              <TableCell>{row.polarity ?? "—"}</TableCell>
+              <TableCell>
+                {typeof row.score === "number"
+                  ? row.score.toFixed(3)
+                  : (row.score ?? "—")}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

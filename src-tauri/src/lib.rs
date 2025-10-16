@@ -49,7 +49,7 @@ pub fn run() {
             sentiment_analysis::handler::calculate_sentiment_analysis_indonesia,
             sentiment_analysis::handler::calculate_sentiment_analysis_multilanguage,
             sentiment_analysis::handler::calculate_sentiment_analysis_english,
-            sentiment_analysis::handler::calculate_sentiment_analysis_default,
+             sentiment_analysis::handler::analyze_and_update_sentiment,
             social_network::handler::set_vertices,
             social_network::handler::calculate_centrality,
             social_network::handler::load_centrality_table,

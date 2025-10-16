@@ -7,6 +7,7 @@ use serde_json::Value;
 use std::sync::Mutex;
 use tauri::{command, AppHandle, Manager};
 
+/// read data from table rust_sentiment created one if non
 #[command]
 pub fn get_paginated_sentiment_target(
     app: AppHandle,
@@ -102,6 +103,10 @@ pub fn get_paginated_sentiment_target(
         }
     }
 
+    // ✅ Ensure columns exist (safe even if already present)
+    let _ = connect.execute("ALTER TABLE rust_sentiment ADD COLUMN polarity TEXT;", []);
+    let _ = connect.execute("ALTER TABLE rust_sentiment ADD COLUMN score REAL;", []);
+
     // ✅ Pagination from rust_sentiment
     let total_count: usize = connect
         .query_row("SELECT COUNT(*) FROM rust_sentiment;", [], |row| row.get(0))
@@ -112,7 +117,7 @@ pub fn get_paginated_sentiment_target(
     let offset = (current_page - 1) * pagination.page_size;
 
     let query = format!(
-        "SELECT \"{}\" FROM rust_sentiment LIMIT ? OFFSET ?",
+        "SELECT \"{}\", polarity, score FROM rust_sentiment LIMIT ? OFFSET ?",
         target_column_state.column_target
     );
 
@@ -138,15 +143,30 @@ pub fn get_paginated_sentiment_target(
 
     let mut page_data = Vec::new();
     while let Ok(Some(row)) = rows.next() {
-        let val: Result<String, _> = row.get(0);
+        let text_val: Result<String, _> = row.get(0);
+        let polarity_val: Result<String, _> = row.get(1);
+        let score_val: Result<f64, _> = row.get(2);
+
         let mut obj = serde_json::Map::new();
+
         obj.insert(
             target_column_state.column_target.clone(),
-            match val {
-                Ok(v) => Value::String(v),
+            text_val.map(Value::String).unwrap_or(Value::Null),
+        );
+        obj.insert(
+            "polarity".to_string(),
+            polarity_val.map(Value::String).unwrap_or(Value::Null),
+        );
+        obj.insert(
+            "score".to_string(),
+            match score_val {
+                Ok(v) => serde_json::Number::from_f64(v)
+                    .map(Value::Number)
+                    .unwrap_or(Value::Null),
                 Err(_) => Value::Null,
             },
         );
+
         page_data.push(Value::Object(obj));
     }
 

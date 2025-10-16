@@ -1,9 +1,15 @@
 import { invoke } from "@tauri-apps/api/core";
+import { useAtomValue } from "jotai";
+import { selectedLang } from "../lib/sentiment_analysis/state";
 
 export function useSentimentAnalysis() {
-  const calculateSentiment = async () => {
+  const targetLang = useAtomValue(selectedLang)
+  console.log(targetLang)
+    const calculateSentiment = async () => {
     try {
-      const response = await invoke("calculate_sentiment_analysis_indonesia", {});
+      const response = await invoke("analyze_and_update_sentiment", {
+        selectedLanguage : targetLang
+      });
       console.log(response);
       return response;
     } catch (error) {
@@ -18,43 +24,12 @@ export function useSentimentAnalysis() {
 }
 
 
-export function useSentimentAnalysisMulti() {
-  const calculateSentiment = async () => {
+export function useSentimentTest() {
+  const targetLang = useAtomValue(selectedLang)
+  console.log(targetLang)
+    const calculateSentiment = async () => {
     try {
-      const response = await invoke("calculate_sentiment_analysis_multilanguage", {});
-      console.log(response);
-      return response;
-    } catch (error) {
-      return {
-        response_code: 500,
-        message: `Error at hook set target column ${error}`,
-      };
-    }
-  };
-
-  return calculateSentiment;
-}
-export function useSentimentAnalysisEng() {
-  const calculateSentiment = async () => {
-    try {
-      const response = await invoke("calculate_sentiment_analysis_english", {});
-      console.log(response);
-      return response;
-    } catch (error) {
-      return {
-        response_code: 500,
-        message: `Error at hook set target column ${error}`,
-      };
-    }
-  };
-
-  return calculateSentiment;
-}
-
-export function useSentimentAnalysisDefault() {
-  const calculateSentiment = async () => {
-    try {
-      const response = await invoke("calculate_sentiment_analysis_default", {});
+      const response = await invoke("calculate_sentiment_analysis_english");
       console.log(response);
       return response;
     } catch (error) {

@@ -1,16 +1,186 @@
-
+use crate::global::db_connection::{DatabaseConnection, DbConnectionProcess};
 use crate::workstation::sentiment_analysis::state::{
     ColumnTargetError, ColumnTargetSelectedResult, ColumnTargetSentimentAnalysis,
     ColumnTargetSuccess,
 };
 use rust_bert::pipelines::common::{ModelResource, ModelType};
 use rust_bert::pipelines::sentiment::Sentiment;
+use rust_bert::pipelines::sentiment::SentimentConfig;
 use rust_bert::pipelines::sentiment::SentimentModel;
-use rust_bert::pipelines::sentiment::{SentimentConfig};
 use rust_bert::resources::LocalResource;
+use serde::Serialize;
 use std::sync::Mutex;
 use tauri::{command, AppHandle, Manager};
 use tch::Device;
+
+#[derive(Serialize)]
+pub enum ProcessTarget {
+    Success(ProcessTargetSuccess),
+    Error(ProcessTargetError),
+}
+
+#[derive(Serialize)]
+pub struct ProcessTargetSuccess {
+    pub response_code: u32,
+    pub message: String,
+}
+
+#[derive(Serialize)]
+pub struct ProcessTargetError {
+    pub response_code: u32,
+    pub message: String,
+}
+
+#[command]
+pub fn analyze_and_update_sentiment(app: AppHandle, selected_language: String) -> ProcessTarget {
+    let binding = app.state::<Mutex<ColumnTargetSentimentAnalysis>>();
+    let target_state = binding.lock().unwrap();
+    let target_col = target_state.column_target.clone();
+
+    if target_col.is_empty() {
+        return ProcessTarget::Error(ProcessTargetError {
+            response_code: 401,
+            message: "No column target. Set at Edit > Pick Column Target".to_string(),
+        });
+    }
+
+    let db = match DatabaseConnection::connect_db(&app) {
+        DbConnectionProcess::Success(s) => s,
+        DbConnectionProcess::Error(e) => {
+            return ProcessTarget::Error(ProcessTargetError {
+                response_code: e.response_code,
+                message: e.message,
+            });
+        }
+    };
+    let conn = db.connection;
+
+    // ✅ make sure table has required columns (add if missing)
+    let _ = conn.execute(
+        "ALTER TABLE rust_sentiment ADD COLUMN polarity TEXT;",
+        [],
+    );
+    let _ = conn.execute(
+        "ALTER TABLE rust_sentiment ADD COLUMN score REAL;",
+        [],
+    );
+
+    let query = format!("SELECT {} FROM rust_sentiment", target_col);
+    let mut stmt = match conn.prepare(&query) {
+        Ok(s) => s,
+        Err(e) => {
+            return ProcessTarget::Error(ProcessTargetError {
+                response_code: 402,
+                message: format!("Failed to prepare query: {}", e),
+            });
+        }
+    };
+
+    let rows = match stmt.query_map([], |row| row.get::<_, String>(0)) {
+        Ok(r) => r,
+        Err(e) => {
+            return ProcessTarget::Error(ProcessTargetError {
+                response_code: 403,
+                message: format!("Failed to query rows: {}", e),
+            });
+        }
+    };
+
+    let mut texts: Vec<String> = vec![];
+    for item in rows.flatten() {
+        texts.push(item);
+    }
+
+    if texts.is_empty() {
+        return ProcessTarget::Error(ProcessTargetError {
+            response_code: 204,
+            message: "No data found in target column".to_string(),
+        });
+    }
+
+    let resource_dir = match app.path().resource_dir() {
+        Ok(p) => p,
+        Err(e) => {
+            return ProcessTarget::Error(ProcessTargetError {
+                response_code: 404,
+                message: format!("Resource dir error: {}", e),
+            });
+        }
+    };
+
+    let (model_dir, model_type) = match selected_language.as_str() {
+        "id" => (resource_dir.join("models/sentiment_analysis/bert-indonesia"), ModelType::Bert),
+        "en" => (resource_dir.join("models/sentiment_analysis/eng-distillbert-sst"), ModelType::DistilBert),
+        "de" | "es" | "fr" | "jp" | "zh" | "ko" | "vi" | "tl" | "ms" | "ar" => (
+            resource_dir.join("models/sentiment_analysis/distillbert-multi"),
+            ModelType::DistilBert,
+        ),
+        _ => {
+            return ProcessTarget::Error(ProcessTargetError {
+                response_code: 405,
+                message: format!("Unsupported language: {}", selected_language),
+            });
+        }
+    };
+
+    let config = SentimentConfig {
+        model_type,
+        model_resource: ModelResource::Torch(Box::new(LocalResource {
+            local_path: model_dir.join("rust_model.ot"),
+        })),
+        config_resource: Box::new(LocalResource {
+            local_path: model_dir.join("config.json"),
+        }),
+        vocab_resource: Box::new(LocalResource {
+            local_path: model_dir.join("vocab.txt"),
+        }),
+        merges_resource: None,
+        lower_case: true,
+        strip_accents: Some(true),
+        add_prefix_space: None,
+        device: Device::Cpu,
+        kind: None,
+    };
+
+    let sentiment_model = match SentimentModel::new(config) {
+        Ok(model) => model,
+        Err(e) => {
+            return ProcessTarget::Error(ProcessTargetError {
+                response_code: 406,
+                message: format!("Failed to load model: {}", e),
+            });
+        }
+    };
+
+    for text in texts {
+        let inputs = vec![text.as_str()];
+        let output = sentiment_model.predict(&inputs);
+
+        if let Some(pred) = output.first() {
+            let polarity_str = match pred.polarity {
+                rust_bert::pipelines::sentiment::SentimentPolarity::Positive => "positive",
+                rust_bert::pipelines::sentiment::SentimentPolarity::Negative => "negative",
+            };
+
+            // ✅ update polarity and score into rust_sentiment table
+            if let Err(e) = conn.execute(
+                &format!(
+                    "UPDATE rust_sentiment SET polarity = ?1, score = ?2 WHERE {} = ?3",
+                    target_col
+                ),
+                rusqlite::params![polarity_str, pred.score, text],
+            ) {
+                eprintln!("Failed to update sentiment for text: {} | error: {}", text, e);
+            }
+        }
+    }
+
+    ProcessTarget::Success(ProcessTargetSuccess {
+        response_code: 200,
+        message: format!("Sentiment analysis completed using language: {}", selected_language),
+    })
+}
+
 
 #[command]
 pub fn set_sentiment_analysis_target_column(
@@ -153,24 +323,4 @@ pub fn calculate_sentiment_analysis_english(app: AppHandle) -> Result<Vec<Sentim
     println!("eng - {:#?}", output);
 
     Ok(output)
-}
-
-#[command]
-pub fn calculate_sentiment_analysis_default(_app: AppHandle) -> Result<(), String> {
-let sentiment_classifier = SentimentModel::new(Default::default())
-    .map_err(|e| e.to_string())?;
-
-    let input = [
-        "Probably my all-time favorite movie, a story of selflessness, sacrifice and dedication to a noble cause, but it's not preachy or boring.",
-        "This film tried to be too many things all at once: stinging political satire, Hollywood blockbuster, sappy romantic comedy, family values promo...",
-        "If you like original gut wrenching laughter you will like this movie. If you are young or old then you will love this movie, hell even my mom liked it.",
-    ];
-
-    let output = sentiment_classifier.predict(&input);
-
-    for sentiment in output {
-        println!("{sentiment:?}");
-    }
-
-    Ok(())
 }

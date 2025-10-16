@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+
 import {
   Select,
   SelectItem,
@@ -26,7 +26,7 @@ import { ModelAiOutline ,ColumnFilterOutline} from "@/components/icon/IconSA";
 
 export default function ListLang() {
   const [selectedLanguage, setselectedLanguage] = useAtom(selectedLang)
-
+  console.log(selectedLang)
   const selectedModel = modelMap[selectedLanguage] || modelMap.default;
   const columnTarget = useAtomValue(columnTargetSentimentAnalysis);
 

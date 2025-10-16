@@ -14,13 +14,11 @@ import {
 } from "@heroui/react";
 import { CloseActionIconOutline } from "@/components/icon/IconAction";
 import { useAtom, useAtomValue } from "jotai";
-import {
-  columnAvailable,
-} from "@/app/lib/data/state";
+import { columnAvailable } from "@/app/lib/data/state";
 import ListLang from "./component/ListLang";
 import { InfoIconSolid } from "@/components/icon/IconView";
 import { InfoIcon } from "@/components/icon/IconFilter";
-import { useSentimentAnalysis, useSentimentAnalysisDefault, useSentimentAnalysisEng, useSentimentAnalysisMulti } from "../useSentimentAnalysis";
+import { useSentimentAnalysis, useSentimentTest } from "../useSentimentAnalysis";
 
 type PickColumnModalType = {
   isOpen: boolean;
@@ -33,18 +31,16 @@ export default function SettingModel({
   onOpenChange,
   onClose,
 }: PickColumnModalType) {
-  const senindo = useSentimentAnalysis()
-    const senmulti = useSentimentAnalysisMulti()
-const seneng = useSentimentAnalysisEng()
-const sendef = useSentimentAnalysisDefault()
+  const sentiment = useSentimentAnalysis();
+  const senttest = useSentimentTest()
   const handlePress = async () => {
     try {
-      const res = await seneng()
-      console.log(res)
+      const res = await sentiment();
+      console.log(res);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
   return (
     <>
       <Modal
@@ -97,7 +93,9 @@ const sendef = useSentimentAnalysisDefault()
             <Button color="danger" variant="light" onPress={onClose}>
               Close
             </Button>
-            <Button onPress={handlePress} color="primary">Analyze</Button>
+            <Button onPress={handlePress} color="primary">
+              Analyze
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
