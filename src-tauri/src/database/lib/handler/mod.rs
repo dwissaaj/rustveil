@@ -99,7 +99,7 @@ pub fn load_data_sqlite(app: AppHandle, pathfile: String) -> DatabaseProcess {
         response_code: 200,
         message: "Data table `Rustveil` exit reload at Data > View > Refresh".to_string(),
         data: None, // You can populate this later when you fetch actual data
-        total_count: Some(all_count)
+        total_count: Some(all_count),
     })
 }
 

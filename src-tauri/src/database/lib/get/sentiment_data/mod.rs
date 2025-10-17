@@ -1,5 +1,5 @@
 use crate::database::lib::get::all_data::PaginationParams;
-use crate::database::lib::state::{DatabaseComplete, DatabaseError, DatabaseProcess};
+use crate::database::lib::state::{GetSentimentDataResponse, GetSentimentDataSuccess, GetSentimentDataError};
 use crate::workstation::sentiment_analysis::state::ColumnTargetSentimentAnalysis;
 use crate::SqliteDataState;
 use rusqlite::Connection;
@@ -13,27 +13,27 @@ pub fn get_paginated_sentiment_target(
     app: AppHandle,
     pagination: PaginationParams,
     target: ColumnTargetSentimentAnalysis,
-) -> DatabaseProcess {
+) -> GetSentimentDataResponse {
     let binding = app.state::<Mutex<ColumnTargetSentimentAnalysis>>();
     let mut target_column_state = binding.lock().unwrap();
     target_column_state.column_target = target.column_target.clone();
 
     if target_column_state.column_target.is_empty() {
-        return DatabaseProcess::Error(DatabaseError {
+        return GetSentimentDataResponse::Error(GetSentimentDataError {
             response_code: 400,
             message: "Column Target missing. Set it at SN > Target > Pick A Column".to_string(),
         });
     }
 
     if pagination.page == 0 || pagination.page_size == 0 {
-        return DatabaseProcess::Error(DatabaseError {
+        return GetSentimentDataResponse::Error(GetSentimentDataError {
             response_code: 400,
             message: "Page and page_size must be greater than 0".to_string(),
         });
     }
 
     if pagination.page_size > 1000 {
-        return DatabaseProcess::Error(DatabaseError {
+        return GetSentimentDataResponse::Error(GetSentimentDataError {
             response_code: 400,
             message: "Page size cannot exceed 1000".to_string(),
         });
@@ -45,7 +45,7 @@ pub fn get_paginated_sentiment_target(
     let db_path = db.file_url.clone();
 
     if db_path.is_empty() || !std::path::Path::new(&db_path).exists() {
-        return DatabaseProcess::Error(DatabaseError {
+        return GetSentimentDataResponse::Error(GetSentimentDataError {
             response_code: 404,
             message: "SQLite database not found. Import Data > File > Load or Upload".to_string(),
         });
@@ -54,7 +54,7 @@ pub fn get_paginated_sentiment_target(
     let connect = match Connection::open(&db_path) {
         Ok(conn) => conn,
         Err(e) => {
-            return DatabaseProcess::Error(DatabaseError {
+            return GetSentimentDataResponse::Error(GetSentimentDataError {
                 response_code: 401,
                 message: format!("Error opening SQLite connection: {}", e),
             });
@@ -80,7 +80,7 @@ pub fn get_paginated_sentiment_target(
         )) {
             Ok(s) => s,
             Err(_) => {
-                return DatabaseProcess::Error(DatabaseError {
+                return GetSentimentDataResponse::Error(GetSentimentDataError {
                     response_code: 500,
                     message: "Failed to prepare select from rustveil.".to_string(),
                 })
@@ -124,7 +124,7 @@ pub fn get_paginated_sentiment_target(
     let mut stmt = match connect.prepare(&query) {
         Ok(s) => s,
         Err(e) => {
-            return DatabaseProcess::Error(DatabaseError {
+            return GetSentimentDataResponse::Error(GetSentimentDataError {
                 response_code: 403,
                 message: format!("Failed to prepare statement: {}", e),
             })
@@ -134,7 +134,7 @@ pub fn get_paginated_sentiment_target(
     let mut rows = match stmt.query([pagination.page_size as i64, offset as i64]) {
         Ok(r) => r,
         Err(e) => {
-            return DatabaseProcess::Error(DatabaseError {
+            return GetSentimentDataResponse::Error(GetSentimentDataError {
                 response_code: 404,
                 message: format!("Query execution failed: {}", e),
             })
@@ -169,8 +169,23 @@ pub fn get_paginated_sentiment_target(
 
         page_data.push(Value::Object(obj));
     }
+    let query_positive: u32 = connect
+        .query_row(
+            "SELECT COUNT(*) FROM rust_sentiment WHERE polarity = 'positive';",
+            [],
+            |row| row.get(0),
+        )
+        .unwrap_or(0);
 
-    DatabaseProcess::Success(DatabaseComplete {
+    let query_negative: u32 = connect
+        .query_row(
+            "SELECT COUNT(*) FROM rust_sentiment WHERE polarity = 'negative';",
+            [],
+            |row| row.get(0),
+        )
+        .unwrap_or(0);
+
+    GetSentimentDataResponse::Success(GetSentimentDataSuccess {
         response_code: 200,
         message: "Column data fetched successfully".to_string(),
         data: if page_data.is_empty() {
@@ -179,5 +194,7 @@ pub fn get_paginated_sentiment_target(
             Some(page_data)
         },
         total_count: Some(total_count),
+        total_negative_data: Some(query_positive),
+        total_positive_data: Some(query_negative),
     })
 }

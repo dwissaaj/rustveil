@@ -1,8 +1,8 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "rustveil",
+  "productName": "Rustveil",
   "version": "0.1.0",
-  "identifier": "com.tauri.dev",
+  "identifier": "com.hakuro.space",
   "build": {
     "frontendDist": "../out",
     "devUrl": "http://localhost:3000",
@@ -34,6 +34,9 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ]
+    ],
+    "longDescription": "An App for handle your Natural Language Processing with support of All LLM Model to better performance and accuracy",
+    "shortDescription": "An App for handle Natural Language Processing Task",
+    "publisher": "Hakuro Space"
   }
 }

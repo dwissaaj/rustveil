@@ -1,4 +1,5 @@
 use crate::global::db_connection::{DatabaseConnection, DbConnectionProcess};
+use crate::sentiment_analysis::state::{ProcessTarget, ProcessTargetError, ProcessTargetSuccess};
 use crate::workstation::sentiment_analysis::state::{
     ColumnTargetError, ColumnTargetSelectedResult, ColumnTargetSentimentAnalysis,
     ColumnTargetSuccess,
@@ -8,28 +9,9 @@ use rust_bert::pipelines::sentiment::Sentiment;
 use rust_bert::pipelines::sentiment::SentimentConfig;
 use rust_bert::pipelines::sentiment::SentimentModel;
 use rust_bert::resources::LocalResource;
-use serde::Serialize;
 use std::sync::Mutex;
 use tauri::{command, AppHandle, Manager};
 use tch::Device;
-
-#[derive(Serialize)]
-pub enum ProcessTarget {
-    Success(ProcessTargetSuccess),
-    Error(ProcessTargetError),
-}
-
-#[derive(Serialize)]
-pub struct ProcessTargetSuccess {
-    pub response_code: u32,
-    pub message: String,
-}
-
-#[derive(Serialize)]
-pub struct ProcessTargetError {
-    pub response_code: u32,
-    pub message: String,
-}
 
 #[command]
 pub fn analyze_and_update_sentiment(app: AppHandle, selected_language: String) -> ProcessTarget {
@@ -56,14 +38,8 @@ pub fn analyze_and_update_sentiment(app: AppHandle, selected_language: String) -
     let conn = db.connection;
 
     // ✅ make sure table has required columns (add if missing)
-    let _ = conn.execute(
-        "ALTER TABLE rust_sentiment ADD COLUMN polarity TEXT;",
-        [],
-    );
-    let _ = conn.execute(
-        "ALTER TABLE rust_sentiment ADD COLUMN score REAL;",
-        [],
-    );
+    let _ = conn.execute("ALTER TABLE rust_sentiment ADD COLUMN polarity TEXT;", []);
+    let _ = conn.execute("ALTER TABLE rust_sentiment ADD COLUMN score REAL;", []);
 
     let query = format!("SELECT {} FROM rust_sentiment", target_col);
     let mut stmt = match conn.prepare(&query) {
@@ -109,8 +85,14 @@ pub fn analyze_and_update_sentiment(app: AppHandle, selected_language: String) -
     };
 
     let (model_dir, model_type) = match selected_language.as_str() {
-        "id" => (resource_dir.join("models/sentiment_analysis/bert-indonesia"), ModelType::Bert),
-        "en" => (resource_dir.join("models/sentiment_analysis/eng-distillbert-sst"), ModelType::DistilBert),
+        "id" => (
+            resource_dir.join("models/sentiment_analysis/bert-indonesia"),
+            ModelType::Bert,
+        ),
+        "en" => (
+            resource_dir.join("models/sentiment_analysis/eng-distillbert-sst"),
+            ModelType::DistilBert,
+        ),
         "de" | "es" | "fr" | "jp" | "zh" | "ko" | "vi" | "tl" | "ms" | "ar" => (
             resource_dir.join("models/sentiment_analysis/distillbert-multi"),
             ModelType::DistilBert,
@@ -162,7 +144,6 @@ pub fn analyze_and_update_sentiment(app: AppHandle, selected_language: String) -
                 rust_bert::pipelines::sentiment::SentimentPolarity::Negative => "negative",
             };
 
-            // ✅ update polarity and score into rust_sentiment table
             if let Err(e) = conn.execute(
                 &format!(
                     "UPDATE rust_sentiment SET polarity = ?1, score = ?2 WHERE {} = ?3",
@@ -170,17 +151,46 @@ pub fn analyze_and_update_sentiment(app: AppHandle, selected_language: String) -
                 ),
                 rusqlite::params![polarity_str, pred.score, text],
             ) {
-                eprintln!("Failed to update sentiment for text: {} | error: {}", text, e);
+                eprintln!(
+                    "Failed to update sentiment for text: {} | error: {}",
+                    text, e
+                );
             }
         }
     }
+    let query_positive: u32 = conn
+        .query_row(
+            "SELECT COUNT(*) FROM rust_sentiment WHERE polarity = 'positive';",
+            [],
+            |row| row.get(0),
+        )
+        .unwrap_or(0);
 
+    let query_negative: u32 = conn
+        .query_row(
+            "SELECT COUNT(*) FROM rust_sentiment WHERE polarity = 'negative';",
+            [],
+            |row| row.get(0),
+        )
+        .unwrap_or(0);
+
+    let query_total: u32 = conn
+        .query_row("SELECT COUNT(*) FROM rust_sentiment;", [], |row| row.get(0))
+        .unwrap_or(0);
+
+
+    
     ProcessTarget::Success(ProcessTargetSuccess {
         response_code: 200,
-        message: format!("Sentiment analysis completed using language: {}", selected_language),
+        message: format!(
+            "Sentiment analysis completed using language: {}",
+            selected_language
+        ),
+        total_negative_data: Some(query_positive),
+        total_positive_data: Some(query_negative),
+        total_data: Some(query_total),
     })
 }
-
 
 #[command]
 pub fn set_sentiment_analysis_target_column(

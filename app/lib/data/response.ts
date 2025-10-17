@@ -3,6 +3,8 @@ export interface ResponseSuccess {
   message: string;
   data: Record<string, any>[];
   total_count?: number;
+  total_negative_data?: number;
+  total_positive_data?: number;
 }
 
 export interface ResponseError {

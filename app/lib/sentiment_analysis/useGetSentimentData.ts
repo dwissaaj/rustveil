@@ -21,13 +21,15 @@ export function useGetSentimentDataTarget() {
           },
         },
       );
-
+      console.log("response get sen", response)
       if ("Success" in response) {
         return {
           response_code: response.Success.response_code,
           message: response.Success.message,
           data: response.Success.data,
           total_count: response.Success.total_count,
+          total_negative_data: response.Success.total_negative_data,
+          total_positive_data: response.Success.total_positive_data,
         };
       } else if ("Error" in response) {
         return {

@@ -3,6 +3,35 @@
 version = 3
 
 [[package]]
+name = "Rustveil"
+version = "0.1.0"
+dependencies = [
+ "calamine",
+ "chrono",
+ "console",
+ "indicatif",
+ "log",
+ "once_cell",
+ "petgraph 0.8.2",
+ "rusqlite",
+ "rust-bert",
+ "rustworkx-core",
+ "sea-query",
+ "sea-query-rusqlite",
+ "serde",
+ "serde_json",
+ "tauri",
+ "tauri-build",
+ "tauri-plugin-dialog",
+ "tauri-plugin-fs",
+ "tauri-plugin-log",
+ "tauri-plugin-opener",
+ "tauri-plugin-store",
+ "tch",
+ "uuid",
+]
+
+[[package]]
 name = "addr2line"
 version = "0.24.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -119,35 +148,6 @@ name = "anyhow"
 version = "1.0.98"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e16d2d3311acee920a9eb8d33b8cbc1787ce4a264e85f964c2404b969bdcd487"
-
-[[package]]
-name = "app"
-version = "0.1.0"
-dependencies = [
- "calamine",
- "chrono",
- "console",
- "indicatif",
- "log",
- "once_cell",
- "petgraph 0.8.2",
- "rusqlite",
- "rust-bert",
- "rustworkx-core",
- "sea-query",
- "sea-query-rusqlite",
- "serde",
- "serde_json",
- "tauri",
- "tauri-build",
- "tauri-plugin-dialog",
- "tauri-plugin-fs",
- "tauri-plugin-log",
- "tauri-plugin-opener",
- "tauri-plugin-store",
- "tch",
- "uuid",
-]
 
 [[package]]
 name = "arbitrary"

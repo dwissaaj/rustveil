@@ -12,20 +12,26 @@ import {
   Button,
   addToast,
 } from "@heroui/react";
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 
 import { useGetSentimentDataTarget } from "../lib/sentiment_analysis/useGetSentimentData";
 import { RefreshIcon } from "@/components/icon/IconView";
-import { columnTargetSentimentAnalysis } from "../lib/sentiment_analysis/state";
+import {
+  columnTargetSentimentAnalysis,
+  sentimentCountData,
+  sentimentData,
+  sentimentViewerPage,
+} from "../lib/sentiment_analysis/state";
 
 export default function ColumnViewerTable() {
   const targetColumn = useAtomValue(columnTargetSentimentAnalysis);
   const getTargetData = useGetSentimentDataTarget();
 
-  const [data, setData] = useState<Record<string, any>[]>([]);
-  const [page, setPage] = useState(1);
+  const [data, setData] = useAtom(sentimentData);
+  const [page, setPage] = useAtom(sentimentViewerPage);
+  const [, setTotalCountData] = useAtom(sentimentCountData);
   const [totalCount, setTotalCount] = useState(0);
-  const columns = data.length > 0 ? Object.keys(data[0]) : [targetColumn];
+
   const rowsPerPage = 100;
   const totalPages = Math.ceil(totalCount / rowsPerPage);
 
@@ -33,7 +39,11 @@ export default function ColumnViewerTable() {
     if (!targetColumn) {
       setData([]);
       setTotalCount(0);
-
+      setTotalCountData({
+        total_count: 0,
+        total_negative_data: 0,
+        total_positive_data: 0,
+      });
     }
 
     try {
@@ -42,7 +52,11 @@ export default function ColumnViewerTable() {
       if (response?.response_code === 200 && response.data) {
         setData(response.data);
         setTotalCount(response.total_count ?? 0);
-
+        setTotalCountData({
+          total_count: response.total_count ?? 0,
+          total_negative_data: response.total_negative_data ?? 0,
+          total_positive_data: response.total_positive_data ?? 0,
+        });
         if (showToast) {
           addToast({
             title: "Data Fetched",
@@ -54,7 +68,11 @@ export default function ColumnViewerTable() {
       } else if (response?.response_code !== 200) {
         setData([]);
         setTotalCount(0);
-
+        setTotalCountData({
+          total_count: 0,
+          total_negative_data: 0,
+          total_positive_data: 0,
+        });
         if (showToast) {
           addToast({
             title: "Error Fetching",
@@ -78,7 +96,6 @@ export default function ColumnViewerTable() {
       }
     }
   };
-
 
   useEffect(() => {
     fetchData(false);

@@ -57,7 +57,7 @@ pub fn run() {
             database::lib::get::all_data::get_all_data,
             database::lib::get::all_data::get_paginated_data,
             database::lib::get::all_data::get_all_vertices,
-            database::lib::get::text_target::get_paginated_sentiment_target,
+            database::lib::get::sentiment_data::get_paginated_sentiment_target,
         ])
         .run(tauri::generate_context!())
         

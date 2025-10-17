@@ -24,3 +24,25 @@ pub struct ColumnTargetError {
 
     pub message: String,
 }
+
+
+#[derive(Serialize)]
+pub enum ProcessTarget {
+    Success(ProcessTargetSuccess),
+    Error(ProcessTargetError),
+}
+
+#[derive(Serialize)]
+pub struct ProcessTargetSuccess {
+    pub response_code: u32,
+    pub message: String,
+    pub total_negative_data: Option<u32>,
+    pub total_positive_data: Option<u32>,
+    pub total_data : Option<u32>
+}
+
+#[derive(Serialize)]
+pub struct ProcessTargetError {
+    pub response_code: u32,
+    pub message: String,
+}
