@@ -1,6 +1,5 @@
 "use client";
 
-
 import {
   Select,
   SelectItem,
@@ -16,17 +15,24 @@ import {
 } from "@heroui/react";
 import { useAtom, useAtomValue } from "jotai";
 
-import { modelComponents, modelMap, supportedLang } from "../../../lib/sentiment_analysis/supportedLang";
-import { columnTargetSentimentAnalysis, selectedLang } from "../../../lib/sentiment_analysis/state";
-import { ModelAiOutline ,ColumnFilterOutline} from "@/components/icon/IconSA";
-
-
-
-
+import {
+  modelComponents,
+  modelMap,
+  supportedLang,
+} from "../../../lib/sentiment_analysis/supportedLang";
+import {
+  columnTargetSentimentAnalysis,
+  selectedLang,
+} from "../../../lib/sentiment_analysis/state";
+import {
+  ModelAiOutline,
+  ColumnFilterOutline,
+  LanguageIcon,
+} from "@/components/icon/IconSA";
 
 export default function ListLang() {
-  const [selectedLanguage, setselectedLanguage] = useAtom(selectedLang)
-  console.log(selectedLang)
+  const [selectedLanguage, setselectedLanguage] = useAtom(selectedLang);
+  console.log(selectedLang);
   const selectedModel = modelMap[selectedLanguage] || modelMap.default;
   const columnTarget = useAtomValue(columnTargetSentimentAnalysis);
 
@@ -36,31 +42,13 @@ export default function ListLang() {
 
   return (
     <div className="flex flex-col gap-4 max-w-xl">
-      <div className="flex gap-2">
-        <Tooltip
-          className="capitalize"
-          color="primary"
-          content="If You want to change target go to Setting > Pick Column Target"
-        >
-          <Chip startContent={<ColumnFilterOutline className="size-6 "  />} color="primary" variant="flat">
-            {columnTarget}
-          </Chip>
-        </Tooltip>
-        <Tooltip
-          className="capitalize"
-          color="primary"
-          content="This is the model currently used for sentiment analysis"
-        >
-          <Chip startContent={<ModelAiOutline className="size-6 "  />} className="cursor-pointer" color="primary" variant="flat" onClick={onOpen}>
-            {selectedModel}
-          </Chip>
-        </Tooltip>
-      </div>
-
       <div>
         <Select
-          label="Favorite Lang"
+          label="Target Language"
           placeholder="Select a Language"
+          variant="underlined"
+          color="primary"
+          labelPlacement="inside"
           selectedKeys={[selectedLanguage]}
           onChange={(e) => setselectedLanguage(e.target.value)}
         >
@@ -69,13 +57,57 @@ export default function ListLang() {
           ))}
         </Select>
       </div>
-
+      <div className="flex gap-2">
+        <Tooltip
+          className="capitalize"
+          color="secondary"
+          content="Mismatched at choose language result in bad sentiment"
+        >
+          <Chip
+            startContent={<LanguageIcon className="size-6 " />}
+            color="secondary"
+            variant="flat"
+          >
+            {selectedLanguage}
+          </Chip>
+        </Tooltip>
+        <Tooltip
+          className="capitalize"
+          color="secondary"
+          content="If No column showed upload a data first"
+        >
+          <Chip
+            startContent={<ColumnFilterOutline className="size-6 " />}
+            color="secondary"
+            variant="flat"
+          >
+            {columnTarget}
+          </Chip>
+        </Tooltip>
+        <Tooltip
+          className="capitalize"
+          color="secondary"
+          content="This is the model currently used for sentiment analysis"
+        >
+          <Chip
+            startContent={<ModelAiOutline className="size-6 " />}
+            className="cursor-pointer"
+            color="secondary"
+            variant="flat"
+            onClick={onOpen}
+          >
+            {selectedModel}
+          </Chip>
+        </Tooltip>
+      </div>
 
       <Drawer isOpen={isOpen} onOpenChange={onOpenChange} size="lg">
         <DrawerContent>
           {(onClose) => (
             <>
-              <DrawerHeader className="text-2xl">Model Information</DrawerHeader>
+              <DrawerHeader className="text-2xl">
+                Model Information
+              </DrawerHeader>
               <DrawerBody>
                 <ModelComponent />
               </DrawerBody>
@@ -83,7 +115,6 @@ export default function ListLang() {
                 <Button color="danger" variant="light" onPress={onClose}>
                   Close
                 </Button>
-                
               </DrawerFooter>
             </>
           )}

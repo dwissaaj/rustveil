@@ -14,7 +14,7 @@ import {
   addToast,
 } from "@heroui/react";
 import { useAtom, useAtomValue } from "jotai";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef } from "react";
 import { PieFilterState, showFilterAtom, topShowDataPie } from "./state";
 import {
   selectedCentrality,

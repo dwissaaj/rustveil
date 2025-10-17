@@ -6,19 +6,17 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-  addToast,
-  Select,
-  SelectItem,
-  Chip,
-  Tooltip,
 } from "@heroui/react";
 import { CloseActionIconOutline } from "@/components/icon/IconAction";
-import { useAtom, useAtomValue } from "jotai";
-import { columnAvailable } from "@/app/lib/data/state";
 import ListLang from "./component/ListLang";
-import { InfoIconSolid } from "@/components/icon/IconView";
-import { InfoIcon } from "@/components/icon/IconFilter";
-import { useSentimentAnalysis, useSentimentTest } from "../useSentimentAnalysis";
+import {
+  useSentimentAnalysis,
+  useSentimentTest,
+} from "../useSentimentAnalysis";
+import ListColumn from "./component/ListColumn";
+import { useEffect, useState } from "react";
+import { useAtomValue } from "jotai";
+import { columnTargetSentimentAnalysis, selectedLang } from "@/app/lib/sentiment_analysis/state";
 
 type PickColumnModalType = {
   isOpen: boolean;
@@ -31,8 +29,14 @@ export default function SettingModel({
   onOpenChange,
   onClose,
 }: PickColumnModalType) {
+  const [analyzeBtn, setanalyzeBtn] = useState({
+    isLoading: false,
+    isDisabled: false
+  })
+  const columnTarget = useAtomValue(columnTargetSentimentAnalysis)
+  const languageTarget = useAtomValue(selectedLang)
   const sentiment = useSentimentAnalysis();
-  const senttest = useSentimentTest()
+  const senttest = useSentimentTest();
   const handlePress = async () => {
     try {
       const res = await sentiment();
@@ -41,10 +45,24 @@ export default function SettingModel({
       console.log(error);
     }
   };
+    useEffect(() => {
+      if(columnTarget === "" ) {
+        setanalyzeBtn({
+          isLoading: false,
+          isDisabled:  true
+        })
+      }
+      if(languageTarget === "" ) {
+        setanalyzeBtn({
+          isLoading: false,
+          isDisabled:  true
+        })
+      }
+    }, [columnTarget,languageTarget]);
   return (
     <>
       <Modal
-        size="xl"
+        size="2xl"
         closeButton={
           <Button
             isIconOnly
@@ -61,39 +79,23 @@ export default function SettingModel({
         <ModalContent>
           <ModalHeader className="flex flex-col gap-1">
             <div className="flex items-center gap-2">
-              <p className="text-3xl font-medium">Target Column</p>
+              <p className="text-3xl font-medium">Setting Model</p>
             </div>
           </ModalHeader>
-          <ModalBody className="flex flex-col gap-2">
-            <div>
-              <div className="flex flex-col gap-2"></div>
-            </div>
+          <ModalBody className="flex flex-col gap-4">
+            
             <div className="flex flex-col gap-2">
-              <div>
-                <Tooltip
-                  color="primary"
-                  content="Click model For explanation"
-                  placement="top"
-                >
-                  <Button
-                    variant="light"
-                    endContent={<InfoIcon className="w-6" color="secondary" />}
-                    className="text-lg"
-                  >
-                    Pick a suitable language
-                  </Button>
-                </Tooltip>
-              </div>
               <div>
                 <ListLang />
               </div>
             </div>
+            
           </ModalBody>
           <ModalFooter>
             <Button color="danger" variant="light" onPress={onClose}>
               Close
             </Button>
-            <Button onPress={handlePress} color="primary">
+            <Button isDisabled={analyzeBtn.isDisabled} isLoading={analyzeBtn.isLoading} onPress={handlePress} color="primary">
               Analyze
             </Button>
           </ModalFooter>

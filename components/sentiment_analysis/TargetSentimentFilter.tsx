@@ -44,20 +44,20 @@ export default function TargetSentimentFilter() {
         </DropdownTrigger>
         <DropdownMenu color="primary" variant="flat" aria-label="File actions">
           <DropdownItem
-            key="custom-model"
-            description="Custom Your Params"
-            startContent={<SettingViewOutline className="w-6" />}
-            onPress={onSettingOpen}
-          >
-            Custom Model
-          </DropdownItem>
-          <DropdownItem
             key="column-pick"
             description="Choose your text data"
             startContent={<ColumnFilterSolid className="w-6" />}
             onPress={onTargetPick}
           >
             Target Column
+          </DropdownItem>
+          <DropdownItem
+            key="custom-model"
+            description="Custom Your Params"
+            startContent={<SettingViewOutline className="w-6" />}
+            onPress={onSettingOpen}
+          >
+            Custom Model
           </DropdownItem>
         </DropdownMenu>
       </Dropdown>

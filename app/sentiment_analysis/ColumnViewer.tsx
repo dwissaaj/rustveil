@@ -33,7 +33,7 @@ export default function ColumnViewerTable() {
     if (!targetColumn) {
       setData([]);
       setTotalCount(0);
-      return;
+
     }
 
     try {
@@ -46,7 +46,7 @@ export default function ColumnViewerTable() {
         if (showToast) {
           addToast({
             title: "Data Fetched",
-            description: `Data Rendered ${response?.message}`,
+            description: `${response?.message}`,
             variant: "bordered",
             color: "success",
           });
@@ -79,13 +79,13 @@ export default function ColumnViewerTable() {
     }
   };
 
-  // fetch data automatically when page or target column changes, no toast
+
   useEffect(() => {
     fetchData(false);
   }, [page, targetColumn]);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 p-2">
       <Table
         className=""
         isHeaderSticky
