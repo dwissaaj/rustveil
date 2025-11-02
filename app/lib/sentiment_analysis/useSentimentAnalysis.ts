@@ -1,6 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 import { useAtomValue } from "jotai";
-import { selectedLang } from "../lib/sentiment_analysis/state";
+import { selectedLang } from "./state";
 
 export function useSentimentAnalysis() {
   const targetLang = useAtomValue(selectedLang)

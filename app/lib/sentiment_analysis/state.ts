@@ -68,3 +68,5 @@ export interface PieSentimentType {
   value: number;
   label?: string;
 }
+
+export const showFilterSentiment = atom(false);

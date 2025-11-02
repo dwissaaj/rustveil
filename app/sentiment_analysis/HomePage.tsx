@@ -29,7 +29,9 @@ export default function HomePage() {
             className={`w-2 m-2 ${theme === "dark" ? "bg-gray-600" : "bg-gray-300"} rounded transition-colors duration-200 hover:opacity-100 opacity-40 transition-200`}
           />
           <Panel defaultSize={50}>
-            <ChartViewer />
+            <div className="max-h-[85vh] mt-2 border rounded-lg shadow-2xl">
+              <ChartViewer />
+            </div>
           </Panel>
         </PanelGroup>
       </div>

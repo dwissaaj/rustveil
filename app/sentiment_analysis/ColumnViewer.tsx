@@ -117,7 +117,7 @@ export default function ColumnViewerTable() {
             </div>
           )
         }
-        bottomContentPlacement="outside"
+        bottomContentPlacement="inside"
         topContent={
           <Button
             isIconOnly

@@ -12,7 +12,7 @@ import ListLang from "./component/ListLang";
 import {
   useSentimentAnalysis,
   useSentimentTest,
-} from "../useSentimentAnalysis";
+} from "../../lib/sentiment_analysis/useSentimentAnalysis";
 import ListColumn from "./component/ListColumn";
 import { useEffect, useState } from "react";
 import { useAtomValue } from "jotai";
