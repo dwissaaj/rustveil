@@ -12,6 +12,7 @@ use rust_bert::resources::LocalResource;
 use std::sync::Mutex;
 use tauri::{command, AppHandle, Manager};
 use tch::Device;
+use rusqlite::params;
 
 #[command]
 pub fn analyze_and_update_sentiment(app: AppHandle, selected_language: String) -> ProcessTarget {
@@ -197,7 +198,7 @@ pub fn set_sentiment_analysis_target_column(
     app: AppHandle,
     target: ColumnTargetSentimentAnalysis,
 ) -> ColumnTargetSelectedResult {
-    // 1. Update the file path in state
+    // Get column name from app state
     let binding = app.state::<Mutex<ColumnTargetSentimentAnalysis>>();
     let mut target_column_state = binding.lock().unwrap();
     target_column_state.column_target = target.column_target.clone();
@@ -205,16 +206,69 @@ pub fn set_sentiment_analysis_target_column(
     if target_column_state.column_target.is_empty() {
         return ColumnTargetSelectedResult::Error(ColumnTargetError {
             response_code: 401,
-            message: "No column target. Set at Edit > Pick Column Target".to_string(),
+            message: "No column target provided".to_string(),
         });
+    }
+
+    // Connect to SQLite
+    let db_process = DatabaseConnection::connect_db(&app);
+    let conn = match db_process {
+        DbConnectionProcess::Success(success) => success.connection,
+        DbConnectionProcess::Error(err) => {
+            return ColumnTargetSelectedResult::Error(ColumnTargetError {
+                response_code: err.response_code,
+                message: err.message,
+            })
+        }
+    };
+
+    // Create the metadata table if not exists
+    if let Err(e) = conn.execute(
+        "CREATE TABLE IF NOT EXISTS rustveilmetadata (
+            id INTEGER PRIMARY KEY CHECK (id = 1),
+            target_column TEXT
+        )",
+        [],
+    ) {
+        return ColumnTargetSelectedResult::Error(ColumnTargetError {
+            response_code: 500,
+            message: format!("Failed to create metadata table: {}", e),
+        });
+    }
+
+    // Check if a record already exists
+    let mut stmt = match conn.prepare("SELECT COUNT(*) FROM rustveilmetadata WHERE id = 1") {
+        Ok(s) => s,
+        Err(e) => {
+            return ColumnTargetSelectedResult::Error(ColumnTargetError {
+                response_code: 500,
+                message: format!("Failed to check metadata existence: {}", e),
+            })
+        }
+    };
+
+    let count: i64 = stmt.query_row([], |row| row.get(0)).unwrap_or(0);
+
+    if count == 0 {
+        // Insert new record only if no row exists
+        if let Err(e) = conn.execute(
+            "INSERT INTO rustveilmetadata (id, target_column) VALUES (1, ?1)",
+            params![target_column_state.column_target],
+        ) {
+            return ColumnTargetSelectedResult::Error(ColumnTargetError {
+                response_code: 500,
+                message: format!("Failed to insert target column: {}", e),
+            });
+        }
     }
 
     ColumnTargetSelectedResult::Success(ColumnTargetSuccess {
         response_code: 200,
-        message: "Target column is saved".to_string(),
+        message: "Stored at RustveilMetadata".to_string(),
         target: target_column_state.column_target.to_string(),
     })
 }
+
 
 #[command]
 pub fn calculate_sentiment_analysis_indonesia(app: AppHandle) -> Result<Vec<Sentiment>, String> {
