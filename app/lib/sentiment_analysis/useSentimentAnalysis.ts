@@ -3,12 +3,12 @@ import { useAtomValue } from "jotai";
 import { selectedLang } from "./state";
 
 export function useSentimentAnalysis() {
-  const targetLang = useAtomValue(selectedLang)
-  console.log(targetLang)
-    const calculateSentiment = async () => {
+  const targetLang = useAtomValue(selectedLang);
+  console.log(targetLang);
+  const calculateSentiment = async () => {
     try {
       const response = await invoke("analyze_and_update_sentiment", {
-        selectedLanguage : targetLang
+        selectedLanguage: targetLang,
       });
       console.log(response);
       return response;
@@ -23,11 +23,10 @@ export function useSentimentAnalysis() {
   return calculateSentiment;
 }
 
-
 export function useSentimentTest() {
-  const targetLang = useAtomValue(selectedLang)
-  console.log(targetLang)
-    const calculateSentiment = async () => {
+  const targetLang = useAtomValue(selectedLang);
+  console.log(targetLang);
+  const calculateSentiment = async () => {
     try {
       const response = await invoke("calculate_sentiment_analysis_english");
       console.log(response);

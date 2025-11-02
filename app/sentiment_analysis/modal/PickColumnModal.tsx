@@ -12,9 +12,7 @@ import {
 } from "@heroui/react";
 import { CloseActionIconOutline } from "@/components/icon/IconAction";
 import { useAtom } from "jotai";
-import {
-  columnAvailable,
-} from "@/app/lib/data/state";
+import { columnAvailable } from "@/app/lib/data/state";
 import { useSetTargetColumn } from "../../lib/sentiment_analysis/useSetTargetColumn";
 import { columnTargetSentimentAnalysis } from "../../lib/sentiment_analysis/state";
 

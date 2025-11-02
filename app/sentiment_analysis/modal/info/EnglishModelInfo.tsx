@@ -1,11 +1,13 @@
 import { useAtomValue } from "jotai";
 import Image from "next/image";
-import { columnTargetSentimentAnalysis, selectedLang } from "../../../lib/sentiment_analysis/state";
+import {
+  columnTargetSentimentAnalysis,
+  selectedLang,
+} from "../../../lib/sentiment_analysis/state";
 import { Chip } from "@heroui/react";
 
-
 import Link from "next/link";
-import { LanguageIcon ,ColumnFilterOutline} from "@/components/icon/IconSA";
+import { LanguageIcon, ColumnFilterOutline } from "@/components/icon/IconSA";
 
 export default function EnglishModelInfo() {
   const selectedLanguage = useAtomValue(selectedLang);
@@ -60,10 +62,18 @@ export default function EnglishModelInfo() {
       <div className="">
         <strong className="text-xl">Model Details</strong>
         <ul className="list-disc">
-          <li><strong>Developed by:</strong> Hugging Face</li>
-          <li><strong>Model Type:</strong> Text Classification</li>
-          <li><strong>Language(s):</strong> English</li>
-          <li><strong>License:</strong> Apache-2.0</li>
+          <li>
+            <strong>Developed by:</strong> Hugging Face
+          </li>
+          <li>
+            <strong>Model Type:</strong> Text Classification
+          </li>
+          <li>
+            <strong>Language(s):</strong> English
+          </li>
+          <li>
+            <strong>License:</strong> Apache-2.0
+          </li>
         </ul>
       </div>
       <div className="space-y-2">

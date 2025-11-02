@@ -7,7 +7,7 @@ import React from "react";
 export default function ListColumn() {
   const [column] = useAtom(columnAvailable);
   const [textTargetSentiment, setTextTargetSentiment] = useAtom(
-    columnTargetSentimentAnalysis
+    columnTargetSentimentAnalysis,
   );
   return (
     <div className="flex flex-col gap-2 items-start">

@@ -1,7 +1,10 @@
 "use client";
+
 import { Tabs, Tab } from "@heroui/react";
+
 import NetworkHome from "./network/NetworkHome";
 import ChartHome from "./centrality/ChartHome";
+
 import SocialFilterListWrapper from "@/components/sna/SocialFilterListWrapper";
 
 export default function page() {
@@ -12,9 +15,9 @@ export default function page() {
       </div>
       <div className="mt-4">
         <Tabs
-          size="lg"
           aria-label="Social Tab"
           color="primary"
+          size="lg"
           variant="underlined"
         >
           <Tab key="network" title="Network">

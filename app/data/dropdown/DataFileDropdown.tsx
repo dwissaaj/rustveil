@@ -1,5 +1,7 @@
 "use client";
+
 import { useState } from "react";
+
 import {
   Dropdown,
   useDisclosure,
@@ -9,10 +11,11 @@ import {
   Button,
 } from "@heroui/react";
 
-import { UploadNewData, LoadNewData } from "@/components/icon/IconFilter";
-import { FileTabIcon } from "@/components/icon/IconAction";
 import DataPicker from "../picker/DataPickerModal";
 import DataLoader from "../picker/DataLoadModal";
+
+import { UploadNewData, LoadNewData } from "@/components/icon/IconFilter";
+import { FileTabIcon } from "@/components/icon/IconAction";
 
 export default function DataFileDropdown() {
   const {
@@ -32,16 +35,16 @@ export default function DataFileDropdown() {
       <Dropdown>
         <DropdownTrigger>
           <Button
-            startContent={<FileTabIcon className="w-4" />}
-            size="sm"
             className="text-black dark:text-white"
             color="primary"
+            size="sm"
+            startContent={<FileTabIcon className="w-4" />}
             variant="light"
           >
             File
           </Button>
         </DropdownTrigger>
-        <DropdownMenu color="primary" variant="flat" aria-label="File actions">
+        <DropdownMenu aria-label="File actions" color="primary" variant="flat">
           <DropdownItem
             key="pick-file"
             description="Start with new data"

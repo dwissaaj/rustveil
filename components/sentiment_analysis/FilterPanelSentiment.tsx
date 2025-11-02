@@ -15,9 +15,8 @@ import { PieSentimentFilterState } from "../../app/lib/sentiment_analysis/state"
 interface FilterType {
   exportImage: () => void;
 }
-export function FilterPanelSentiment({  exportImage }: FilterType) {
+export function FilterPanelSentiment({ exportImage }: FilterType) {
   const [filter, setFilter] = useAtom(PieSentimentFilterState);
-  
 
   return (
     <>
@@ -27,7 +26,6 @@ export function FilterPanelSentiment({  exportImage }: FilterType) {
       <Accordion>
         <AccordionItem key="1" aria-label="General Tab" title="General">
           <div className="flex flex-col gap-2">
-            
             <Slider
               size="sm"
               label="Start Angle"

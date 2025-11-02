@@ -48,8 +48,8 @@ export function SentimentPieChart({
           labels: {
             text: {
               fill: textColor,
-               fontSize: 16, 
-              fontWeight: 600, 
+              fontSize: 16,
+              fontWeight: 600,
             },
           },
           legends: {

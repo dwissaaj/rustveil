@@ -193,4 +193,3 @@ export const SettingViewOutline: React.FC<IconSvgProps> = ({
     </svg>
   );
 };
-

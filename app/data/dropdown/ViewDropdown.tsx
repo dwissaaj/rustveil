@@ -22,10 +22,11 @@ export function ViewDropdown({ onDataFetched }: ViewDropdownProps) {
     <Dropdown>
       <DropdownTrigger>
         <Button
+         className="text-black dark:text-white"
+          color="primary"
           startContent={<ViewTabIcon className="w-4" />}
           size="sm"
-          className="text-black dark:text-white"
-          color="primary"
+         
           variant="light"
         >
           View

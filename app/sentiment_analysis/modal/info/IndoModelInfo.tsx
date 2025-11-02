@@ -1,9 +1,12 @@
 import { useAtomValue } from "jotai";
 import Image from "next/image";
-import { columnTargetSentimentAnalysis, selectedLang } from "../../../lib/sentiment_analysis/state";
+import {
+  columnTargetSentimentAnalysis,
+  selectedLang,
+} from "../../../lib/sentiment_analysis/state";
 import { Chip } from "@heroui/react";
 
-import { LanguageIcon,ColumnFilterOutline } from "@/components/icon/IconSA";
+import { LanguageIcon, ColumnFilterOutline } from "@/components/icon/IconSA";
 import Link from "next/link";
 
 export default function IndoModelInfo() {
@@ -14,9 +17,7 @@ export default function IndoModelInfo() {
     <div className="p-2 space-y-4">
       <div className="space-y-4">
         <div>
-          <strong>
-            Agufsamudra/indo-sentiment-analysis
-          </strong>
+          <strong>Agufsamudra/indo-sentiment-analysis</strong>
         </div>
         <div className="flex flex-row gap-4">
           <Chip
@@ -57,11 +58,22 @@ export default function IndoModelInfo() {
       <div className="">
         <strong className="text-xl">Model Details</strong>
         <ul className="list-disc">
-          <li><strong>Developed by:</strong> agufsamudra</li>
-          <li><strong>Model Type:</strong> Text Classification</li>
-          <li><strong>Language(s):</strong> Indonesia</li>
-          <li><strong>License:</strong> Apache-2.0</li>
-           <li><strong>Fine-tuned from model:</strong> indobenchmark/indobert-base-p1</li>
+          <li>
+            <strong>Developed by:</strong> agufsamudra
+          </li>
+          <li>
+            <strong>Model Type:</strong> Text Classification
+          </li>
+          <li>
+            <strong>Language(s):</strong> Indonesia
+          </li>
+          <li>
+            <strong>License:</strong> Apache-2.0
+          </li>
+          <li>
+            <strong>Fine-tuned from model:</strong>{" "}
+            indobenchmark/indobert-base-p1
+          </li>
         </ul>
       </div>
       <div className="space-y-2">
@@ -100,8 +112,6 @@ export default function IndoModelInfo() {
                 Huggingface Documentation
               </Link>
             </li>
-
-            
           </ul>
         </div>
       </div>

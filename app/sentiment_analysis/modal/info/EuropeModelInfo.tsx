@@ -1,9 +1,16 @@
 import { useAtomValue } from "jotai";
 import Image from "next/image";
-import { columnTargetSentimentAnalysis, selectedLang } from "../../../lib/sentiment_analysis/state";
+import {
+  columnTargetSentimentAnalysis,
+  selectedLang,
+} from "../../../lib/sentiment_analysis/state";
 import { Chip } from "@heroui/react";
 
-import { ColumnFilterOutline, LanguageIcon, StarIconOutline } from "@/components/icon/IconSA";
+import {
+  ColumnFilterOutline,
+  LanguageIcon,
+  StarIconOutline,
+} from "@/components/icon/IconSA";
 import Link from "next/link";
 
 export default function EuropeModelInfo() {
@@ -13,9 +20,7 @@ export default function EuropeModelInfo() {
     <div className="p-2 space-y-4">
       <div className="space-y-4">
         <div>
-          <strong>
-            Nlptown/bert-base-multilingual-uncased-sentiment
-          </strong>
+          <strong>Nlptown/bert-base-multilingual-uncased-sentiment</strong>
         </div>
         <div className="flex flex-row gap-4">
           <Chip
@@ -49,41 +54,74 @@ export default function EuropeModelInfo() {
       <div>
         <strong className="text-xl">Description</strong>
         <p>
-          bert-base-multilingual-uncased model finetuned for sentiment analysis created by
-          nlptown best is train from review data, best used for product review
+          bert-base-multilingual-uncased model finetuned for sentiment analysis
+          created by nlptown best is train from review data, best used for
+          product review
         </p>
       </div>
       <div className="">
         <strong className="text-xl">Model Details</strong>
         <ul className="list-disc">
-          <li><strong>Developed by:</strong> Nlptown</li>
-          <li><strong>Model Type:</strong> Text Classification</li>
-          <li><strong>Language(s):</strong> Dutch, Germany, French</li>
-          <li><strong>License:</strong> Mit</li>
+          <li>
+            <strong>Developed by:</strong> Nlptown
+          </li>
+          <li>
+            <strong>Model Type:</strong> Text Classification
+          </li>
+          <li>
+            <strong>Language(s):</strong> Dutch, Germany, French
+          </li>
+          <li>
+            <strong>License:</strong> Mit
+          </li>
         </ul>
       </div>
       <div className="space-y-2">
         <strong className="text-xl">Label</strong>
         <div className="space-x-2">
-          <Chip variant="flat" color="danger" size="md" endContent={<StarIconOutline  className="size-4"/>}>
+          <Chip
+            variant="flat"
+            color="danger"
+            size="md"
+            endContent={<StarIconOutline className="size-4" />}
+          >
             0
           </Chip>
-          <Chip variant="flat" color="danger" size="md" endContent={<StarIconOutline  className="size-4"/>}>
+          <Chip
+            variant="flat"
+            color="danger"
+            size="md"
+            endContent={<StarIconOutline className="size-4" />}
+          >
             1
           </Chip>
-          <Chip variant="flat" color="danger" size="md" endContent={<StarIconOutline  className="size-4"/>}>
+          <Chip
+            variant="flat"
+            color="danger"
+            size="md"
+            endContent={<StarIconOutline className="size-4" />}
+          >
             2
           </Chip>
-          <Chip variant="flat" color="danger" size="md" endContent={<StarIconOutline  className="size-4"/>}>
+          <Chip
+            variant="flat"
+            color="danger"
+            size="md"
+            endContent={<StarIconOutline className="size-4" />}
+          >
             3
           </Chip>
-          <Chip variant="flat" color="danger" size="md" endContent={<StarIconOutline  className="size-4"/>}>
+          <Chip
+            variant="flat"
+            color="danger"
+            size="md"
+            endContent={<StarIconOutline className="size-4" />}
+          >
             4
           </Chip>
         </div>
       </div>
 
-     
       <div>
         <strong className="text-xl">Resources</strong>
         <div className="flex flex-col gap-2">
@@ -98,7 +136,7 @@ export default function EuropeModelInfo() {
                 Nlp Town Website
               </Link>
             </li>
-<li>
+            <li>
               <Link
                 color="foreground"
                 rel="noopener noreferrer"
@@ -108,7 +146,6 @@ export default function EuropeModelInfo() {
                 Huggingface Documentation
               </Link>
             </li>
-            
           </ul>
         </div>
       </div>

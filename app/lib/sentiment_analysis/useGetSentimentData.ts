@@ -4,7 +4,6 @@ import { InvokeResponse } from "@/app/lib/data/response";
 import { useAtomValue } from "jotai";
 import { columnTargetSentimentAnalysis } from "@/app/lib/sentiment_analysis/state";
 
-
 export function useGetSentimentDataTarget() {
   const columnTarget = useAtomValue(columnTargetSentimentAnalysis);
   const getTargetData = async (page: number = 1, pageSize: number = 100) => {
@@ -21,7 +20,7 @@ export function useGetSentimentDataTarget() {
           },
         },
       );
-      console.log("response get sen", response)
+      console.log("response get sen", response);
       if ("Success" in response) {
         return {
           response_code: response.Success.response_code,

@@ -1,6 +1,9 @@
 import { useAtomValue } from "jotai";
 import Image from "next/image";
-import { columnTargetSentimentAnalysis, selectedLang } from "../../../lib/sentiment_analysis/state";
+import {
+  columnTargetSentimentAnalysis,
+  selectedLang,
+} from "../../../lib/sentiment_analysis/state";
 import { Chip } from "@heroui/react";
 
 import { ColumnFilterOutline, LanguageIcon } from "@/components/icon/IconSA";

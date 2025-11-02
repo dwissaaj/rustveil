@@ -65,14 +65,13 @@ export default function TableServer({
         topContent={
           <div>
             <Button
-            isIconOnly
-            className="m-2"
-            color="primary"
-            startContent={<RefreshIcon className="w-6" />}
-            variant="light"
-            onPress={onRefresh}
-          />
-          
+              isIconOnly
+              className="m-2"
+              color="primary"
+              startContent={<RefreshIcon className="w-6" />}
+              variant="light"
+              onPress={onRefresh}
+            />
           </div>
         }
       >

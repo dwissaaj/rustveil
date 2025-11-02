@@ -1,4 +1,4 @@
-import { ColorSchema } from "@/app/social_network/centrality/state"
+import { ColorSchema } from "@/app/social_network/centrality/state";
 import { atom } from "jotai";
 
 export const selectedLang = atom<string>("");
@@ -17,7 +17,6 @@ export const sentimentCountData = atom<SentimentCount>({
 });
 export const sentimentData = atom<Record<string, any>[]>([]);
 export const sentimentViewerPage = atom<number>(1);
-
 
 export const showFilterAtom = atom(false);
 
