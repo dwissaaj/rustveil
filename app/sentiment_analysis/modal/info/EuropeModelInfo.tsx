@@ -1,21 +1,23 @@
 import { useAtomValue } from "jotai";
 import Image from "next/image";
+import { Chip } from "@heroui/react";
+import Link from "next/link";
+
 import {
   columnTargetSentimentAnalysis,
   selectedLang,
 } from "../../../lib/sentiment_analysis/state";
-import { Chip } from "@heroui/react";
 
 import {
   ColumnFilterOutline,
   LanguageIcon,
   StarIconOutline,
 } from "@/components/icon/IconSA";
-import Link from "next/link";
 
 export default function EuropeModelInfo() {
   const selectedLanguage = useAtomValue(selectedLang);
   const columnTarget = useAtomValue(columnTargetSentimentAnalysis);
+
   return (
     <div className="p-2 space-y-4">
       <div className="space-y-4">
@@ -25,17 +27,17 @@ export default function EuropeModelInfo() {
         <div className="flex flex-row gap-4">
           <Chip
             className="p-2"
-            startContent={<LanguageIcon className="size-6" />}
             color="primary"
             radius="lg"
+            startContent={<LanguageIcon className="size-6" />}
             variant="flat"
           >
             <p className="text-md">{selectedLanguage}</p>
           </Chip>
           <Chip
-            startContent={<ColumnFilterOutline className="size-6" />}
             color="primary"
             radius="lg"
+            startContent={<ColumnFilterOutline className="size-6" />}
             variant="flat"
           >
             {columnTarget}
@@ -44,11 +46,11 @@ export default function EuropeModelInfo() {
       </div>
       <div>
         <Image
-          src="/model/bert-base-multilingual-uncased-sentiment.png"
           alt="Europe Model"
-          width={500}
-          height={150}
           className="rounded-lg shadow"
+          height={150}
+          src="/model/bert-base-multilingual-uncased-sentiment.png"
+          width={500}
         />
       </div>
       <div>
@@ -80,42 +82,42 @@ export default function EuropeModelInfo() {
         <strong className="text-xl">Label</strong>
         <div className="space-x-2">
           <Chip
-            variant="flat"
             color="danger"
-            size="md"
             endContent={<StarIconOutline className="size-4" />}
+            size="md"
+            variant="flat"
           >
             0
           </Chip>
           <Chip
-            variant="flat"
             color="danger"
-            size="md"
             endContent={<StarIconOutline className="size-4" />}
+            size="md"
+            variant="flat"
           >
             1
           </Chip>
           <Chip
-            variant="flat"
             color="danger"
-            size="md"
             endContent={<StarIconOutline className="size-4" />}
+            size="md"
+            variant="flat"
           >
             2
           </Chip>
           <Chip
-            variant="flat"
             color="danger"
-            size="md"
             endContent={<StarIconOutline className="size-4" />}
+            size="md"
+            variant="flat"
           >
             3
           </Chip>
           <Chip
-            variant="flat"
             color="danger"
-            size="md"
             endContent={<StarIconOutline className="size-4" />}
+            size="md"
+            variant="flat"
           >
             4
           </Chip>
@@ -129,9 +131,9 @@ export default function EuropeModelInfo() {
             <li>
               <Link
                 color="foreground"
+                href="https://www.nlp.town/"
                 rel="noopener noreferrer"
                 target="_blank"
-                href="https://www.nlp.town/"
               >
                 Nlp Town Website
               </Link>
@@ -139,9 +141,9 @@ export default function EuropeModelInfo() {
             <li>
               <Link
                 color="foreground"
+                href="https://huggingface.co/nlptown/bert-base-multilingual-uncased-sentiment"
                 rel="noopener noreferrer"
                 target="_blank"
-                href="https://huggingface.co/nlptown/bert-base-multilingual-uncased-sentiment"
               >
                 Huggingface Documentation
               </Link>

@@ -2,6 +2,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { useAtomValue } from "jotai";
 
 import { SetVerticesResponse } from "./response";
+
 import {
   vertex1ColumnSelected,
   vertex2ColumnSelected,

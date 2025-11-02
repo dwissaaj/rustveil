@@ -1,5 +1,6 @@
-import { ColorSchema } from "@/app/social_network/centrality/state";
 import { atom } from "jotai";
+
+import { ColorSchema } from "@/app/social_network/centrality/state";
 
 export const selectedLang = atom<string>("");
 export const columnTargetSentimentAnalysis = atom<string>("");

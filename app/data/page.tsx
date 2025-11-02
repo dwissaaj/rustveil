@@ -1,8 +1,10 @@
 "use client";
 import { useAtom } from "jotai";
+
+import TableServer from "./table/TableServer";
+
 import { useRefreshServer } from "@/app/lib/data/handler/server/useRefreshServer";
 import FilterListWrapper from "@/components/data/FilterListWrapper";
-
 import {
   currentPageTable,
   dataTable,
@@ -10,7 +12,6 @@ import {
   totalCountTable,
 } from "@/app/lib/data/state";
 
-import TableServer from "./table/TableServer";
 export default function Page() {
   const [data, setData] = useAtom(dataTable);
   const [loading, setLoading] = useAtom(loadingTable);

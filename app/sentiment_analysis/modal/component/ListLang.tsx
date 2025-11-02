@@ -24,6 +24,7 @@ import {
   columnTargetSentimentAnalysis,
   selectedLang,
 } from "../../../lib/sentiment_analysis/state";
+
 import {
   ModelAiOutline,
   ColumnFilterOutline,
@@ -32,7 +33,7 @@ import {
 
 export default function ListLang() {
   const [selectedLanguage, setselectedLanguage] = useAtom(selectedLang);
-  console.log(selectedLang);
+
   const selectedModel = modelMap[selectedLanguage] || modelMap.default;
   const columnTarget = useAtomValue(columnTargetSentimentAnalysis);
 
@@ -44,12 +45,12 @@ export default function ListLang() {
     <div className="flex flex-col gap-4 max-w-xl">
       <div>
         <Select
-          label="Target Language"
-          placeholder="Select a Language"
-          variant="underlined"
           color="primary"
+          label="Target Language"
           labelPlacement="inside"
+          placeholder="Select a Language"
           selectedKeys={[selectedLanguage]}
+          variant="underlined"
           onChange={(e) => setselectedLanguage(e.target.value)}
         >
           {supportedLang.map((lang) => (
@@ -64,8 +65,8 @@ export default function ListLang() {
           content="Mismatched at choose language result in bad sentiment"
         >
           <Chip
-            startContent={<LanguageIcon className="size-6 " />}
             color="secondary"
+            startContent={<LanguageIcon className="size-6 " />}
             variant="flat"
           >
             {selectedLanguage}
@@ -77,8 +78,8 @@ export default function ListLang() {
           content="If No column showed upload a data first"
         >
           <Chip
-            startContent={<ColumnFilterOutline className="size-6 " />}
             color="secondary"
+            startContent={<ColumnFilterOutline className="size-6 " />}
             variant="flat"
           >
             {columnTarget}
@@ -90,9 +91,9 @@ export default function ListLang() {
           content="This is the model currently used for sentiment analysis"
         >
           <Chip
-            startContent={<ModelAiOutline className="size-6 " />}
             className="cursor-pointer"
             color="secondary"
+            startContent={<ModelAiOutline className="size-6 " />}
             variant="flat"
             onClick={onOpen}
           >
@@ -101,7 +102,7 @@ export default function ListLang() {
         </Tooltip>
       </div>
 
-      <Drawer isOpen={isOpen} onOpenChange={onOpenChange} size="lg">
+      <Drawer isOpen={isOpen} size="lg" onOpenChange={onOpenChange}>
         <DrawerContent>
           {(onClose) => (
             <>

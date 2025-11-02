@@ -10,11 +10,13 @@ import {
   Select,
   SelectItem,
 } from "@heroui/react";
-import { CloseActionIconOutline } from "@/components/icon/IconAction";
 import { useAtom } from "jotai";
-import { columnAvailable } from "@/app/lib/data/state";
+
 import { useSetTargetColumn } from "../../lib/sentiment_analysis/useSetTargetColumn";
 import { columnTargetSentimentAnalysis } from "../../lib/sentiment_analysis/state";
+
+import { columnAvailable } from "@/app/lib/data/state";
+import { CloseActionIconOutline } from "@/components/icon/IconAction";
 
 type PickColumnModalType = {
   isOpen: boolean;
@@ -35,6 +37,7 @@ export default function PickColumnModal({
   const handleColumn = async () => {
     try {
       const result = await setcolumn();
+
       if (result?.response_code === 200) {
         addToast({
           title: "Set Column Success",
@@ -60,6 +63,7 @@ export default function PickColumnModal({
       });
     }
   };
+
   return (
     <>
       <Modal
@@ -87,14 +91,15 @@ export default function PickColumnModal({
               <div className="flex flex-col gap-2">
                 <Select
                   className="max-w-lg"
-                  label="Target Contain Text"
-                  placeholder="Choose a column"
-                  variant="underlined"
                   color="primary"
+                  label="Target Contain Text"
                   labelPlacement="outside"
+                  placeholder="Choose a column"
                   value={textTargetSentiment}
+                  variant="underlined"
                   onChange={(event) => {
                     const value = event.target.value;
+
                     seTextTargetSentiment(value);
                   }}
                 >
@@ -110,9 +115,9 @@ export default function PickColumnModal({
               Close
             </Button>
             <Button
+              color="primary"
               isDisabled={!textTargetSentiment}
               onPress={handleColumn}
-              color="primary"
             >
               Choose Column
             </Button>

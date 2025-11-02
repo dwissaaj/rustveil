@@ -2,6 +2,7 @@ import { useAtom } from "jotai";
 import { invoke } from "@tauri-apps/api/core";
 
 import { ReagraphData, ReagraphNode, ReagraphEdge } from "./state";
+
 import { GetEdgesResponse } from "@/app/lib/workstation/social/network/response";
 
 // Utility to transform Tauri edges to Reagraph nodes & edges
@@ -20,6 +21,7 @@ function transformEdgesToReagraph(edges: { source: string; target: string }[]) {
 
     // Add edge
     const edgeId = `${e.source}-${e.target}`;
+
     edgesList.push({
       id: edgeId,
       source: e.source,
@@ -45,7 +47,6 @@ export function GetReagraph() {
         const reagraphData = transformEdgesToReagraph(
           response.Success.data || [],
         );
-        console.log("resat", response.Success.data);
 
         setReagraphData(reagraphData);
 

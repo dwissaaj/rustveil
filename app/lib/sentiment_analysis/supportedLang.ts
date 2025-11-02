@@ -1,6 +1,5 @@
 import EnglishModelInfo from "../../sentiment_analysis/modal/info/EnglishModelInfo";
 import IndoModelInfo from "../../sentiment_analysis/modal/info/IndoModelInfo";
-import EuropeModelInfo from "../../sentiment_analysis/modal/info/EuropeModelInfo";
 import MultiLangModelInfo from "../../sentiment_analysis/modal/info/MultiLangModelInfo";
 
 export const supportedLang = [

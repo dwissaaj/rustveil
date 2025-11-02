@@ -15,13 +15,14 @@ import {
 import { useAtom, useAtomValue } from "jotai";
 
 import { useGetSentimentDataTarget } from "../lib/sentiment_analysis/useGetSentimentData";
-import { RefreshIcon } from "@/components/icon/IconView";
 import {
   columnTargetSentimentAnalysis,
   sentimentCountData,
   sentimentData,
   sentimentViewerPage,
 } from "../lib/sentiment_analysis/state";
+
+import { RefreshIcon } from "@/components/icon/IconView";
 
 export default function ColumnViewerTable() {
   const targetColumn = useAtomValue(columnTargetSentimentAnalysis);
@@ -104,7 +105,6 @@ export default function ColumnViewerTable() {
   return (
     <div className="flex flex-col gap-4 p-2">
       <Table
-        className=""
         isHeaderSticky
         isStriped
         isVirtualized
@@ -118,6 +118,7 @@ export default function ColumnViewerTable() {
           )
         }
         bottomContentPlacement="inside"
+        className=""
         topContent={
           <Button
             isIconOnly

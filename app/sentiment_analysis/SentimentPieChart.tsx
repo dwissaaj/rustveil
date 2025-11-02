@@ -1,7 +1,8 @@
 import { ResponsivePie } from "@nivo/pie";
 import { useTheme } from "next-themes";
-import { PieSentimentStateType } from "../lib/sentiment_analysis/state";
 import { ColorSchemeId } from "@nivo/colors";
+
+import { PieSentimentStateType } from "../lib/sentiment_analysis/state";
 export interface SentimentDataType {
   id: string;
   value: number;
@@ -19,31 +20,32 @@ export function SentimentPieChart({
   const textColor = theme === "dark" ? "#e5e7eb" : "#1f2937";
   const tooltipBackgroundColor = theme === "dark" ? "#374151" : "#ffffff";
   const tooltipTextColor = theme === "dark" ? "#e5e7eb" : "#1f2937";
+
   return (
     <div className={`flex-1 h-[75vh] `}>
       <ResponsivePie
+        activeOuterRadiusOffset={8}
+        arcLabelsSkipAngle={chartFilter.labelSkip}
+        arcLinkLabelsColor={{ from: "color" }}
+        arcLinkLabelsDiagonalLength={chartFilter.labelDiagonalLength}
+        arcLinkLabelsOffset={chartFilter.labelsOffset}
+        arcLinkLabelsStraightLength={chartFilter.labelStraightLength}
+        arcLinkLabelsTextOffset={chartFilter.textOffset}
+        arcLinkLabelsThickness={2}
+        colors={{ scheme: chartFilter.colorSchema as ColorSchemeId }}
+        cornerRadius={chartFilter.cornerRadius}
         data={data}
+        enableArcLinkLabels={true}
+        endAngle={chartFilter.endAngle}
+        innerRadius={chartFilter.innerRadius}
         margin={{
           top: chartFilter.topMargin,
           right: chartFilter.rightMargin,
           bottom: chartFilter.bottomMargin,
           left: chartFilter.leftMargin,
         }}
-        startAngle={chartFilter.startAngle}
-        endAngle={chartFilter.endAngle}
-        innerRadius={chartFilter.innerRadius}
         padAngle={chartFilter.padAngle}
-        cornerRadius={chartFilter.cornerRadius}
-        activeOuterRadiusOffset={8}
-        arcLinkLabelsOffset={chartFilter.labelsOffset}
-        arcLinkLabelsTextOffset={chartFilter.textOffset}
-        colors={{ scheme: chartFilter.colorSchema as ColorSchemeId }}
-        arcLinkLabelsColor={{ from: "color" }}
-        enableArcLinkLabels={true}
-        arcLinkLabelsThickness={2}
-        arcLabelsSkipAngle={chartFilter.labelSkip}
-        arcLinkLabelsDiagonalLength={chartFilter.labelDiagonalLength}
-        arcLinkLabelsStraightLength={chartFilter.labelStraightLength}
+        startAngle={chartFilter.startAngle}
         theme={{
           labels: {
             text: {

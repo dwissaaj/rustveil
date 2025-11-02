@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-
 import { useTheme } from "next-themes";
 
 import EdgesTable from "./NetworkTable";
@@ -16,8 +15,9 @@ export default function NetworkHome() {
     const onMouseMove = (moveEvent: MouseEvent) => {
       const viewportWidth = window.innerWidth; // total width
       const maxWidth = viewportWidth - 100; // leave at least 100px for the graph
-      
+
       let newWidth = startWidth + (moveEvent.clientX - startX);
+
       if (newWidth < 100) newWidth = 100; // min width
       if (newWidth > maxWidth) newWidth = maxWidth; // max width
 
@@ -47,13 +47,13 @@ export default function NetworkHome() {
         style={{ marginLeft: "7px", marginRight: "7px", width: "5px" }}
       >
         <button
-          onMouseDown={handleMouseDown}
           className={`
             w-full h-full rounded transition-colors duration-200
             ${theme === "dark" ? "bg-gray-600" : "bg-gray-300"} 
             hover:opacity-100 opacity-40 transition-200
           `}
-        ></button>
+          onMouseDown={handleMouseDown}
+        />
       </div>
 
       <div className="flex-1 max-h-full">

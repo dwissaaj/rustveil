@@ -8,7 +8,9 @@ export function useGetDataByColumn(targetColumn: string) {
     () =>
       atom((get) => {
         const data = get(dataTable);
+
         if (!targetColumn) return [];
+
         return data.map((row) => row[targetColumn] ?? null);
       }),
     [targetColumn],

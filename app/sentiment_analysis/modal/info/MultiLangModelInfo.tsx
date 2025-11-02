@@ -1,17 +1,19 @@
 import { useAtomValue } from "jotai";
 import Image from "next/image";
+import { Chip } from "@heroui/react";
+import Link from "next/link";
+
 import {
   columnTargetSentimentAnalysis,
   selectedLang,
 } from "../../../lib/sentiment_analysis/state";
-import { Chip } from "@heroui/react";
 
 import { ColumnFilterOutline, LanguageIcon } from "@/components/icon/IconSA";
-import Link from "next/link";
 
 export default function MultiLangModelInfo() {
   const selectedLanguage = useAtomValue(selectedLang);
   const columnTarget = useAtomValue(columnTargetSentimentAnalysis);
+
   return (
     <div className="p-2 space-y-4">
       <div className="space-y-4">
@@ -21,17 +23,17 @@ export default function MultiLangModelInfo() {
         <div className="flex flex-row gap-4">
           <Chip
             className="p-2"
-            startContent={<LanguageIcon className="size-6" />}
             color="primary"
             radius="lg"
+            startContent={<LanguageIcon className="size-6" />}
             variant="flat"
           >
             <p className="text-md">{selectedLanguage}</p>
           </Chip>
           <Chip
-            startContent={<ColumnFilterOutline className="size-6" />}
             color="primary"
             radius="lg"
+            startContent={<ColumnFilterOutline className="size-6" />}
             variant="flat"
           >
             {columnTarget}
@@ -40,11 +42,11 @@ export default function MultiLangModelInfo() {
       </div>
       <div>
         <Image
-          src="/model/multilingual-sentiment-analysis.png"
           alt="Europe Model"
-          width={500}
-          height={150}
           className="rounded-lg shadow"
+          height={150}
+          src="/model/multilingual-sentiment-analysis.png"
+          width={500}
         />
       </div>
       <div>
@@ -77,19 +79,19 @@ export default function MultiLangModelInfo() {
       <div className="space-y-2">
         <strong className="text-xl">Label</strong>
         <div className="flex flex-col gap-2 ">
-          <Chip variant="flat" size="md">
+          <Chip size="md" variant="flat">
             0: Very Negative
           </Chip>
-          <Chip variant="flat" size="md">
+          <Chip size="md" variant="flat">
             1: Negative
           </Chip>
-          <Chip variant="flat" size="md">
+          <Chip size="md" variant="flat">
             2: Neutral
           </Chip>
-          <Chip variant="flat" size="md">
+          <Chip size="md" variant="flat">
             3: Positive
           </Chip>
-          <Chip variant="flat" size="md">
+          <Chip size="md" variant="flat">
             4: Very Positive
           </Chip>
         </div>
@@ -109,9 +111,9 @@ export default function MultiLangModelInfo() {
             <li>
               <Link
                 color="foreground"
+                href="https://discord.com/invite/sznxwdqBXj"
                 rel="noopener noreferrer"
                 target="_blank"
-                href="https://discord.com/invite/sznxwdqBXj"
               >
                 Tabularisai discord
               </Link>
@@ -119,9 +121,9 @@ export default function MultiLangModelInfo() {
             <li>
               <Link
                 color="foreground"
+                href="https://huggingface.co/tabularisai/multilingual-sentiment-analysis"
                 rel="noopener noreferrer"
                 target="_blank"
-                href="https://huggingface.co/tabularisai/multilingual-sentiment-analysis"
               >
                 Huggingface Documentation
               </Link>

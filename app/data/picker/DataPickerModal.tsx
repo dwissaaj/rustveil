@@ -13,7 +13,6 @@ import {
 import { useState } from "react";
 
 import { useFileOpener } from "@/app/lib/data/new_data/useFileOpener";
-
 import { useTableOpen } from "@/app/lib/data/new_data/useTableOpen";
 import { useCloseModal } from "@/app/lib/data/useCloseModal";
 import { useDatabaseProgress } from "@/app/lib/data/progress/useDatabaseProgress";

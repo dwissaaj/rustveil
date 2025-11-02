@@ -1,11 +1,5 @@
 import React, { useRef } from "react";
-import { SentimentPieChart } from "./SentimentPieChart";
 import { useAtom, useAtomValue } from "jotai";
-import {
-  PieSentimentFilterState,
-  sentimentCountData,
-  showFilterSentiment,
-} from "../lib/sentiment_analysis/state";
 import {
   Button,
   Modal,
@@ -16,13 +10,22 @@ import {
   Tooltip,
   addToast,
 } from "@heroui/react";
-import { FullScreenIcon } from "@/components/icon/IconView";
-import { FilterIcon, InfoIcon } from "@/components/icon/IconFilter";
-import AllZeroComponent from "@/components/sna/centrality/AllZeroComponent";
-import { useExportToImage } from "../lib/workstation/social/useExportToImage";
 import { useTheme } from "next-themes";
+
+import { useExportToImage } from "../lib/workstation/social/useExportToImage";
+import {
+  PieSentimentFilterState,
+  sentimentCountData,
+  showFilterSentiment,
+} from "../lib/sentiment_analysis/state";
 import { FilterPanelSentiment } from "../../components/sentiment_analysis/FilterPanelSentiment";
 import NoSentimentData from "../../components/sentiment_analysis/NoSentimentData";
+
+import { SentimentPieChart } from "./SentimentPieChart";
+
+import AllZeroComponent from "@/components/sna/centrality/AllZeroComponent";
+import { FilterIcon, InfoIcon } from "@/components/icon/IconFilter";
+import { FullScreenIcon } from "@/components/icon/IconView";
 export default function ChartViewer() {
   const totalCountData = useAtomValue(sentimentCountData);
   const chartFilter = useAtomValue(PieSentimentFilterState);
@@ -79,19 +82,19 @@ export default function ChartViewer() {
     <div className="w-full min-h-full flex flex-col items-start justify-center gap-10 rounded-xl p-4">
       <div className="font-medium flex flex-row justify-start gap-4 items-center">
         <Button
-          variant="flat"
           isIconOnly
-          startContent={<FullScreenIcon className="w-6" />}
           color="primary"
+          startContent={<FullScreenIcon className="w-6" />}
+          variant="flat"
           onPress={onOpen}
-        ></Button>
+        />
         <Tooltip content="Customize Chart in Full Screen Mode">
           <Button
-            variant="flat"
             isIconOnly
-            startContent={<InfoIcon className="w-6" />}
             color="primary"
-          ></Button>
+            startContent={<InfoIcon className="w-6" />}
+            variant="flat"
+          />
         </Tooltip>
       </div>
 
@@ -104,7 +107,6 @@ export default function ChartViewer() {
           <div className="flex w-full items-center justify-center">
             <div className="min-w-[1200px] h-[75vh]">
               <SentimentPieChart
-                data={senData}
                 chartFilter={{
                   ...chartFilter,
                   topMargin: 50,
@@ -112,6 +114,7 @@ export default function ChartViewer() {
                   bottomMargin: 50,
                   leftMargin: 50,
                 }}
+                data={senData}
               />
             </div>
           </div>
@@ -123,18 +126,18 @@ export default function ChartViewer() {
       </div>
 
       <Modal
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
         className="w-4/5 max-w-[1800px]"
+        isOpen={isOpen}
         scrollBehavior="outside"
+        onOpenChange={onOpenChange}
       >
         <ModalContent>
           <ModalHeader className="flex flex-row justify-start gap-4 items-center">
             <Button
-              variant="light"
-              color="default"
               isIconOnly
+              color="default"
               startContent={<FilterIcon className="w-4" />}
+              variant="light"
               onPress={() => setshowFilter(!showFilter)}
             />
           </ModalHeader>
@@ -165,8 +168,8 @@ export default function ChartViewer() {
                     </div>
                   ) : (
                     <SentimentPieChart
-                      data={senData}
                       chartFilter={chartFilter}
+                      data={senData}
                     />
                   )}
                 </div>

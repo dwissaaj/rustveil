@@ -22,17 +22,16 @@ export function ViewDropdown({ onDataFetched }: ViewDropdownProps) {
     <Dropdown>
       <DropdownTrigger>
         <Button
-         className="text-black dark:text-white"
+          className="text-black dark:text-white"
           color="primary"
-          startContent={<ViewTabIcon className="w-4" />}
           size="sm"
-         
+          startContent={<ViewTabIcon className="w-4" />}
           variant="light"
         >
           View
         </Button>
       </DropdownTrigger>
-      <DropdownMenu color="primary" variant="flat" aria-label="view actions">
+      <DropdownMenu aria-label="view actions" color="primary" variant="flat">
         <DropdownItem
           key="refresh"
           description="Check new data"

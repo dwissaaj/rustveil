@@ -15,7 +15,7 @@ export function useGetEdges() {
         const transformData = transformEdgesToGraph(
           response.Success.data || [],
         );
-        console.log("resat", response.Success.data);
+
         setGraphAtom(transformData);
 
         return {

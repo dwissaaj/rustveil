@@ -1,7 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
+import { useAtomValue } from "jotai";
 
 import { InvokeResponse } from "@/app/lib/data/response";
-import { useAtomValue } from "jotai";
 import { columnTargetSentimentAnalysis } from "@/app/lib/sentiment_analysis/state";
 
 export function useGetSentimentDataTarget() {
@@ -20,7 +20,7 @@ export function useGetSentimentDataTarget() {
           },
         },
       );
-      console.log("response get sen", response);
+
       if ("Success" in response) {
         return {
           response_code: response.Success.response_code,
