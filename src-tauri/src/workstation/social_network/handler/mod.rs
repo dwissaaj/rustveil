@@ -82,7 +82,7 @@ pub fn calculate_centrality(app: AppHandle, graph_type: String ) -> CalculatePro
         Err(e) => {
             return CalculateProcess::Error(CalculateProcessError {
                 response_code: 500,
-                message: format!("Failed to prepare statement: {}", e),
+                message: format!("Try to reload your target vertices. Failed to prepare statement: {}", e),
             });
         }
     };

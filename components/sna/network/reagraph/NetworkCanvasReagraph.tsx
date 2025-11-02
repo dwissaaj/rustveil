@@ -66,7 +66,7 @@ type Props = {
 
 function NetworkCanvasReagraph(
   props: Props,
-  ref: React.Ref<NetworkCanvasHandle>,
+  ref: React.Ref<NetworkCanvasHandle>
 ) {
   const graphData = useAtomValue(ReagraphData);
   const centralityAtom = useAtomValue(centralityData);
@@ -77,10 +77,10 @@ function NetworkCanvasReagraph(
   const graphRef = useRef<GraphCanvasRef | null>(null);
 
   const [layout, setLayout] = useState<LayoutTypes>(
-    props.layout ?? "forceDirected2d",
+    props.layout ?? "forceDirected2d"
   );
   const [selectedMetric, setSelectedMetric] = useState<CentralityKey>(
-    props.centrality ?? "betweenness_centrality",
+    props.centrality ?? "betweenness_centrality"
   );
   useEffect(() => {
     if (props.centrality && props.centrality !== selectedMetric) {
@@ -150,13 +150,33 @@ function NetworkCanvasReagraph(
     });
   }, [graphData, centralityAtom, hasGraph, selectedMetric]);
 
+  const uniqueEdges = useMemo(() => {
+    const seen = new Set<string>();
+    return graphData.edges.map((edge, index) => {
+      // Create a fallback ID if it's missing or duplicated
+      let edgeId = edge.id || `${edge.source}-${edge.target}-${index}`;
+
+      // Ensure uniqueness
+      if (seen.has(edgeId)) {
+        edgeId = `${edge.source}-${edge.target}-${index}`;
+      }
+      seen.add(edgeId);
+
+      return {
+        ...edge,
+        id: edgeId,
+        label: edge.label ?? `${edge.source} → ${edge.target}`,
+      };
+    });
+  }, [graphData.edges]);
+
   return (
     <div className="relative flex-1 min-h-[600px] overflow-hidden">
       {hasGraph ? (
         <GraphCanvas
           key={selectedMetric}
           nodes={sizedNodes}
-          edges={graphData.edges}
+          edges={uniqueEdges}
           theme={customTheme}
           ref={graphRef}
           labelType="all"
@@ -172,7 +192,7 @@ function NetworkCanvasReagraph(
               centralityAtom?.graphData?.eigenvector_centrality ?? [];
             const katz = centralityAtom?.graphData?.katz_centrality ?? [];
             const entry = Object.entries(nodeMap).find(
-              ([_, id]) => id === data.id,
+              ([_, id]) => id === data.id
             );
             const idx = entry ? Number(entry[0]) : -1;
 

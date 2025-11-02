@@ -97,8 +97,8 @@ pub fn load_data_sqlite(app: AppHandle, pathfile: String) -> DatabaseProcess {
         };
     DatabaseProcess::Success(DatabaseComplete {
         response_code: 200,
-        message: "Data table `Rustveil` exit reload at Data > View > Refresh".to_string(),
-        data: None, // You can populate this later when you fetch actual data
+        message: "Data table `Rustveil` exist reload at Data > View > Refresh".to_string(),
+        data: None,
         total_count: Some(all_count),
     })
 }
