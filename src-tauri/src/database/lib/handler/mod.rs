@@ -1,16 +1,14 @@
 use super::state::{DatabaseComplete, DatabaseError, DatabaseProcess};
+use crate::database::lib::state::DatabaseInsertionProgress;
+use crate::SqliteDataState;
 use rusqlite::Connection;
 use sea_query::{Alias, ColumnDef, Query, SimpleExpr, SqliteQueryBuilder, Table};
 use sea_query_rusqlite::RusqliteBinder;
 use serde_json::Value;
-use uuid::Uuid;
-use std::sync::Mutex;
-use tauri::{AppHandle, Manager,Emitter, command};
 use std::path::Path;
-use crate::SqliteDataState;
-use crate::database::lib::state::DatabaseInsertionProgress;
-
-
+use std::sync::Mutex;
+use tauri::{command, AppHandle, Emitter, Manager};
+use uuid::Uuid;
 
 /// Loads and validates a SQLite database file, checking for the mandatory 'rustveil' table.
 ///
@@ -35,8 +33,7 @@ use crate::database::lib::state::DatabaseInsertionProgress;
 ///   - Database cannot be opened
 ///   - 'rustveil' table does not exist
 /// - Returns error code 404 for internal database errors
-/// 
-
+///
 
 #[command]
 pub fn load_data_sqlite(app: AppHandle, pathfile: String) -> DatabaseProcess {
@@ -47,7 +44,8 @@ pub fn load_data_sqlite(app: AppHandle, pathfile: String) -> DatabaseProcess {
     if pathfile.is_empty() {
         return DatabaseProcess::Error(DatabaseError {
             response_code: 404,
-            message: "File path or database is none. Try to load Data > File > Load or Upload".to_string(),
+            message: "File path or database is none. Try to load Data > File > Load or Upload"
+                .to_string(),
         });
     }
     // 2. Check if rustveil table exists
@@ -60,41 +58,41 @@ pub fn load_data_sqlite(app: AppHandle, pathfile: String) -> DatabaseProcess {
             });
         }
     };
-    
+
     // Check if rustveil table exists
     let table_exists: bool = match conn.query_row(
-    "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='rustveil'",
-    [],
-    |row| row.get::<_, i64>(0) // Specify i64 for COUNT(*)
-) {
-    Ok(count) => count > 0,
-    Err(e) => {
-        return DatabaseProcess::Error(DatabaseError {
-            response_code: 404,
-            message: format!("Error checking table existence: {}", e),
-        });
-    }
-};
-    
+        "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='rustveil'",
+        [],
+        |row| row.get::<_, i64>(0), // Specify i64 for COUNT(*)
+    ) {
+        Ok(count) => count > 0,
+        Err(e) => {
+            return DatabaseProcess::Error(DatabaseError {
+                response_code: 404,
+                message: format!("Error checking table existence: {}", e),
+            });
+        }
+    };
+
     if !table_exists {
         return DatabaseProcess::Error(DatabaseError {
             response_code: 404,
             message: "Table 'rustveil' does not exist in the database".to_string(),
         });
     }
-    
+
     // 3. Get total count of records (optional)
-        let all_count: usize = match conn.query_row("SELECT COUNT(*) FROM rustveil", [], |row| {
-            row.get::<_, i64>(0).map(|count| count as usize) // Convert i64 to usize
-        }) {
-            Ok(count) => count,
-            Err(e) => {
-                return DatabaseProcess::Error(DatabaseError {
-                    response_code: 500,
-                    message: format!("Error counting records: {}", e),
-                });
-            }
-        };
+    let all_count: usize = match conn.query_row("SELECT COUNT(*) FROM rustveil", [], |row| {
+        row.get::<_, i64>(0).map(|count| count as usize) // Convert i64 to usize
+    }) {
+        Ok(count) => count,
+        Err(e) => {
+            return DatabaseProcess::Error(DatabaseError {
+                response_code: 500,
+                message: format!("Error counting records: {}", e),
+            });
+        }
+    };
     DatabaseProcess::Success(DatabaseComplete {
         response_code: 200,
         message: "Data table `Rustveil` exist reload at Data > View > Refresh".to_string(),
@@ -104,16 +102,16 @@ pub fn load_data_sqlite(app: AppHandle, pathfile: String) -> DatabaseProcess {
 }
 
 /// Inserts JSON data into a SQLite database table.
-/// 
+///
 /// - Creates the table if it doesn't exist
 /// - Infers column types from the first JSON object in `data_json`
 /// - Adds a `rv_uuid` column automatically as a unique identifier
-/// 
+///
 /// # Parameters
 /// - `data_json`: Vector of JSON objects (rows of data)
 /// - `headers`: Column names (extracted from JSON keys)
 /// - `connect`: An open SQLite database connection
-/// 
+///
 /// # Returns
 /// - `DatabaseProcess::Success` on success
 /// - `DatabaseProcess::Error` on failure
@@ -121,7 +119,7 @@ pub fn data_to_sqlite(
     data_json: Vec<Value>,
     headers: Vec<String>,
     connect: &Connection,
-    app: &AppHandle
+    app: &AppHandle,
 ) -> DatabaseProcess {
     let table_name = "rustveil";
 
@@ -129,7 +127,9 @@ pub fn data_to_sqlite(
     let mut col_map = Vec::new();
     for h in headers {
         let h = h.trim();
-        if h.is_empty() { continue }
+        if h.is_empty() {
+            continue;
+        }
         let sanitized = h.replace(" ", "_");
         col_map.push((h.to_string(), sanitized));
     }
@@ -137,7 +137,12 @@ pub fn data_to_sqlite(
     // ----- STEP 1: CREATE TABLE -----
     let mut table = Table::create();
     table.table(Alias::new(table_name)).if_not_exists();
-    table.col(ColumnDef::new(Alias::new("rv_uuid")).string().not_null().unique_key());
+    table.col(
+        ColumnDef::new(Alias::new("rv_uuid"))
+            .string()
+            .not_null()
+            .unique_key(),
+    );
 
     if let Some(first_row) = data_json.iter().find(|v| v.is_object()) {
         if let Some(obj) = first_row.as_object() {
@@ -157,19 +162,20 @@ pub fn data_to_sqlite(
 
     let sql = table.to_string(SqliteQueryBuilder);
     if let Err(e) = connect.execute(sql.as_str(), []) {
-
         return DatabaseProcess::Error(DatabaseError {
             response_code: 401,
             message: format!("Error creating table: {}", e),
         });
-    } else {
-        log::info!("Created table `{}` successfully", table_name);
-    }
+    } 
 
     // ----- STEP 2: INSERT DATA IN BATCHES -----
     let max_variables = 999;
     let num_columns = col_map.len() + 1; // +1 for rv_uuid
-    let batch_size = if num_columns > 0 { max_variables / num_columns } else { 1 };
+    let batch_size = if num_columns > 0 {
+        max_variables / num_columns
+    } else {
+        1
+    };
     let total_data = (data_json.len() / batch_size) * batch_size + (data_json.len() % batch_size);
     let mut total_inserted = 0;
     for (i, chunk) in data_json.chunks(batch_size).enumerate() {
@@ -197,7 +203,9 @@ pub fn data_to_sqlite(
                     Some(Value::String(s)) => {
                         SimpleExpr::Value(sea_query::Value::String(Some(Box::new(s.clone()))))
                     }
-                    _ => SimpleExpr::Value(sea_query::Value::String(Some(Box::new("".to_string())))),
+                    _ => {
+                        SimpleExpr::Value(sea_query::Value::String(Some(Box::new("".to_string()))))
+                    }
                 }));
 
                 insert.values_panic(exprs);
@@ -209,12 +217,14 @@ pub fn data_to_sqlite(
         match connect.execute(sql.as_str(), &*params.as_params()) {
             Ok(count) => {
                 total_inserted += count;
-                app.emit("database-insert-progress", DatabaseInsertionProgress {
-                total_rows: total_data, 
-                count: total_inserted,
-               
-                }).unwrap();
- 
+                app.emit(
+                    "database-insert-progress",
+                    DatabaseInsertionProgress {
+                        total_rows: total_data,
+                        count: total_inserted,
+                    },
+                )
+                .unwrap();
             }
             Err(e) => {
                 return DatabaseProcess::Error(DatabaseError {
@@ -224,48 +234,46 @@ pub fn data_to_sqlite(
             }
         }
     }
-    let all_count: usize = match connect.query_row("SELECT COUNT(*) FROM rustveil", [], |row| row.get(0)) {
-        Ok(c) => c,
-        Err(_) => 0,
-    };
+    let all_count: usize =
+        match connect.query_row("SELECT COUNT(*) FROM rustveil", [], |row| row.get(0)) {
+            Ok(c) => c,
+            Err(_) => 0,
+        };
     let sql = table.to_string(SqliteQueryBuilder);
-if let Err(e) = connect.execute(sql.as_str(), []) {
+    if let Err(e) = connect.execute(sql.as_str(), []) {
+        return DatabaseProcess::Error(DatabaseError {
+            response_code: 401,
+            message: format!("Error creating table: {}", e),
+        });
+    } else {
+        log::info!("Created table `{}` successfully", table_name);
+    }
 
-    return DatabaseProcess::Error(DatabaseError {
-        response_code: 401,
-        message: format!("Error creating table: {}", e),
-    });
-} else {
-    log::info!("Created table `{}` successfully", table_name);
-}
-
-// ADD THIS LINE TO CREATE THE METADATA TABLE
-if let Err(e) = connect.execute("CREATE TABLE IF NOT EXISTS rustveil_metadata (target_vertices TEXT, target_sentiment TEXT)", []) {
+    // ADD THIS LINE TO CREATE THE METADATA TABLE
+    if let Err(e) = connect.execute("CREATE TABLE IF NOT EXISTS rustveil_metadata (target_vertices TEXT, target_sentiment TEXT)", []) {
     log::error!("Failed to create metadata table: {}", e);
 }
     DatabaseProcess::Success(DatabaseComplete {
         response_code: 200,
         message: format!("Success: inserted {} rows", total_inserted),
         data: Some(data_json),
-        total_count: Some(all_count)
+        total_count: Some(all_count),
     })
 }
 
-
-
 /// Opens an SQLite connection for the given `base_path`.
-/// 
+///
 /// ### Behavior
 /// - If `base_path` does **not** exist:
 ///   - A new SQLite file is created at `base_path`.
-/// 
+///
 /// - If `base_path` **already exists**:
 ///   - It will automatically find the **next available filename** by appending a counter:
 ///   - Example: `db.sqlite`, then `db(1).sqlite`, then `db(2).sqlite`, etc.
 ///   - This ensures existing database files are not overwritten accidentally.
-/// 
-/// - The **final resolved file path** is stored in the global app state 
-///   (`SqliteDataState.file_url`) so the frontend (or other parts of the app) 
+///
+/// - The **final resolved file path** is stored in the global app state
+///   (`SqliteDataState.file_url`) so the frontend (or other parts of the app)
 ///   can always reference the currently active database file.
 ///
 /// ### Parameters
@@ -284,12 +292,16 @@ if let Err(e) = connect.execute("CREATE TABLE IF NOT EXISTS rustveil_metadata (t
 
 pub fn open_or_create_sqlite(app: &AppHandle, base_path: &str) -> Result<Connection, String> {
     let mut final_path = base_path.to_string();
-    
+
     // if file exists, find next available filename
     if Path::new(&final_path).exists() {
         let mut counter = 1;
         loop {
-            let candidate = format!("{}({}).sqlite", base_path.trim_end_matches(".sqlite"), counter);
+            let candidate = format!(
+                "{}({}).sqlite",
+                base_path.trim_end_matches(".sqlite"),
+                counter
+            );
             if !Path::new(&candidate).exists() {
                 final_path = candidate;
                 break;
@@ -298,14 +310,12 @@ pub fn open_or_create_sqlite(app: &AppHandle, base_path: &str) -> Result<Connect
         }
     }
     if let Some(state) = app.try_state::<Mutex<SqliteDataState>>() {
-            if let Ok(mut sqlite_state) = state.lock() {
-                sqlite_state.file_url = final_path.clone();
-            }
+        if let Ok(mut sqlite_state) = state.lock() {
+            sqlite_state.file_url = final_path.clone();
         }
+    }
     match Connection::open(&final_path) {
         Ok(conn) => Ok(conn),
         Err(e) => Err(format!("Error at connection: {}", e)),
     }
 }
-
-

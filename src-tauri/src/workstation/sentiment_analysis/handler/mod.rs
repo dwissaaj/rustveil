@@ -13,8 +13,6 @@ use std::sync::Mutex;
 use tauri::{command, AppHandle, Manager};
 use tch::Device;
 
-
-
 #[command]
 pub fn analyze_and_update_sentiment(app: AppHandle, selected_language: String) -> ProcessTarget {
     let binding = app.state::<Mutex<ColumnTargetSentimentAnalysis>>();
@@ -180,8 +178,6 @@ pub fn analyze_and_update_sentiment(app: AppHandle, selected_language: String) -
         .query_row("SELECT COUNT(*) FROM rust_sentiment;", [], |row| row.get(0))
         .unwrap_or(0);
 
-
-    
     ProcessTarget::Success(ProcessTargetSuccess {
         response_code: 200,
         message: format!(
@@ -214,24 +210,27 @@ pub fn set_sentiment_analysis_target_column(
     save_sentiment_to_database(&app, &target_column_state)
 }
 
-fn save_sentiment_to_database(app: &AppHandle, target: &ColumnTargetSentimentAnalysis) -> ColumnTargetSelectedResult {
+fn save_sentiment_to_database(
+    app: &AppHandle,
+    target: &ColumnTargetSentimentAnalysis,
+) -> ColumnTargetSelectedResult {
     let db_result = DatabaseConnection::connect_db(app);
-    
+
     match db_result {
         DbConnectionProcess::Success(db_success) => {
             let conn = db_success.connection;
-            
+
             let sentiment_json = serde_json::json!({
                 "target_sentiment": target.column_target,
                 "created_at": chrono::Utc::now().to_rfc3339(),
                 "updated_at": chrono::Utc::now().to_rfc3339()
             });
-            
-            // Just insert - no counting needed
+
             match conn.execute(
-                "INSERT INTO rustveil_metadata (target_sentiment) VALUES (?1)",
-                &[&sentiment_json.to_string()],
-            ) {
+    "INSERT INTO rustveil_metadata (rowid, target_vertices, target_sentiment) VALUES (1, NULL, ?1)
+     ON CONFLICT(rowid) DO UPDATE SET target_sentiment = excluded.target_sentiment",
+    &[&sentiment_json.to_string()],
+) {
                 Ok(_) => ColumnTargetSelectedResult::Success(ColumnTargetSuccess {
                     response_code: 200,
                     message: "Target column is saved".to_string(),
@@ -242,7 +241,7 @@ fn save_sentiment_to_database(app: &AppHandle, target: &ColumnTargetSentimentAna
                     message: format!("Failed to save sentiment target: {}", e),
                 }),
             }
-        },
+        }
         DbConnectionProcess::Error(e) => ColumnTargetSelectedResult::Error(ColumnTargetError {
             response_code: e.response_code,
             message: e.message,

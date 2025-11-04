@@ -48,15 +48,16 @@ fn save_vertices_to_database(app: &AppHandle, vertices: &VerticesSelected) -> Ve
                 "updated_at": chrono::Utc::now().to_rfc3339()
             });
             
-            // Just insert - no counting needed
+         
             match conn.execute(
-                "INSERT INTO rustveil_metadata (target_vertices) VALUES (?1)",
-                &[&vertex_json.to_string()],
-            ) {
+            "INSERT INTO rustveil_metadata (rowid, target_vertices, target_sentiment) VALUES (1, ?1, NULL)
+            ON CONFLICT(rowid) DO UPDATE SET target_vertices = excluded.target_vertices",
+            &[&vertex_json.to_string()],
+        ) {
                 Ok(_) => VerticesSelectedResult::Success(VerticesSetSuccess {
                     response_code: 200,
                     message: "Target column is saved".to_string(),
-                }),
+                }), 
                 Err(e) => VerticesSelectedResult::Error(VerticesSetError {
                     response_code: 500,
                     message: format!("Failed to save vertices: {}", e),

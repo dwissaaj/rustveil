@@ -7,7 +7,7 @@ use serde_json::Value;
 use std::sync::Mutex;
 use tauri::{command, AppHandle, Manager};
 
-/// read data from table rust_sentiment created one if non
+/// read data from table rustveil_sentiment created one if non
 #[command]
 pub fn get_paginated_sentiment_target(
     app: AppHandle,
@@ -63,14 +63,14 @@ pub fn get_paginated_sentiment_target(
 
     let _ = connect.execute(
         &format!(
-            "CREATE TABLE IF NOT EXISTS rust_sentiment (id INTEGER PRIMARY KEY AUTOINCREMENT, \"{}\" TEXT);",
+            "CREATE TABLE IF NOT EXISTS rustveil_sentiment (id INTEGER PRIMARY KEY AUTOINCREMENT, \"{}\" TEXT);",
             target_column_state.column_target
         ),
         [],
     );
 
     let count: i64 = connect
-        .query_row("SELECT COUNT(*) FROM rust_sentiment;", [], |row| row.get(0))
+        .query_row("SELECT COUNT(*) FROM rustveil_sentiment;", [], |row| row.get(0))
         .unwrap_or(0);
 
     if count == 0 {
@@ -92,7 +92,7 @@ pub fn get_paginated_sentiment_target(
             .unwrap();
 
         let insert_sql = format!(
-            "INSERT INTO rust_sentiment (\"{}\") VALUES (?1);",
+            "INSERT INTO rustveil_sentiment (\"{}\") VALUES (?1);",
             target_column_state.column_target
         );
         for r in old_rows {
@@ -104,12 +104,12 @@ pub fn get_paginated_sentiment_target(
     }
 
     // ✅ Ensure columns exist (safe even if already present)
-    let _ = connect.execute("ALTER TABLE rust_sentiment ADD COLUMN polarity TEXT;", []);
-    let _ = connect.execute("ALTER TABLE rust_sentiment ADD COLUMN score REAL;", []);
+    let _ = connect.execute("ALTER TABLE rustveil_sentiment ADD COLUMN polarity TEXT;", []);
+    let _ = connect.execute("ALTER TABLE rustveil_sentiment ADD COLUMN score REAL;", []);
 
-    // ✅ Pagination from rust_sentiment
+    // ✅ Pagination from rustveil_sentiment
     let total_count: usize = connect
-        .query_row("SELECT COUNT(*) FROM rust_sentiment;", [], |row| row.get(0))
+        .query_row("SELECT COUNT(*) FROM rustveil_sentiment;", [], |row| row.get(0))
         .unwrap_or(0);
 
     let total_pages = (total_count + pagination.page_size - 1) / pagination.page_size;
@@ -117,7 +117,7 @@ pub fn get_paginated_sentiment_target(
     let offset = (current_page - 1) * pagination.page_size;
 
     let query = format!(
-        "SELECT \"{}\", polarity, score FROM rust_sentiment LIMIT ? OFFSET ?",
+        "SELECT \"{}\", polarity, score FROM rustveil_sentiment LIMIT ? OFFSET ?",
         target_column_state.column_target
     );
 
@@ -171,7 +171,7 @@ pub fn get_paginated_sentiment_target(
     }
     let query_positive: u32 = connect
         .query_row(
-            "SELECT COUNT(*) FROM rust_sentiment WHERE polarity = 'positive';",
+            "SELECT COUNT(*) FROM rustveil_sentiment WHERE polarity = 'positive';",
             [],
             |row| row.get(0),
         )
@@ -179,7 +179,7 @@ pub fn get_paginated_sentiment_target(
 
     let query_negative: u32 = connect
         .query_row(
-            "SELECT COUNT(*) FROM rust_sentiment WHERE polarity = 'negative';",
+            "SELECT COUNT(*) FROM rustveil_sentiment WHERE polarity = 'negative';",
             [],
             |row| row.get(0),
         )
