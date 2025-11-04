@@ -17,7 +17,7 @@ export function useSetTargetColumn() {
           },
         },
       );
-
+      console.log(response)
       if ("Success" in response) {
         return {
           response_code: response.Success.response_code,

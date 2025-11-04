@@ -41,7 +41,7 @@ export default function ColumnViewerTable() {
       setData([]);
       setTotalCount(0);
       setTotalCountData({
-        total_count: 0,
+        total_data: 0,
         total_negative_data: 0,
         total_positive_data: 0,
       });
@@ -54,7 +54,7 @@ export default function ColumnViewerTable() {
         setData(response.data);
         setTotalCount(response.total_count ?? 0);
         setTotalCountData({
-          total_count: response.total_count ?? 0,
+          total_data: response.total_count ?? 0,
           total_negative_data: response.total_negative_data ?? 0,
           total_positive_data: response.total_positive_data ?? 0,
         });
@@ -70,7 +70,7 @@ export default function ColumnViewerTable() {
         setData([]);
         setTotalCount(0);
         setTotalCountData({
-          total_count: 0,
+          total_data: 0,
           total_negative_data: 0,
           total_positive_data: 0,
         });
@@ -117,7 +117,7 @@ export default function ColumnViewerTable() {
             </div>
           )
         }
-        bottomContentPlacement="inside"
+        bottomContentPlacement="outside"
         className=""
         topContent={
           <Button

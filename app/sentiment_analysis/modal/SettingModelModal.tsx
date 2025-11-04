@@ -6,14 +6,14 @@ import {
   ModalBody,
   ModalFooter,
   Button,
+  addToast,
 } from "@heroui/react";
 import { CloseActionIconOutline } from "@/components/icon/IconAction";
 import ListLang from "./component/ListLang";
 import {
   useSentimentAnalysis,
-  useSentimentTest,
 } from "../../lib/sentiment_analysis/useSentimentAnalysis";
-import ListColumn from "./component/ListColumn";
+
 import { useEffect, useState } from "react";
 import { useAtomValue } from "jotai";
 import {
@@ -39,29 +39,48 @@ export default function SettingModel({
   const columnTarget = useAtomValue(columnTargetSentimentAnalysis);
   const languageTarget = useAtomValue(selectedLang);
   const sentiment = useSentimentAnalysis();
-  const senttest = useSentimentTest();
   const handlePress = async () => {
     try {
-      const res = await sentiment();
-      console.log(res);
+      const result = await sentiment();
+      if (result?.response_code === 200) {
+        addToast({
+          title: "Processing Sentiment Complete",
+          description: `Total Processed ${result.total_data}, with positive ${result.total_positive_data} and negative ${result.total_negative_data}`,
+          variant: "bordered",
+          color: "success",
+        });
+        onClose();
+      } else {
+        addToast({
+          title: "Set Column Error",
+          description: `Error at ${result?.message}`,
+          variant: "bordered",
+          color: "danger",
+        });
+      }
     } catch (error) {
-      console.log(error);
+      addToast({
+        title: "Set Column Error",
+        description: `Error at ${error}`,
+        variant: "bordered",
+        color: "danger",
+      });
     }
   };
-  useEffect(() => {
-    if (columnTarget === "") {
-      setanalyzeBtn({
-        isLoading: false,
-        isDisabled: true,
-      });
-    }
-    if (languageTarget === "") {
-      setanalyzeBtn({
-        isLoading: false,
-        isDisabled: true,
-      });
-    }
-  }, [columnTarget, languageTarget]);
+  // useEffect(() => {
+  //   if (columnTarget === "") {
+  //     setanalyzeBtn({
+  //       isLoading: false,
+  //       isDisabled: true,
+  //     });
+  //   }
+  //   if (languageTarget === "") {
+  //     setanalyzeBtn({
+  //       isLoading: false,
+  //       isDisabled: true,
+  //     });
+  //   }
+  // }, [columnTarget, languageTarget]);
   return (
     <>
       <Modal

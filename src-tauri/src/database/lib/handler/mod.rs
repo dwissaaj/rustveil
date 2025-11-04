@@ -228,6 +228,21 @@ pub fn data_to_sqlite(
         Ok(c) => c,
         Err(_) => 0,
     };
+    let sql = table.to_string(SqliteQueryBuilder);
+if let Err(e) = connect.execute(sql.as_str(), []) {
+
+    return DatabaseProcess::Error(DatabaseError {
+        response_code: 401,
+        message: format!("Error creating table: {}", e),
+    });
+} else {
+    log::info!("Created table `{}` successfully", table_name);
+}
+
+// ADD THIS LINE TO CREATE THE METADATA TABLE
+if let Err(e) = connect.execute("CREATE TABLE IF NOT EXISTS rustveil_metadata (target_vertices TEXT, target_sentiment TEXT)", []) {
+    log::error!("Failed to create metadata table: {}", e);
+}
     DatabaseProcess::Success(DatabaseComplete {
         response_code: 200,
         message: format!("Success: inserted {} rows", total_inserted),

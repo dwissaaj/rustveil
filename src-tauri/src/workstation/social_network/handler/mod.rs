@@ -14,29 +14,61 @@ use crate::social_network::calculate::{betweenness_centrality_calculate_direct,
     katz_centrality_calculate,
     closeness_centrality_calculate
     };
-
+use crate::global::db_connection::DatabaseConnection;
+use crate::global::db_connection::{DbConnectionProcess,};
 
 #[command]
 pub fn set_vertices(app: AppHandle, vertices_selected: VerticesSelected) -> VerticesSelectedResult {
-    // 1. Update the file path in state
     let binding = app.state::<Mutex<VerticesSelected>>();
     let mut vertex_choosed = binding.lock().unwrap();
     vertex_choosed.vertex_1 = vertices_selected.vertex_1.clone();
     vertex_choosed.vertex_2 = vertices_selected.vertex_2.clone();
+    
     if vertex_choosed.vertex_1.is_empty() || vertex_choosed.vertex_2.is_empty() {
-       return VerticesSelectedResult::Error(VerticesSetError {
-                response_code: 401,
-                message: "No column target. Set at Social > Edit > Locate Vertex".to_string(),
-        })
+        return VerticesSelectedResult::Error(VerticesSetError {
+            response_code: 401,
+            message: "No column target. Set at Social > Edit > Locate Vertex".to_string(),
+        });
     }
 
-    VerticesSelectedResult::Success(VerticesSetSuccess {
-            response_code: 200,
-            message: "Target column is saved".to_string(),
-        })
+    // Directly return the result from save_vertices_to_database
+    save_vertices_to_database(&app, &vertex_choosed)
 }
-
-
+fn save_vertices_to_database(app: &AppHandle, vertices: &VerticesSelected) -> VerticesSelectedResult {
+    let db_result = DatabaseConnection::connect_db(app);
+    
+    match db_result {
+        DbConnectionProcess::Success(db_success) => {
+            let conn = db_success.connection;
+            
+            let vertex_json = serde_json::json!({
+                "target_vertex_1": vertices.vertex_1,
+                "target_vertex_2": vertices.vertex_2,
+                "created_at": chrono::Utc::now().to_rfc3339(),
+                "updated_at": chrono::Utc::now().to_rfc3339()
+            });
+            
+            // Just insert - no counting needed
+            match conn.execute(
+                "INSERT INTO rustveil_metadata (target_vertices) VALUES (?1)",
+                &[&vertex_json.to_string()],
+            ) {
+                Ok(_) => VerticesSelectedResult::Success(VerticesSetSuccess {
+                    response_code: 200,
+                    message: "Target column is saved".to_string(),
+                }),
+                Err(e) => VerticesSelectedResult::Error(VerticesSetError {
+                    response_code: 500,
+                    message: format!("Failed to save vertices: {}", e),
+                }),
+            }
+        },
+        DbConnectionProcess::Error(e) => VerticesSelectedResult::Error(VerticesSetError {
+            response_code: e.response_code,
+            message: e.message,
+        }),
+    }
+}
 #[command]
 pub fn calculate_centrality(app: AppHandle, graph_type: String ) -> CalculateProcess {
  // Step 1: Get data from database (your original get_data_vertex logic)

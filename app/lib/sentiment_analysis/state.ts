@@ -6,13 +6,13 @@ export const selectedLang = atom<string>("");
 export const columnTargetSentimentAnalysis = atom<string>("");
 
 export interface SentimentCount {
-  total_count: number;
+  total_data: number;
   total_negative_data: number;
   total_positive_data: number;
 }
 
 export const sentimentCountData = atom<SentimentCount>({
-  total_count: 0,
+  total_data: 0,
   total_negative_data: 0,
   total_positive_data: 0,
 });
