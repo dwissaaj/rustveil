@@ -1,9 +1,5 @@
 use serde::Serialize;
-<<<<<<< HEAD
 use serde_json::Value;
-=======
-use serde_json::{ Value};
->>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08
 
 /// Represents the result of a database-related process.
 ///
@@ -28,7 +24,6 @@ pub enum DatabaseProcess {
 pub struct DatabaseComplete {
     pub response_code: u32,
     pub message: String,
-<<<<<<< HEAD
     pub data: Option<Vec<Value>>,
     pub total_count: Option<usize>,
     pub total_negative_data: Option<usize>,
@@ -37,21 +32,11 @@ pub struct DatabaseComplete {
     pub target_vertex_2: Option<String>,
     pub graph_type: Option<String>,
     pub target_sentiment: Option<String>,
-=======
-
-    pub data: Option<Vec<Value>>,
-
-    pub total_count: Option<usize>
->>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08
 }
 #[derive(Serialize)]
 pub struct DatabaseError {
     /// Numeric code representing the error type.
-<<<<<<< HEAD
     pub response_code: u32,
-=======
-    pub error_code: u32,
->>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08
 
     /// Description of the error for logging or UI display.
     pub message: String,
@@ -60,7 +45,6 @@ pub struct SqliteDataState {
     pub file_url: String,
 }
 
-<<<<<<< HEAD
 #[derive(Clone, Serialize)]
 pub struct DatabaseInsertionProgress {
     pub total_rows: usize,
@@ -131,13 +115,3 @@ pub struct LoadDatabaseError {
     /// Description of the error for logging or UI display.
     pub message: String,
 }
-=======
-
-#[derive(Clone, Serialize)]
-pub struct DatabaseInsertionProgress {
-  pub total_rows: usize,
-  pub count: usize
-}
-
-
->>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08

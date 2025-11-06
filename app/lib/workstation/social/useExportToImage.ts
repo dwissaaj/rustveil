@@ -12,10 +12,6 @@ async function getUniqueFilename(
 ): Promise<string> {
   let counter = 0;
   let filename = `${baseName}.${ext}`;
-<<<<<<< HEAD
-
-=======
->>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08
   while (
     await exists(`Rust Veil/${filename}`, {
       baseDir: BaseDirectory.Home,
@@ -24,10 +20,6 @@ async function getUniqueFilename(
     counter++;
     filename = `${baseName}(${counter}).${ext}`;
   }
-<<<<<<< HEAD
-
-=======
->>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08
   return filename;
 }
 export function useExportToImage({ targetRef, filename }: ExportImageOptions) {
@@ -56,17 +48,9 @@ export function useExportToImage({ targetRef, filename }: ExportImageOptions) {
       const buffer = await blob.arrayBuffer();
       const contents = new Uint8Array(buffer);
       const filepath = await getUniqueFilename(filename, "png");
-<<<<<<< HEAD
-
       await writeFile(`Rust Veil/${filepath}`, contents, {
         baseDir: BaseDirectory.Home,
       });
-
-=======
-      await writeFile(`Rust Veil/${filepath}`, contents, {
-        baseDir: BaseDirectory.Home,
-      });
->>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08
       return {
         response_code: 200,
         message: `Saved at Rust Veil/${filepath}`,

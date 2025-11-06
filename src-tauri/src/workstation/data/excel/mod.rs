@@ -1,5 +1,5 @@
 
-use crate::database::lib::handler::{open_or_create_sqlite, data_to_sqlite};
+use crate::database::lib::handler::{open_or_create_sqlite, load_data_sqlite};
 use crate::database::lib::state::DatabaseProcess;
 use calamine::{open_workbook, Data, Reader, Xlsx};
 use chrono::NaiveDate;
@@ -68,11 +68,7 @@ fn excel_serial_to_date(serial: f64) -> String {
 /// - [`get_all_data`] — retrieves canonical DB contents
 
 #[command]
-<<<<<<< HEAD
 pub fn upload_excel_file(app: AppHandle, url: String, sheet_name: String) -> ProcessingResult {
-=======
-pub fn load_data(app: AppHandle, url: String, sheet_name: String) -> ProcessingResult {
->>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08
 
     let file_app = app.state::<Mutex<AppFolderPath>>();
 
@@ -81,11 +77,7 @@ pub fn load_data(app: AppHandle, url: String, sheet_name: String) -> ProcessingR
 
     if file_path.file_url.is_empty(){
         return ProcessingResult::Error(ErrorResult {
-<<<<<<< HEAD
             response_code: 401,
-=======
-            error_code: 401,
->>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08
             message: "No Data or file loaded. Go to Data > File > Load or Upload ".to_string(),
         });
     }
@@ -95,11 +87,7 @@ pub fn load_data(app: AppHandle, url: String, sheet_name: String) -> ProcessingR
         Ok(wb) => wb,
         Err(e) => {
             return ProcessingResult::Error(ErrorResult {
-<<<<<<< HEAD
                 response_code: 401,
-=======
-                error_code: 401,
->>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08
                 message: format!("Cannot open file: {}", e),
             })
         }
@@ -119,11 +107,7 @@ pub fn load_data(app: AppHandle, url: String, sheet_name: String) -> ProcessingR
         }
         Err(e) => {
             return ProcessingResult::Error(ErrorResult {
-<<<<<<< HEAD
                 response_code: 401,
-=======
-                error_code: 401,
->>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08
                 message: format!("Sheet not found {}", e),
             })
         }
@@ -139,11 +123,7 @@ pub fn load_data(app: AppHandle, url: String, sheet_name: String) -> ProcessingR
             },
         );
         return ProcessingResult::Error(ErrorResult {
-<<<<<<< HEAD
             response_code: 401,
-=======
-            error_code: 401,
->>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08
             message: "Rows are empty, no data available".to_string(),
         });
     }
@@ -190,11 +170,7 @@ pub fn load_data(app: AppHandle, url: String, sheet_name: String) -> ProcessingR
         Ok(conn) => conn,
         Err(_) => {
             return ProcessingResult::Error(ErrorResult {
-<<<<<<< HEAD
                 response_code: 401,
-=======
-                error_code: 401,
->>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08
                 message: "Load Data Sqlite Error Connection".to_string(),
             })
         }
@@ -227,11 +203,7 @@ pub fn load_data(app: AppHandle, url: String, sheet_name: String) -> ProcessingR
         })
     }
     DatabaseProcess::Error(err) => ProcessingResult::Error(ErrorResult {
-<<<<<<< HEAD
         response_code: err.response_code,
-=======
-        error_code: err.error_code,
->>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08
         message: err.message,
     }),
 }
