@@ -1,2 +1,6 @@
+<<<<<<< HEAD
 - refactor error code
+=======
+- There is error if a user dont have header as the first row
+>>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08
 - 

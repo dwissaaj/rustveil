@@ -92,10 +92,17 @@ export default function NetworkTableViewer() {
       }
     } catch (err) {
       addToast({
+<<<<<<< HEAD:components/sna/network/NetworkTableViewer.tsx
         title: "Error at Fetch 2",
         description: `${err}`,
         color: "danger",
       });
+=======
+          title: "Error at Fetch 2",
+          description: `${err}`,
+          color: "danger",
+        });
+>>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08:components/workstation/sna/network/NetworkTableViewer.tsx
     } finally {
       setIsLoading(false);
     }
@@ -104,6 +111,10 @@ export default function NetworkTableViewer() {
   return (
     <div className="flex flex-col gap-2">
       <Table
+<<<<<<< HEAD:components/sna/network/NetworkTableViewer.tsx
+=======
+
+>>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08:components/workstation/sna/network/NetworkTableViewer.tsx
         aria-label="Centrality table"
         sortDescriptor={list.sortDescriptor}
         onSortChange={list.sort}
@@ -118,6 +129,10 @@ export default function NetworkTableViewer() {
             </div>
           )
         }
+<<<<<<< HEAD:components/sna/network/NetworkTableViewer.tsx
+=======
+
+>>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08:components/workstation/sna/network/NetworkTableViewer.tsx
         bottomContentPlacement="inside"
         topContent={
           <Button

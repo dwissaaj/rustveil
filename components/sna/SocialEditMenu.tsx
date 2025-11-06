@@ -54,8 +54,12 @@ export default function SocialEditMenu() {
       <Dropdown>
         <DropdownTrigger>
           <Button
+<<<<<<< HEAD:components/sna/SocialEditMenu.tsx
             startContent={<EditTabIcon className="w-4" />}
             size="sm"
+=======
+            size="lg"
+>>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08:components/workstation/sna/SocialEditMenu.tsx
             className="text-black dark:text-white"
             color="primary"
             variant="light"

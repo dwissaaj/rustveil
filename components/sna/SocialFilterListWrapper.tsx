@@ -12,6 +12,10 @@ export default function SocialFilterListWrapper() {
       <div>
         <SocialCalculateMenu />
       </div>
+<<<<<<< HEAD:components/sna/SocialFilterListWrapper.tsx
+=======
+      <div></div>
+>>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08:components/workstation/sna/SocialFilterListWrapper.tsx
     </div>
   );
 }

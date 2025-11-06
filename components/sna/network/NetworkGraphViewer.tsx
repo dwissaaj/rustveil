@@ -77,7 +77,11 @@ export default function NetworkGraphViewer() {
   const data = { nodes, links };
 
   return (
+<<<<<<< HEAD:components/sna/network/NetworkGraphViewer.tsx
     <div style={{ height: "75vh", width: "100%" }}>
+=======
+    <div style={{ height: "75vh", width: "100%"}}>
+>>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08:components/workstation/sna/network/NetworkGraphViewer.tsx
       <ResponsiveNetwork
         data={data}
         margin={{ top: 50, right: 50, bottom: 50, left: 50 }}

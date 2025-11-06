@@ -1,11 +1,19 @@
 import { ResponsivePie } from "@nivo/pie";
 import { ColorSchemeId } from "@nivo/colors";
+<<<<<<< HEAD:components/sna/centrality/pie/CentralityPieComponent.tsx
 
 import { useTheme } from "next-themes";
 import {
   NivoPieType,
   PieFilterStateType,
 } from "@/app/social_network/centrality/state";
+=======
+import {
+  PieFilterStateType,
+  NivoPieType,
+} from "../../../../../app/work/(workgroup)/social_network/centrality/state";
+import { useTheme } from "next-themes";
+>>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08:components/workstation/sna/centrality/pie/CentralityPieComponent.tsx
 
 export function CentralityPieComponent({
   data,
@@ -38,12 +46,20 @@ export function CentralityPieComponent({
         arcLinkLabelsOffset={chartFilter.labelsOffset}
         arcLinkLabelsTextOffset={chartFilter.textOffset}
         colors={{ scheme: chartFilter.colorSchema as ColorSchemeId }}
+<<<<<<< HEAD:components/sna/centrality/pie/CentralityPieComponent.tsx
         arcLinkLabelsColor={{ from: "color" }}
+=======
+        arcLinkLabelsColor={{ from: "color" }} 
+>>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08:components/workstation/sna/centrality/pie/CentralityPieComponent.tsx
         enableArcLinkLabels={true}
         arcLinkLabelsThickness={2}
         arcLabelsSkipAngle={chartFilter.labelSkip}
         arcLinkLabelsDiagonalLength={chartFilter.labelDiagonalLength}
         arcLinkLabelsStraightLength={chartFilter.labelStraightLength}
+<<<<<<< HEAD:components/sna/centrality/pie/CentralityPieComponent.tsx
+=======
+        
+>>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08:components/workstation/sna/centrality/pie/CentralityPieComponent.tsx
         theme={{
           labels: {
             text: {
@@ -64,6 +80,10 @@ export function CentralityPieComponent({
             },
           },
         }}
+<<<<<<< HEAD:components/sna/centrality/pie/CentralityPieComponent.tsx
+=======
+        
+>>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08:components/workstation/sna/centrality/pie/CentralityPieComponent.tsx
       />
     </div>
   );

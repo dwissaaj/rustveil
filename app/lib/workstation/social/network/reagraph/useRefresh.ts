@@ -1,5 +1,8 @@
 import { addToast } from "@heroui/react";
+<<<<<<< HEAD
 
+=======
+>>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08
 import { GetReagraph } from "./useGetReagraph";
 
 export function useRefreshGraph() {
@@ -7,7 +10,10 @@ export function useRefreshGraph() {
   const handleRefreshGraph = async () => {
     try {
       const result = await fetchEdges();
+<<<<<<< HEAD
 
+=======
+>>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08
       if (result?.response_code === 200) {
         addToast({
           title: "Success",

@@ -1,5 +1,13 @@
 import { useAtom } from "jotai";
+<<<<<<< HEAD:components/sna/centrality/bar/FilterControlBarChart.tsx
 
+=======
+import {
+  BarFilterState,
+  topShowDataBar,
+  ColorSchema,
+} from "../../../../../app/work/(workgroup)/social_network/centrality/state";
+>>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08:components/workstation/sna/centrality/bar/FilterControlBarChart.tsx
 import {
   Select,
   SelectItem,
@@ -12,11 +20,14 @@ import {
   Button,
 } from "@heroui/react";
 import { DownloadActionIconSolid } from "@/components/icon/IconAction";
+<<<<<<< HEAD:components/sna/centrality/bar/FilterControlBarChart.tsx
 import {
   BarFilterState,
   topShowDataBar,
   ColorSchema,
 } from "@/app/social_network/centrality/state";
+=======
+>>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08:components/workstation/sna/centrality/bar/FilterControlBarChart.tsx
 
 interface FilterType {
   maxNodes: number;

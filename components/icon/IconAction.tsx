@@ -57,7 +57,10 @@ export const DownloadActionIconSolid: React.FC<IconSvgProps> = ({
 }) => {
   return (
     <svg
+<<<<<<< HEAD
       {...props}
+=======
+>>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="currentColor"
@@ -72,6 +75,7 @@ export const DownloadActionIconSolid: React.FC<IconSvgProps> = ({
     </svg>
   );
 };
+<<<<<<< HEAD
 
 export const FileTabIcon: React.FC<IconSvgProps> = ({
   size = 12,
@@ -171,3 +175,5 @@ export const CalculateTabIcon: React.FC<IconSvgProps> = ({
     </svg>
   );
 };
+=======
+>>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08

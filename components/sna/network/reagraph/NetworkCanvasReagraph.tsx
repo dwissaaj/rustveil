@@ -1,6 +1,7 @@
 "use client";
 
 import { useAtomValue } from "jotai";
+<<<<<<< HEAD:components/sna/network/reagraph/NetworkCanvasReagraph.tsx
 import React, {
   useMemo,
   useRef,
@@ -9,6 +10,9 @@ import React, {
   useEffect,
   useState,
 } from "react";
+=======
+import React, { useMemo, useRef, useImperativeHandle, forwardRef, useEffect, useState } from "react";
+>>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08:components/workstation/sna/network/reagraph/NetworkCanvasReagraph.tsx
 import {
   GraphCanvas,
   darkTheme,
@@ -64,10 +68,14 @@ type Props = {
   centrality?: CentralityKey;
 };
 
+<<<<<<< HEAD:components/sna/network/reagraph/NetworkCanvasReagraph.tsx
 function NetworkCanvasReagraph(
   props: Props,
   ref: React.Ref<NetworkCanvasHandle>
 ) {
+=======
+function NetworkCanvasReagraph(props: Props, ref: React.Ref<NetworkCanvasHandle>) {
+>>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08:components/workstation/sna/network/reagraph/NetworkCanvasReagraph.tsx
   const graphData = useAtomValue(ReagraphData);
   const centralityAtom = useAtomValue(centralityData);
   const hasGraph = graphData.nodes.length > 0 && graphData.edges.length > 0;
@@ -76,17 +84,28 @@ function NetworkCanvasReagraph(
   const baseTheme: Theme = isDark ? darkTheme : lightTheme;
   const graphRef = useRef<GraphCanvasRef | null>(null);
 
+<<<<<<< HEAD:components/sna/network/reagraph/NetworkCanvasReagraph.tsx
   const [layout, setLayout] = useState<LayoutTypes>(
     props.layout ?? "forceDirected2d"
   );
+=======
+  const [layout, setLayout] = useState<LayoutTypes>(props.layout ?? "forceDirected2d");
+>>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08:components/workstation/sna/network/reagraph/NetworkCanvasReagraph.tsx
   const [selectedMetric, setSelectedMetric] = useState<CentralityKey>(
     props.centrality ?? "betweenness_centrality"
   );
   useEffect(() => {
+<<<<<<< HEAD:components/sna/network/reagraph/NetworkCanvasReagraph.tsx
     if (props.centrality && props.centrality !== selectedMetric) {
       setSelectedMetric(props.centrality);
     }
   }, [props.centrality]);
+=======
+  if (props.centrality && props.centrality !== selectedMetric) {
+    setSelectedMetric(props.centrality);
+  }
+}, [props.centrality]);
+>>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08:components/workstation/sna/network/reagraph/NetworkCanvasReagraph.tsx
   useEffect(() => {
     if (props.layout && props.layout !== layout) setLayout(props.layout);
   }, [props.layout]);
@@ -119,6 +138,7 @@ function NetworkCanvasReagraph(
       },
     },
     cluster: baseTheme.cluster
+<<<<<<< HEAD:components/sna/network/reagraph/NetworkCanvasReagraph.tsx
       ? {
           ...baseTheme.cluster,
           label: {
@@ -169,20 +189,52 @@ function NetworkCanvasReagraph(
       };
     });
   }, [graphData.edges]);
+=======
+      ? { ...baseTheme.cluster, label: { ...baseTheme.cluster.label, color: isDark ? "#d1d5db" : "#374151" } }
+      : undefined,
+  };
+
+const sizedNodes = useMemo(() => {
+  if (!hasGraph) return [];
+
+  const nodeMap = centralityAtom?.graphData?.node_map ?? {};
+  const metricArr = centralityAtom?.graphData?.[selectedMetric] ?? [];
+
+  if (metricArr.length === 0) return graphData.nodes;
+
+  const max = Math.max(...metricArr);
+  const min = Math.min(...metricArr);
+
+  return graphData.nodes.map((n) => {
+    const entry = Object.entries(nodeMap).find(([_, id]) => id === n.id);
+    const idx = entry ? Number(entry[0]) : -1;
+    const centrality = idx >= 0 && idx < metricArr.length ? metricArr[idx] : 0;
+    const norm = max === min ? 0.5 : (centrality - min) / (max - min);
+    return { ...n, label: n.label ?? n.id, size: 20 + norm * 80 };
+  });
+}, [graphData, centralityAtom, hasGraph, selectedMetric]);
+>>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08:components/workstation/sna/network/reagraph/NetworkCanvasReagraph.tsx
 
   return (
     <div className="relative flex-1 min-h-[600px] overflow-hidden">
       {hasGraph ? (
         <GraphCanvas
+<<<<<<< HEAD:components/sna/network/reagraph/NetworkCanvasReagraph.tsx
           key={selectedMetric}
           nodes={sizedNodes}
           edges={uniqueEdges}
+=======
+          key={selectedMetric} 
+          nodes={sizedNodes}
+          edges={graphData.edges}
+>>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08:components/workstation/sna/network/reagraph/NetworkCanvasReagraph.tsx
           theme={customTheme}
           ref={graphRef}
           labelType="all"
           layoutType={layout}
           contextMenu={({ data, onClose }) => {
             const nodeMap = centralityAtom?.graphData?.node_map ?? {};
+<<<<<<< HEAD:components/sna/network/reagraph/NetworkCanvasReagraph.tsx
             const betweenness =
               centralityAtom?.graphData?.betweenness_centrality ?? [];
             const closeness =
@@ -194,6 +246,14 @@ function NetworkCanvasReagraph(
             const entry = Object.entries(nodeMap).find(
               ([_, id]) => id === data.id
             );
+=======
+            const betweenness = centralityAtom?.graphData?.betweenness_centrality ?? [];
+            const closeness = centralityAtom?.graphData?.closeness_centrality ?? [];
+            const degree = centralityAtom?.graphData?.degree_centrality ?? [];
+            const eigen = centralityAtom?.graphData?.eigenvector_centrality ?? [];
+            const katz = centralityAtom?.graphData?.katz_centrality ?? [];
+            const entry = Object.entries(nodeMap).find(([_, id]) => id === data.id);
+>>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08:components/workstation/sna/network/reagraph/NetworkCanvasReagraph.tsx
             const idx = entry ? Number(entry[0]) : -1;
 
             return (
@@ -205,6 +265,7 @@ function NetworkCanvasReagraph(
                 <div>
                   <h2 className="text-lg font-semibold">{data.label}</h2>
                   <ul className="text-md">
+<<<<<<< HEAD:components/sna/network/reagraph/NetworkCanvasReagraph.tsx
                     <li>
                       Betweenness:{" "}
                       {idx >= 0 ? betweenness[idx]?.toFixed(4) : "-"}
@@ -216,6 +277,12 @@ function NetworkCanvasReagraph(
                     <li>
                       Eigenvector: {idx >= 0 ? eigen[idx]?.toFixed(4) : "-"}
                     </li>
+=======
+                    <li>Betweenness: {idx >= 0 ? betweenness[idx]?.toFixed(4) : "-"}</li>
+                    <li>Closeness: {idx >= 0 ? closeness[idx]?.toFixed(4) : "-"}</li>
+                    <li>Degree: {idx >= 0 ? degree[idx]?.toFixed(4) : "-"}</li>
+                    <li>Eigenvector: {idx >= 0 ? eigen[idx]?.toFixed(4) : "-"}</li>
+>>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08:components/workstation/sna/network/reagraph/NetworkCanvasReagraph.tsx
                     <li>Katz: {idx >= 0 ? katz[idx]?.toFixed(4) : "-"}</li>
                   </ul>
                 </div>

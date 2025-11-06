@@ -1,4 +1,5 @@
 import { ColorSchemeId } from "@nivo/colors";
+<<<<<<< HEAD:components/sna/centrality/bar/CentralityBarComponent.tsx
 
 import { ResponsiveBar } from "@nivo/bar";
 import { useTheme } from "next-themes";
@@ -6,6 +7,14 @@ import {
   BarFilterStateType,
   NivoBarType,
 } from "@/app/social_network/centrality/state";
+=======
+import {
+  BarFilterStateType,
+  NivoBarType,
+} from "../../../../../app/work/(workgroup)/social_network/centrality/state";
+import { ResponsiveBar } from "@nivo/bar";
+import { useTheme } from "next-themes";
+>>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08:components/workstation/sna/centrality/bar/CentralityBarComponent.tsx
 
 export function CentralityBarComponent({
   data,
@@ -77,11 +86,20 @@ export function CentralityBarComponent({
               text: {
                 fill: textColor,
                 fontSize: 16,
+<<<<<<< HEAD:components/sna/centrality/bar/CentralityBarComponent.tsx
                 fontWeight: 700,
               },
             },
           },
 
+=======
+                fontWeight: 700
+
+              },
+            },
+          },
+          
+>>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08:components/workstation/sna/centrality/bar/CentralityBarComponent.tsx
           legends: {
             text: {
               fill: textColor,

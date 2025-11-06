@@ -14,16 +14,25 @@ use crate::social_network::calculate::{betweenness_centrality_calculate_direct,
     katz_centrality_calculate,
     closeness_centrality_calculate
     };
+<<<<<<< HEAD
 use crate::global::db_connection::DatabaseConnection;
 use crate::global::db_connection::{DbConnectionProcess,};
 
 #[command]
 pub fn set_vertices(app: AppHandle, vertices_selected: VerticesSelected) -> VerticesSelectedResult {
         let current_timestamp  = chrono::Utc::now().to_rfc3339();
+=======
+
+
+#[command]
+pub fn set_vertices(app: AppHandle, vertices_selected: VerticesSelected) -> VerticesSelectedResult {
+    // 1. Update the file path in state
+>>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08
     let binding = app.state::<Mutex<VerticesSelected>>();
     let mut vertex_choosed = binding.lock().unwrap();
     vertex_choosed.vertex_1 = vertices_selected.vertex_1.clone();
     vertex_choosed.vertex_2 = vertices_selected.vertex_2.clone();
+<<<<<<< HEAD
     vertex_choosed.graph_type = vertices_selected.graph_type.clone();
 
     if vertex_choosed.vertex_1.is_empty() || vertex_choosed.vertex_2.is_empty() || vertex_choosed.graph_type.is_empty() {
@@ -74,6 +83,22 @@ fn save_vertices_to_database(app: &AppHandle, vertices: &VerticesSelected, curre
         }),
     }
 }
+=======
+    if vertex_choosed.vertex_1.is_empty() || vertex_choosed.vertex_2.is_empty() {
+       return VerticesSelectedResult::Error(VerticesSetError {
+                response_code: 401,
+                message: "No column target. Set at Social > Edit > Locate Vertex".to_string(),
+        })
+    }
+
+    VerticesSelectedResult::Success(VerticesSetSuccess {
+            response_code: 200,
+            message: "Target column is saved".to_string(),
+        })
+}
+
+
+>>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08
 #[command]
 pub fn calculate_centrality(app: AppHandle, graph_type: String ) -> CalculateProcess {
  // Step 1: Get data from database (your original get_data_vertex logic)
@@ -119,7 +144,11 @@ pub fn calculate_centrality(app: AppHandle, graph_type: String ) -> CalculatePro
         Err(e) => {
             return CalculateProcess::Error(CalculateProcessError {
                 response_code: 500,
+<<<<<<< HEAD
                 message: format!("Try to reload your target vertices. Failed to prepare statement: {}", e),
+=======
+                message: format!("Failed to prepare statement: {}", e),
+>>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08
             });
         }
     };

@@ -24,7 +24,11 @@ pub struct DataTable {
 #[derive(Clone, Serialize)]
 pub struct ErrorResult {
     /// Error code (e.g., 401 for connection failure).
+<<<<<<< HEAD
     pub response_code: u32,
+=======
+    pub error_code: u32,
+>>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08
     /// Description of the error.
     pub message: String,
 }
