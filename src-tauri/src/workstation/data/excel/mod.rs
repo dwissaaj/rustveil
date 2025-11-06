@@ -1,5 +1,5 @@
 
-use crate::database::lib::handler::{open_or_create_sqlite, load_data_sqlite};
+use crate::database::lib::handler::{open_or_create_sqlite, data_to_sqlite};
 use crate::database::lib::state::DatabaseProcess;
 use calamine::{open_workbook, Data, Reader, Xlsx};
 use chrono::NaiveDate;

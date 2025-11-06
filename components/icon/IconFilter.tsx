@@ -201,7 +201,6 @@ export const FilterIcon: React.FC<IconSvgProps> = ({
     </svg>
   );
 };
-<<<<<<< HEAD
 export const ColumnFilterSolid: React.FC<IconSvgProps> = ({
   size = 24,
   width,
@@ -220,5 +219,3 @@ export const ColumnFilterSolid: React.FC<IconSvgProps> = ({
     </svg>
   );
 };
-=======
->>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08

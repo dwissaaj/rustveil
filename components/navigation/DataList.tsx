@@ -1,18 +1,11 @@
 "use client";
 import {
-  Navbar,
-  NavbarBrand,
-  NavbarContent,
   NavbarItem,
-  Link,
   Button,
   DropdownItem,
   DropdownTrigger,
   Dropdown,
   DropdownMenu,
-  NavbarMenu,
-  NavbarMenuItem,
-  NavbarMenuToggle,
 } from "@heroui/react";
 import { DataNavIcon, DropDownNavIcon } from "../icon/IconNavigation";
 

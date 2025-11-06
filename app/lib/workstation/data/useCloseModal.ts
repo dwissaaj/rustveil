@@ -1,6 +1,6 @@
 import { useAtom, useSetAtom } from "jotai";
+import { filePath, sheetAvailable } from "../../data/state";
 
-import { filePath, sheetAvailable } from "./state";
 
 export const useCloseModal = (
   onOpenChange: (open: boolean) => void,

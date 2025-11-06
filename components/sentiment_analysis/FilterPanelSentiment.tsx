@@ -1,8 +1,6 @@
 import { useAtom } from "jotai";
 
 import {
-  Select,
-  SelectItem,
   Slider,
   Input,
   Textarea,

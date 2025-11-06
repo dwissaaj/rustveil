@@ -1,2 +1,3 @@
 - refactor error code
-- remove DatabaseComplete in lib state
+- cant change column target in sentiment
+- error at chart network it cant rerender unless move to network tab

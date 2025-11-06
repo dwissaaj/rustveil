@@ -1,13 +1,4 @@
 import { useAtom } from "jotai";
-<<<<<<< HEAD:components/sna/centrality/pie/FilterPanelPieChart.tsx
-
-=======
-import {
-  PieFilterState,
-  ColorSchema,
-  topShowDataPie,
-} from "../../../../../app/work/(workgroup)/social_network/centrality/state";
->>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08:components/workstation/sna/centrality/pie/FilterPanelPieChart.tsx
 import {
   Select,
   SelectItem,
@@ -19,14 +10,11 @@ import {
   Button,
 } from "@heroui/react";
 import { DownloadActionIconSolid } from "@/components/icon/IconAction";
-<<<<<<< HEAD:components/sna/centrality/pie/FilterPanelPieChart.tsx
 import {
   PieFilterState,
   ColorSchema,
   topShowDataPie,
 } from "@/app/social_network/centrality/state";
-=======
->>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08:components/workstation/sna/centrality/pie/FilterPanelPieChart.tsx
 interface FilterType {
   maxNodes: number;
   exportImage: () => void;
@@ -84,7 +72,6 @@ export function FilterPanelPieChart({ maxNodes, exportImage }: FilterType) {
               ))}
             </Select>
             <Slider
-<<<<<<< HEAD:components/sna/centrality/pie/FilterPanelPieChart.tsx
               size="sm"
               label="Start Angle"
               minValue={-180}
@@ -105,26 +92,6 @@ export function FilterPanelPieChart({ maxNodes, exportImage }: FilterType) {
                 setFilter({ ...filter, endAngle: Number(val) })
               }
             />
-=======
-            size="sm"
-            label="Start Angle"
-            minValue={-180}
-            maxValue={360}
-            value={filter.startAngle}
-            onChange={(val) =>
-              setFilter({ ...filter, startAngle: Number(val) })
-            }
-          />
-
-          <Slider
-            size="sm"
-            label="End Angle"
-            minValue={-360}
-            maxValue={360}
-            value={filter.endAngle}
-            onChange={(val) => setFilter({ ...filter, endAngle: Number(val) })}
-          />
->>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08:components/workstation/sna/centrality/pie/FilterPanelPieChart.tsx
           </div>
         </AccordionItem>
         <AccordionItem key="2" aria-label="title tab" title="Title">
@@ -218,13 +185,7 @@ export function FilterPanelPieChart({ maxNodes, exportImage }: FilterType) {
             minValue={0}
             maxValue={45}
             value={filter.labelSkip}
-<<<<<<< HEAD:components/sna/centrality/pie/FilterPanelPieChart.tsx
             onChange={(val) => setFilter({ ...filter, labelSkip: Number(val) })}
-=======
-            onChange={(val) =>
-              setFilter({ ...filter, labelSkip: Number(val) })
-            }
->>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08:components/workstation/sna/centrality/pie/FilterPanelPieChart.tsx
           />
           <Slider
             size="sm"

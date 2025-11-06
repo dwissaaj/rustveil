@@ -4,11 +4,7 @@ import {
   vertex1ColumnSelected,
   vertex2ColumnSelected,
   vertexGraphTypeSelected,
-<<<<<<< HEAD:components/sna/centrality/VerticesSelectComponent.tsx
 } from "@/app/lib/data/state";
-=======
-} from "@/app/lib/workstation/data/state";
->>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08:components/workstation/sna/centrality/VerticesSelectComponent.tsx
 
 import { TooltipIcon, VerticesIcon } from "@/components/icon/IconFilter";
 import {

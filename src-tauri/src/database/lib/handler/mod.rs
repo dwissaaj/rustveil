@@ -12,10 +12,33 @@ use std::path::Path;
 use std::sync::Mutex;
 use tauri::{command, AppHandle, Emitter, Manager};
 use uuid::Uuid;
-
+/// Loads and validates a SQLite database file, checking for the mandatory 'rustveil' table.
+///
+/// # Arguments
+/// * `app` - The Tauri application handle for accessing application state
+/// * `pathfile` - The file path to the SQLite database to load
+///
+/// # Returns
+/// Returns `DatabaseProcess` enum with either:
+/// - `DatabaseProcess::Success` with success message if validation passes
+/// - `DatabaseProcess::Error` with appropriate error code and message if validation fails
+///
+/// # Validation Steps
+/// 1. Checks if the provided file path is not empty
+/// 2. Attempts to open the SQLite database connection
+/// 3. Verifies the existence of the mandatory 'rustveil' table
+/// 4. Returns success if all validations pass
+///
+/// # Errors
+/// - Returns error code 404 if:
+///   - File path is empty
+///   - Database cannot be opened
+///   - 'rustveil' table does not exist
+/// - Returns error code 404 for internal database errors
+///
 
 #[command]
-pub fn load_data_sqlite(app: AppHandle, pathfile: String) -> LoadDatabaseProcess {
+pub fn load_sqlite_data(app: AppHandle, pathfile: String) -> LoadDatabaseProcess {
     // 1. Update the file path in state
     let binding = app.state::<Mutex<SqliteDataState>>();
     let mut db = binding.lock().unwrap();
@@ -190,8 +213,10 @@ pub fn load_data_sqlite(app: AppHandle, pathfile: String) -> LoadDatabaseProcess
 /// - `headers`: Column names (extracted from JSON keys)
 /// - `connect`: An open SQLite database connection
 ///
-
-
+/// # Returns
+/// - `DatabaseProcess::Success` on success
+/// - `DatabaseProcess::Error` on failure
+/// 
 pub fn data_to_sqlite(
     data_json: Vec<Value>,
     headers: Vec<String>,
@@ -375,6 +400,7 @@ pub fn data_to_sqlite(
 
 pub fn open_or_create_sqlite(app: &AppHandle, base_path: &str) -> Result<Connection, String> {
     let mut final_path = base_path.to_string();
+
     // if file exists, find next available filename
     if Path::new(&final_path).exists() {
         let mut counter = 1;
@@ -400,5 +426,4 @@ pub fn open_or_create_sqlite(app: &AppHandle, base_path: &str) -> Result<Connect
         Ok(conn) => Ok(conn),
         Err(e) => Err(format!("Error at connection: {}", e)),
     }
-}}
-
+}

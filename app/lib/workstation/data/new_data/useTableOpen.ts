@@ -1,8 +1,9 @@
 import { invoke } from "@tauri-apps/api/core";
 import { useAtomValue } from "jotai";
 
-import { filePath, sheetSelected } from "../state";
+
 import { InvokeResponse } from "../response";
+import { filePath, sheetSelected } from "@/app/lib/data/state";
 
 export function useTableOpen() {
   const { url } = useAtomValue(filePath);

@@ -2,15 +2,9 @@ import { useAtom } from "jotai";
 import { invoke } from "@tauri-apps/api/core";
 
 import { ReagraphData, ReagraphNode, ReagraphEdge } from "./state";
-<<<<<<< HEAD
 
 import { GetEdgesResponse } from "@/app/lib/workstation/social/network/response";
 
-=======
-import { GetEdgesResponse } from "@/app/lib/workstation/social/network/response";
-
-
->>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08
 // Utility to transform Tauri edges to Reagraph nodes & edges
 function transformEdgesToReagraph(edges: { source: string; target: string }[]) {
   const nodesMap: Record<string, ReagraphNode> = {};
@@ -27,10 +21,6 @@ function transformEdgesToReagraph(edges: { source: string; target: string }[]) {
 
     // Add edge
     const edgeId = `${e.source}-${e.target}`;
-<<<<<<< HEAD
-
-=======
->>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08
     edgesList.push({
       id: edgeId,
       source: e.source,
@@ -53,15 +43,9 @@ export function GetReagraph() {
       const response = await invoke<GetEdgesResponse>("get_all_vertices");
 
       if ("Success" in response) {
-<<<<<<< HEAD
         const reagraphData = transformEdgesToReagraph(
           response.Success.data || [],
         );
-=======
-        const reagraphData = transformEdgesToReagraph(response.Success.data || []);
-        console.log("resat", response.Success.data);
-
->>>>>>> dfc31e108e0b3fc3d1bb8908cffa7b2f22800e08
 
         setReagraphData(reagraphData);
 
