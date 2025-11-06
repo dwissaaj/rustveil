@@ -35,7 +35,7 @@ pub fn run() {
             file_url: String::new(),
         }))
         .manage(Mutex::new(SqliteDataState { file_url: String::new() }))
-        .manage(Mutex::new(VerticesSelected { vertex_1: String::new(), vertex_2: String::new() }))
+        .manage(Mutex::new(VerticesSelected { vertex_1: String::new(), vertex_2: String::new(), graph_type : String::new() }))
         .manage(Mutex::new(ColumnTargetSentimentAnalysis { column_target: String::new()}))
         .setup(|app| {
             app.fs_scope();

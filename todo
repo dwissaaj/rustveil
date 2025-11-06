@@ -1,0 +1,3 @@
+ - load sqlite need to pass the state to the front end too
+ - if a loading button at table need to ipdate the state too?
+ - refactor all error code

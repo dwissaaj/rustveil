@@ -7,14 +7,13 @@ import {
   ModalFooter,
   Button,
   addToast,
+  Progress,
 } from "@heroui/react";
 import { CloseActionIconOutline } from "@/components/icon/IconAction";
 import ListLang from "./component/ListLang";
-import {
-  useSentimentAnalysis,
-} from "../../lib/sentiment_analysis/useSentimentAnalysis";
+import { useSentimentAnalysis } from "../../lib/sentiment_analysis/useSentimentAnalysis";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAtomValue } from "jotai";
 import {
   columnTargetSentimentAnalysis,
@@ -32,16 +31,36 @@ export default function SettingModel({
   onOpenChange,
   onClose,
 }: PickColumnModalType) {
-  const [analyzeBtn, setanalyzeBtn] = useState({
-    isLoading: false,
-    isDisabled: false,
-  });
   const columnTarget = useAtomValue(columnTargetSentimentAnalysis);
   const languageTarget = useAtomValue(selectedLang);
+  const [analyzeBtn, setAnalyzeBtn] = useState({ isLoading: false });
+  const isDisabled = !columnTarget || !languageTarget || analyzeBtn.isLoading;
   const sentiment = useSentimentAnalysis();
   const handlePress = async () => {
+    setAnalyzeBtn({ isLoading: true });
+    addToast({
+      title: "Analyzing Data",
+      description: (
+        <div>
+          <p>Please wait, larger dataset have longer process...</p>
+          <Progress
+            isIndeterminate
+            aria-label="Loading..."
+            className="max-w-md"
+            size="sm"
+          />
+        </div>
+      ),
+      variant: "bordered",
+      color: "primary",
+      timeout: 3000,
+    });
+
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
     try {
       const result = await sentiment();
+
       if (result?.response_code === 200) {
         addToast({
           title: "Processing Sentiment Complete",
@@ -65,22 +84,11 @@ export default function SettingModel({
         variant: "bordered",
         color: "danger",
       });
+    } finally {
+      setAnalyzeBtn({ isLoading: false });
     }
   };
-  // useEffect(() => {
-  //   if (columnTarget === "") {
-  //     setanalyzeBtn({
-  //       isLoading: false,
-  //       isDisabled: true,
-  //     });
-  //   }
-  //   if (languageTarget === "") {
-  //     setanalyzeBtn({
-  //       isLoading: false,
-  //       isDisabled: true,
-  //     });
-  //   }
-  // }, [columnTarget, languageTarget]);
+
   return (
     <>
       <Modal
@@ -116,7 +124,7 @@ export default function SettingModel({
               Close
             </Button>
             <Button
-              isDisabled={analyzeBtn.isDisabled}
+              isDisabled={isDisabled}
               isLoading={analyzeBtn.isLoading}
               onPress={handlePress}
               color="primary"

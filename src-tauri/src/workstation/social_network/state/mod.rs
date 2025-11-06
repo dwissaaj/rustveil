@@ -8,6 +8,8 @@ pub struct VerticesSelected {
     pub vertex_1: String,
 
     pub vertex_2: String,
+
+    pub graph_type: String
   
 }
 

@@ -38,10 +38,10 @@ pub fn analyze_and_update_sentiment(app: AppHandle, selected_language: String) -
     let conn = db.connection;
 
     // ✅ make sure table has required columns (add if missing)
-    let _ = conn.execute("ALTER TABLE rust_sentiment ADD COLUMN polarity TEXT;", []);
-    let _ = conn.execute("ALTER TABLE rust_sentiment ADD COLUMN score REAL;", []);
+    let _ = conn.execute("ALTER TABLE rustveil_sentiment ADD COLUMN polarity TEXT;", []);
+    let _ = conn.execute("ALTER TABLE rustveil_sentiment ADD COLUMN score REAL;", []);
 
-    let query = format!("SELECT {} FROM rust_sentiment", target_col);
+    let query = format!("SELECT {} FROM rustveil_sentiment", target_col);
     let mut stmt = match conn.prepare(&query) {
         Ok(s) => s,
         Err(e) => {
@@ -146,7 +146,7 @@ pub fn analyze_and_update_sentiment(app: AppHandle, selected_language: String) -
 
             if let Err(e) = conn.execute(
                 &format!(
-                    "UPDATE rust_sentiment SET polarity = ?1, score = ?2 WHERE {} = ?3",
+                    "UPDATE rustveil_sentiment SET polarity = ?1, score = ?2 WHERE {} = ?3",
                     target_col
                 ),
                 rusqlite::params![polarity_str, pred.score, text],
@@ -160,7 +160,7 @@ pub fn analyze_and_update_sentiment(app: AppHandle, selected_language: String) -
     }
     let query_positive: u32 = conn
         .query_row(
-            "SELECT COUNT(*) FROM rust_sentiment WHERE polarity = 'positive';",
+            "SELECT COUNT(*) FROM rustveil_sentiment WHERE polarity = 'positive';",
             [],
             |row| row.get(0),
         )
@@ -168,14 +168,14 @@ pub fn analyze_and_update_sentiment(app: AppHandle, selected_language: String) -
 
     let query_negative: u32 = conn
         .query_row(
-            "SELECT COUNT(*) FROM rust_sentiment WHERE polarity = 'negative';",
+            "SELECT COUNT(*) FROM rustveil_sentiment WHERE polarity = 'negative';",
             [],
             |row| row.get(0),
         )
         .unwrap_or(0);
 
     let query_total: u32 = conn
-        .query_row("SELECT COUNT(*) FROM rust_sentiment;", [], |row| row.get(0))
+        .query_row("SELECT COUNT(*) FROM rustveil_sentiment;", [], |row| row.get(0))
         .unwrap_or(0);
 
     ProcessTarget::Success(ProcessTargetSuccess {
