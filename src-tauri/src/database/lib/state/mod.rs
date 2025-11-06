@@ -26,6 +26,12 @@ pub struct DatabaseComplete {
     pub message: String,
     pub data: Option<Vec<Value>>,
     pub total_count: Option<usize>,
+    pub total_negative_data: Option<usize>,
+    pub total_positive_data: Option<usize>,
+    pub target_vertex_1: Option<String>,
+    pub target_vertex_2: Option<String>,
+    pub graph_type: Option<String>,
+    pub target_sentiment: Option<String>,
 }
 #[derive(Serialize)]
 pub struct DatabaseError {
@@ -44,7 +50,6 @@ pub struct DatabaseInsertionProgress {
     pub total_rows: usize,
     pub count: usize,
 }
-
 
 #[derive(Serialize)]
 pub enum GetSentimentDataResponse {
@@ -77,4 +82,36 @@ pub struct GetSentimentDataError {
 }
 
 
+#[derive(Serialize)]
+pub enum LoadDatabaseProcess {
+    /// Successful database process result.
+    Success(LoadDatabaseSuccess),
 
+    /// Failed database process result.
+    Error(LoadDatabaseError),
+}
+
+#[derive(Serialize)]
+pub struct LoadDatabaseSuccess {
+    pub response_code: u32,
+    pub message: String,
+    pub data: Option<Vec<Value>>,
+    pub total_count: Option<usize>,
+    pub total_negative_data: Option<usize>,
+    pub total_positive_data: Option<usize>,
+    pub target_vertex_1: Option<String>,
+    pub target_vertex_2: Option<String>,
+    pub graph_type: Option<String>,
+    pub target_social_network_updatedat: Option<String>,
+    pub target_sentiment_analysis_updatedat: Option<String>,
+    pub target_sentiment_column: Option<String>,
+    pub target_language_column: Option<String>,
+}
+#[derive(Serialize)]
+pub struct LoadDatabaseError {
+    /// Numeric code representing the error type.
+    pub response_code: u32,
+
+    /// Description of the error for logging or UI display.
+    pub message: String,
+}

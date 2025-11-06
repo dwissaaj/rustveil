@@ -1,11 +1,11 @@
 use crate::database::lib::state::{DatabaseComplete, DatabaseError, DatabaseProcess};
+use crate::SqliteDataState;
+use crate::VerticesSelected;
 use rusqlite::Connection;
+use serde::Deserialize;
 use serde_json::Value;
 use std::sync::Mutex;
-use tauri::{AppHandle, Manager, command};
-use crate::SqliteDataState;
-use serde::{Deserialize};
-use crate::VerticesSelected;
+use tauri::{command, AppHandle, Manager};
 
 #[derive(Deserialize)]
 pub struct PaginationParams {
@@ -13,12 +13,11 @@ pub struct PaginationParams {
     pub page_size: usize,
 }
 
-
 /// Fetches all data from the `rustveil` table in the SQLite database.
 ///
 /// # Arguments
 /// * `app` - A reference to the Tauri [`AppHandle`] that provides access to the app state,
-///   including the current SQLite database path no need to call again 
+///   including the current SQLite database path no need to call again
 ///
 /// # Returns
 /// A [`DatabaseProcess`] enum that represents either:
@@ -39,24 +38,25 @@ pub struct PaginationParams {
 ///   with column names as keys and cell values as strings (or `null` if unavailable).
 /// - `total count`: A total count of records in the `rustveil` table.
 
-
 #[command]
 pub fn get_all_data(app: AppHandle) -> DatabaseProcess {
     let db_state = app.state::<Mutex<SqliteDataState>>();
     let db = db_state.lock().unwrap(); // now "db" holds the sqlite file state
-    let db_path = db.file_url.clone();  // read the path
+    let db_path = db.file_url.clone(); // read the path
     if db_path.is_empty() {
         return DatabaseProcess::Error(DatabaseError {
             response_code: 404,
-            message: "File path or database is unknown. Try to load Data > File > Load or Upload".to_string(),
+            message: "File path or database is unknown. Try to load Data > File > Load or Upload"
+                .to_string(),
         });
     }
-    
+
     // Check if the SQLite file actually exists
     if !std::path::Path::new(&db_path).exists() {
         return DatabaseProcess::Error(DatabaseError {
             response_code: 404,
-            message: "Sqlite or Database not found. Try to load Data > File > Load or Upload".to_string(),
+            message: "Sqlite or Database not found. Try to load Data > File > Load or Upload"
+                .to_string(),
         });
     }
 
@@ -69,10 +69,11 @@ pub fn get_all_data(app: AppHandle) -> DatabaseProcess {
             })
         }
     };
-    let all_count: usize = match connect.query_row("SELECT COUNT(*) FROM rustveil", [], |row| row.get(0)) {
-        Ok(c) => c,
-        Err(_) => 0,
-    };
+    let all_count: usize =
+        match connect.query_row("SELECT COUNT(*) FROM rustveil", [], |row| row.get(0)) {
+            Ok(c) => c,
+            Err(_) => 0,
+        };
     let mut stmt = match connect.prepare("SELECT * FROM rustveil") {
         Ok(s) => s,
         Err(e) => {
@@ -121,14 +122,23 @@ pub fn get_all_data(app: AppHandle) -> DatabaseProcess {
     DatabaseProcess::Success(DatabaseComplete {
         response_code: 200,
         message: "Data fetched successfully".to_string(),
-        data: if all_data.is_empty() { None } else { Some(all_data) },
+        data: if all_data.is_empty() {
+            None
+        } else {
+            Some(all_data)
+        },
         total_count: Some(all_count),
+        total_negative_data: None,
+        total_positive_data: None,
+        target_vertex_1: None,
+        target_vertex_2: None,
+        graph_type: None,
+        target_sentiment: None,
     })
 }
 
 #[command]
 pub fn get_paginated_data(app: AppHandle, pagination: PaginationParams) -> DatabaseProcess {
-    
     // Validate pagination parameters
     if pagination.page == 0 || pagination.page_size == 0 {
         println!("Invalid pagination: page or page_size is 0");
@@ -149,17 +159,18 @@ pub fn get_paginated_data(app: AppHandle, pagination: PaginationParams) -> Datab
     let db_state = app.state::<Mutex<SqliteDataState>>();
     let db = db_state.lock().unwrap();
     let db_path = db.file_url.clone();
-    
+
     // println!("📁 Database path: {}", db_path);
-    
+
     if db_path.is_empty() {
         println!("No database path found");
         return DatabaseProcess::Error(DatabaseError {
             response_code: 404,
-            message: "File path or database is unknown. Try to load Data > File > Load or Upload".to_string(),
+            message: "File path or database is unknown. Try to load Data > File > Load or Upload"
+                .to_string(),
         });
     }
-    
+
     if !std::path::Path::new(&db_path).exists() {
         println!("Database file does not exist: {}", db_path);
         return DatabaseProcess::Error(DatabaseError {
@@ -175,21 +186,22 @@ pub fn get_paginated_data(app: AppHandle, pagination: PaginationParams) -> Datab
             return DatabaseProcess::Error(DatabaseError {
                 response_code: 401,
                 message: format!("Error at SQLite connection: {}", e),
-            })
+            });
         }
     };
 
     // Get total count
-    let total_count: usize = match connect.query_row("SELECT COUNT(*) FROM rustveil", [], |row| row.get(0)) {
-        Ok(c) => c,
-        Err(e) => {
-            println!("Count query failed: {}", e);
-            return DatabaseProcess::Error(DatabaseError {
-                response_code: 402,
-                message: format!("Failed to count records: {}", e),
-            })
-        }
-    };
+    let total_count: usize =
+        match connect.query_row("SELECT COUNT(*) FROM rustveil", [], |row| row.get(0)) {
+            Ok(c) => c,
+            Err(e) => {
+                println!("Count query failed: {}", e);
+                return DatabaseProcess::Error(DatabaseError {
+                    response_code: 402,
+                    message: format!("Failed to count records: {}", e),
+                });
+            }
+        };
 
     // println!("📊 Total records: {}", total_count);
 
@@ -208,7 +220,7 @@ pub fn get_paginated_data(app: AppHandle, pagination: PaginationParams) -> Datab
             return DatabaseProcess::Error(DatabaseError {
                 response_code: 403,
                 message: format!("Failed to prepare statement: {}", e),
-            })
+            });
         }
     };
 
@@ -227,12 +239,12 @@ pub fn get_paginated_data(app: AppHandle, pagination: PaginationParams) -> Datab
             return DatabaseProcess::Error(DatabaseError {
                 response_code: 404,
                 message: format!("Error executing query: {}", e),
-            })
+            });
         }
     };
 
     let mut page_data = Vec::new();
-    let mut row_count  =0;
+    let mut row_count = 0;
     println!("Returned {}", row_count);
     while let Ok(Some(row)) = rows.next() {
         let mut obj = serde_json::Map::new();
@@ -258,11 +270,20 @@ pub fn get_paginated_data(app: AppHandle, pagination: PaginationParams) -> Datab
     DatabaseProcess::Success(DatabaseComplete {
         response_code: 200,
         message: "Data fetched successfully".to_string(),
-        data: if page_data.is_empty() { None } else { Some(page_data) },
+        data: if page_data.is_empty() {
+            None
+        } else {
+            Some(page_data)
+        },
         total_count: Some(total_count),
+        total_negative_data: None,
+        total_positive_data: None,
+        target_vertex_1: None,
+        target_vertex_2: None,
+        graph_type: None,
+        target_sentiment: None,
     })
 }
-
 
 #[command]
 pub fn get_all_vertices(app: AppHandle) -> DatabaseProcess {
@@ -270,15 +291,16 @@ pub fn get_all_vertices(app: AppHandle) -> DatabaseProcess {
     let vertex_choosed = vertex_binding.lock().unwrap();
     let vertex_1 = vertex_choosed.vertex_1.clone();
     let vertex_2 = vertex_choosed.vertex_2.clone();
-    
+
     let pathfile_binding = app.state::<Mutex<SqliteDataState>>();
     let db = pathfile_binding.lock().unwrap();
     let pathfile = db.file_url.clone();
-    
+
     if pathfile.is_empty() {
         return DatabaseProcess::Error(DatabaseError {
             response_code: 404,
-            message: "File path or database is unknown. Try to load Data > File > Load or Upload".to_string(),
+            message: "File path or database is unknown. Try to load Data > File > Load or Upload"
+                .to_string(),
         });
     }
     if vertex_1.is_empty() || vertex_2.is_empty() {
@@ -286,7 +308,7 @@ pub fn get_all_vertices(app: AppHandle) -> DatabaseProcess {
             response_code: 400,
             message: "Please select vertices columns first at File > Locate Vertices".to_string(),
         });
-    }   
+    }
     if !std::path::Path::new(&pathfile).exists() {
         return DatabaseProcess::Error(DatabaseError {
             response_code: 404,
@@ -304,11 +326,7 @@ pub fn get_all_vertices(app: AppHandle) -> DatabaseProcess {
         }
     };
 
-
-    let sql = format!(
-        "SELECT {}, {} FROM rustveil",
-        vertex_1, vertex_2
-    );
+    let sql = format!("SELECT {}, {} FROM rustveil", vertex_1, vertex_2);
 
     let mut stmt = match connect.prepare(&sql) {
         Ok(s) => s,
@@ -349,6 +367,11 @@ pub fn get_all_vertices(app: AppHandle) -> DatabaseProcess {
         message: "Vertices fetched successfully".to_string(),
         data: if edges.is_empty() { None } else { Some(edges) },
         total_count: None,
+        total_negative_data: None,
+        total_positive_data: None,
+        target_vertex_1: None,
+        target_vertex_2: None,
+        graph_type: None,
+        target_sentiment: None,
     })
 }
-

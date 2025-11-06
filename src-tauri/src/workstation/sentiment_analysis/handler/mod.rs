@@ -196,10 +196,11 @@ pub fn set_sentiment_analysis_target_column(
     target: ColumnTargetSentimentAnalysis,
 ) -> ColumnTargetSelectedResult {
     let binding = app.state::<Mutex<ColumnTargetSentimentAnalysis>>();
-    let mut target_column_state = binding.lock().unwrap();
-    target_column_state.column_target = target.column_target.clone();
-
-    if target_column_state.column_target.is_empty() {
+    let mut target_state = binding.lock().unwrap();
+   
+    target_state.column_target = target.column_target.clone();
+    target_state.language_target = target.language_target.clone();
+    if target_state.column_target.is_empty() || target_state.language_target.is_empty() {
         return ColumnTargetSelectedResult::Error(ColumnTargetError {
             response_code: 401,
             message: "No column target. Set at Edit > Pick Column Target".to_string(),
@@ -207,7 +208,7 @@ pub fn set_sentiment_analysis_target_column(
     }
 
     // Directly return the result from save_sentiment_to_database
-    save_sentiment_to_database(&app, &target_column_state)
+    save_sentiment_to_database(&app, &target_state)
 }
 
 fn save_sentiment_to_database(
@@ -221,7 +222,8 @@ fn save_sentiment_to_database(
             let conn = db_success.connection;
 
             let sentiment_json = serde_json::json!({
-                "target_sentiment": target.column_target,
+                "target_sentiment_column": target.column_target,
+                "target_language_column" : target.language_target,
                 "created_at": chrono::Utc::now().to_rfc3339(),
                 "updated_at": chrono::Utc::now().to_rfc3339()
             });
@@ -234,7 +236,8 @@ fn save_sentiment_to_database(
                 Ok(_) => ColumnTargetSelectedResult::Success(ColumnTargetSuccess {
                     response_code: 200,
                     message: "Target column is saved".to_string(),
-                    target: target.column_target.to_string(),
+                    column_target: target.column_target.to_string(),
+                    language_target: target.column_target.to_string(),
                 }),
                 Err(e) => ColumnTargetSelectedResult::Error(ColumnTargetError {
                     response_code: 500,

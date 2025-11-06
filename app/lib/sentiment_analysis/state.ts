@@ -4,7 +4,7 @@ import { ColorSchema } from "@/app/social_network/centrality/state";
 
 export const selectedLang = atom<string>("");
 export const columnTargetSentimentAnalysis = atom<string>("");
-
+export const targetSentimentCreatedAt = atom<string>("");
 export interface SentimentCount {
   total_data: number;
   total_negative_data: number;

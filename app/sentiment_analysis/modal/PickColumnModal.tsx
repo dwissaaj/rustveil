@@ -9,14 +9,22 @@ import {
   addToast,
   Select,
   SelectItem,
+  Chip,
+  ButtonGroup,
+  Tooltip,
 } from "@heroui/react";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 
 import { useSetTargetColumn } from "../../lib/sentiment_analysis/useSetTargetColumn";
-import { columnTargetSentimentAnalysis } from "../../lib/sentiment_analysis/state";
+import {
+  columnTargetSentimentAnalysis,
+  selectedLang,
+  targetSentimentCreatedAt,
+} from "../../lib/sentiment_analysis/state";
 
 import { columnAvailable } from "@/app/lib/data/state";
 import { CloseActionIconOutline } from "@/components/icon/IconAction";
+import { supportedLang } from "@/app/lib/sentiment_analysis/supportedLang";
 
 type PickColumnModalType = {
   isOpen: boolean;
@@ -29,10 +37,13 @@ export default function PickColumnModal({
   onOpenChange,
   onClose,
 }: PickColumnModalType) {
-  const [column] = useAtom(columnAvailable);
-  const [textTargetSentiment, seTextTargetSentiment] = useAtom(
-    columnTargetSentimentAnalysis,
+  const column = useAtomValue(columnAvailable);
+
+  const [textTargetSentiment, setTextTargetSentiment] = useAtom(
+    columnTargetSentimentAnalysis
   );
+  const [languageTarget, setLanguageTarget] = useAtom(selectedLang);
+  const createdAt = useAtomValue(targetSentimentCreatedAt);
   const setcolumn = useSetTargetColumn();
   const handleColumn = async () => {
     try {
@@ -41,7 +52,7 @@ export default function PickColumnModal({
       if (result?.response_code === 200) {
         addToast({
           title: "Set Column Success",
-          description: `Target Column saved at ${result.target}`,
+          description: `Target Column saved at ${result.column_target} with language ${result.languageTarget}`,
           variant: "bordered",
           color: "success",
         });
@@ -88,7 +99,20 @@ export default function PickColumnModal({
           </ModalHeader>
           <ModalBody className="flex flex-col gap-2">
             <div>
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-4">
+                <div>
+                  <Tooltip
+                    className="capitalize"
+                    color="secondary"
+                    content="Current target based on uploaded data"
+                  >
+                    <ButtonGroup>
+                      <Button>{textTargetSentiment}</Button>
+                      <Button>{languageTarget}</Button>
+                      <Button>{createdAt.slice(0, 10)}</Button>
+                    </ButtonGroup>
+                  </Tooltip>
+                </div>
                 <Select
                   className="max-w-lg"
                   color="primary"
@@ -100,11 +124,30 @@ export default function PickColumnModal({
                   onChange={(event) => {
                     const value = event.target.value;
 
-                    seTextTargetSentiment(value);
+                    setTextTargetSentiment(value);
                   }}
                 >
                   {column.map((col) => (
                     <SelectItem key={col}>{col}</SelectItem>
+                  ))}
+                </Select>
+                <Select
+                  className="max-w-lg"
+                  color="primary"
+                  label="Language Identification"
+                  labelPlacement="outside"
+                  placeholder="Choose a Language"
+                  value={languageTarget}
+                  variant="underlined"
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    setLanguageTarget(value);
+                  }}
+                >
+                  {supportedLang.map((lang) => (
+                    <SelectItem key={lang.key} textValue={lang.key}>
+                      {lang.label}
+                    </SelectItem>
                   ))}
                 </Select>
               </div>

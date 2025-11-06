@@ -1,6 +1,9 @@
 use super::state::{DatabaseComplete, DatabaseError, DatabaseProcess};
+use super::state::{LoadDatabaseError, LoadDatabaseProcess, LoadDatabaseSuccess};
 use crate::database::lib::state::DatabaseInsertionProgress;
+use crate::ColumnTargetSentimentAnalysis;
 use crate::SqliteDataState;
+use crate::VerticesSelected;
 use rusqlite::Connection;
 use sea_query::{Alias, ColumnDef, Query, SimpleExpr, SqliteQueryBuilder, Table};
 use sea_query_rusqlite::RusqliteBinder;
@@ -9,7 +12,6 @@ use std::path::Path;
 use std::sync::Mutex;
 use tauri::{command, AppHandle, Emitter, Manager};
 use uuid::Uuid;
-
 /// Loads and validates a SQLite database file, checking for the mandatory 'rustveil' table.
 ///
 /// # Arguments
@@ -36,13 +38,13 @@ use uuid::Uuid;
 ///
 
 #[command]
-pub fn load_data_sqlite(app: AppHandle, pathfile: String) -> DatabaseProcess {
+pub fn load_sqlite_data(app: AppHandle, pathfile: String) -> LoadDatabaseProcess {
     // 1. Update the file path in state
     let binding = app.state::<Mutex<SqliteDataState>>();
     let mut db = binding.lock().unwrap();
     db.file_url = pathfile.clone();
     if pathfile.is_empty() {
-        return DatabaseProcess::Error(DatabaseError {
+        return LoadDatabaseProcess::Error(LoadDatabaseError {
             response_code: 404,
             message: "File path or database is none. Try to load Data > File > Load or Upload"
                 .to_string(),
@@ -52,7 +54,7 @@ pub fn load_data_sqlite(app: AppHandle, pathfile: String) -> DatabaseProcess {
     let conn = match Connection::open(&pathfile) {
         Ok(conn) => conn,
         Err(e) => {
-            return DatabaseProcess::Error(DatabaseError {
+            return LoadDatabaseProcess::Error(LoadDatabaseError {
                 response_code: 404,
                 message: format!("Failed to open database: {}", e),
             });
@@ -67,7 +69,7 @@ pub fn load_data_sqlite(app: AppHandle, pathfile: String) -> DatabaseProcess {
     ) {
         Ok(count) => count > 0,
         Err(e) => {
-            return DatabaseProcess::Error(DatabaseError {
+            return LoadDatabaseProcess::Error(LoadDatabaseError {
                 response_code: 404,
                 message: format!("Error checking table existence: {}", e),
             });
@@ -75,7 +77,7 @@ pub fn load_data_sqlite(app: AppHandle, pathfile: String) -> DatabaseProcess {
     };
 
     if !table_exists {
-        return DatabaseProcess::Error(DatabaseError {
+        return LoadDatabaseProcess::Error(LoadDatabaseError {
             response_code: 404,
             message: "Table 'rustveil' does not exist in the database".to_string(),
         });
@@ -87,17 +89,116 @@ pub fn load_data_sqlite(app: AppHandle, pathfile: String) -> DatabaseProcess {
     }) {
         Ok(count) => count,
         Err(e) => {
-            return DatabaseProcess::Error(DatabaseError {
+            return LoadDatabaseProcess::Error(LoadDatabaseError {
                 response_code: 500,
                 message: format!("Error counting records: {}", e),
             });
         }
     };
-    DatabaseProcess::Success(DatabaseComplete {
+    let meta_exists: bool = conn
+        .query_row(
+            "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='rustveil_metadata'",
+            [],
+            |row| row.get::<_, i64>(0),
+        )
+        .unwrap_or(0)
+        > 0;
+
+    let mut target_vertex_1: Option<String> = None;
+    let mut target_vertex_2: Option<String> = None;
+    let mut graph_type: Option<String> = None;
+    let mut target_sentiment_column: Option<String> = None;
+    let mut target_language_column: Option<String> = None;
+    let mut target_social_network_updatedat: Option<String> = None;
+    let mut target_sentiment_analysis_updatedat: Option<String> = None;
+    if meta_exists {
+        let mut stmt = match conn.prepare("SELECT * FROM rustveil_metadata") {
+            Ok(stmt) => stmt,
+            Err(e) => {
+                return LoadDatabaseProcess::Error(LoadDatabaseError {
+                    response_code: 500,
+                    message: format!("Error preparing rustveil_metadata query: {}", e),
+                });
+            }
+        };
+
+        let rows = stmt.query_map([], |row| {
+            let vertices_json: Option<String> = row.get(0).ok();
+            let sentiment_json: Option<String> = row.get(1).ok();
+            Ok((vertices_json, sentiment_json))
+        });
+        if let Ok(mapped_rows) = rows {
+            for (vertices_json, sentiment_json) in mapped_rows.flatten() {
+                // --- Handle target_vertices column ---
+                if let Some(json_str) = vertices_json {
+                    if let Ok(json_val) = serde_json::from_str::<Value>(&json_str) {
+                        if let Some(v) = json_val.get("target_vertex_1").and_then(|v| v.as_str()) {
+                            target_vertex_1 = Some(v.to_string());
+                        }
+                        if let Some(v) = json_val.get("target_vertex_2").and_then(|v| v.as_str()) {
+                            target_vertex_2 = Some(v.to_string());
+                        }
+                        if let Some(v) = json_val.get("graph_type").and_then(|v| v.as_str()) {
+                            graph_type = Some(v.to_string());
+                        }
+                        if let Some(updated) = json_val.get("created_at").and_then(|v| v.as_str()) {
+                            target_social_network_updatedat = Some(updated.to_string());
+                        }
+                    }
+                }
+
+                // --- Handle target_sentiment column ---
+                if let Some(json_str) = sentiment_json {
+                    if let Ok(json_val) = serde_json::from_str::<Value>(&json_str) {
+                        if let Some(v) = json_val
+                            .get("target_language_column")
+                            .and_then(|v| v.as_str())
+                        {
+                            target_language_column = Some(v.to_string());
+                        }
+                        if let Some(v) = json_val
+                            .get("target_sentiment_column")
+                            .and_then(|v| v.as_str())
+                        {
+                            target_sentiment_column = Some(v.to_string());
+                        }
+                        if let Some(updated) = json_val.get("created_at").and_then(|v| v.as_str()) {
+                            target_sentiment_analysis_updatedat = Some(updated.to_string());
+                        }
+                    }
+                }
+            }
+        }
+    }
+    if let (Some(lang), Some(sent)) = (&target_language_column, &target_sentiment_column) {
+        let binding = app.state::<Mutex<ColumnTargetSentimentAnalysis>>();
+        let mut target_state = binding.lock().unwrap();
+        target_state.language_target = lang.clone();
+        target_state.column_target = sent.clone();
+    }
+
+    // update vertices selected
+    if let (Some(v1), Some(v2), Some(gt)) = (&target_vertex_1, &target_vertex_2, &graph_type) {
+        let binding = app.state::<Mutex<VerticesSelected>>();
+        let mut vertex_choosed = binding.lock().unwrap();
+        vertex_choosed.vertex_1 = v1.clone();
+        vertex_choosed.vertex_2 = v2.clone();
+        vertex_choosed.graph_type = gt.clone();
+    }
+    LoadDatabaseProcess::Success(LoadDatabaseSuccess {
         response_code: 200,
         message: "Data table `Rustveil` exist reload at Data > View > Refresh".to_string(),
         data: None,
         total_count: Some(all_count),
+        total_negative_data: None,
+        total_positive_data: None,
+        target_vertex_1,
+        target_vertex_2,
+        graph_type,
+        target_sentiment_column,
+        target_language_column,
+        target_social_network_updatedat,
+        target_sentiment_analysis_updatedat,
     })
 }
 
@@ -166,7 +267,7 @@ pub fn data_to_sqlite(
             response_code: 401,
             message: format!("Error creating table: {}", e),
         });
-    } 
+    }
 
     // ----- STEP 2: INSERT DATA IN BATCHES -----
     let max_variables = 999;
@@ -258,6 +359,12 @@ pub fn data_to_sqlite(
         message: format!("Success: inserted {} rows", total_inserted),
         data: Some(data_json),
         total_count: Some(all_count),
+        total_negative_data: None,
+        total_positive_data: None,
+        target_vertex_1: None,
+        target_vertex_2: None,
+        graph_type: None,
+        target_sentiment: None,
     })
 }
 

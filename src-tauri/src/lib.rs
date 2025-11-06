@@ -36,14 +36,14 @@ pub fn run() {
         }))
         .manage(Mutex::new(SqliteDataState { file_url: String::new() }))
         .manage(Mutex::new(VerticesSelected { vertex_1: String::new(), vertex_2: String::new(), graph_type : String::new() }))
-        .manage(Mutex::new(ColumnTargetSentimentAnalysis { column_target: String::new()}))
+        .manage(Mutex::new(ColumnTargetSentimentAnalysis { column_target: String::new(), language_target: String::new()}))
         .setup(|app| {
             app.fs_scope();
             app_path::create_folder_main_app(app);
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
-            workstation::data::excel::load_data,
+            workstation::data::excel::upload_excel_file,
             workstation::data::excel::get_sheet,
             sentiment_analysis::handler::set_sentiment_analysis_target_column,
             sentiment_analysis::handler::calculate_sentiment_analysis_indonesia,
@@ -53,7 +53,7 @@ pub fn run() {
             social_network::handler::set_vertices,
             social_network::handler::calculate_centrality,
             social_network::handler::load_centrality_table,
-            database::lib::handler::load_data_sqlite,
+            database::lib::handler::load_sqlite_data,
             database::lib::get::all_data::get_all_data,
             database::lib::get::all_data::get_paginated_data,
             database::lib::get::all_data::get_all_vertices,

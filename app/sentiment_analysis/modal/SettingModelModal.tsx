@@ -53,10 +53,10 @@ export default function SettingModel({
       ),
       variant: "bordered",
       color: "primary",
-      timeout: 3000,
+      timeout: 1000,
     });
 
-    await new Promise((resolve) => setTimeout(resolve, 200));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     try {
       const result = await sentiment();
@@ -92,7 +92,7 @@ export default function SettingModel({
   return (
     <>
       <Modal
-        size="2xl"
+        size="3xl"
         closeButton={
           <Button
             isIconOnly

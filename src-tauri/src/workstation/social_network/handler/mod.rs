@@ -19,11 +19,13 @@ use crate::global::db_connection::{DbConnectionProcess,};
 
 #[command]
 pub fn set_vertices(app: AppHandle, vertices_selected: VerticesSelected) -> VerticesSelectedResult {
+        let current_timestamp  = chrono::Utc::now().to_rfc3339();
     let binding = app.state::<Mutex<VerticesSelected>>();
     let mut vertex_choosed = binding.lock().unwrap();
     vertex_choosed.vertex_1 = vertices_selected.vertex_1.clone();
     vertex_choosed.vertex_2 = vertices_selected.vertex_2.clone();
     vertex_choosed.graph_type = vertices_selected.graph_type.clone();
+
     if vertex_choosed.vertex_1.is_empty() || vertex_choosed.vertex_2.is_empty() || vertex_choosed.graph_type.is_empty() {
         return VerticesSelectedResult::Error(VerticesSetError {
             response_code: 401,
@@ -31,10 +33,11 @@ pub fn set_vertices(app: AppHandle, vertices_selected: VerticesSelected) -> Vert
         });
     }
 
-    // Directly return the result from save_vertices_to_database
-    save_vertices_to_database(&app, &vertex_choosed)
+
+
+    save_vertices_to_database(&app, &vertex_choosed, current_timestamp)
 }
-fn save_vertices_to_database(app: &AppHandle, vertices: &VerticesSelected) -> VerticesSelectedResult {
+fn save_vertices_to_database(app: &AppHandle, vertices: &VerticesSelected, current_timestamp: String) -> VerticesSelectedResult {
     let db_result = DatabaseConnection::connect_db(app);
     
     match db_result {
@@ -45,8 +48,8 @@ fn save_vertices_to_database(app: &AppHandle, vertices: &VerticesSelected) -> Ve
                 "target_vertex_1": vertices.vertex_1,
                 "target_vertex_2": vertices.vertex_2,
                 "graph_type": vertices.graph_type,
-                "created_at": chrono::Utc::now().to_rfc3339(),
-                "updated_at": chrono::Utc::now().to_rfc3339()
+                "created_at": current_timestamp,
+                "updated_at": current_timestamp
             });
             
          

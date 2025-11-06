@@ -68,7 +68,7 @@ fn excel_serial_to_date(serial: f64) -> String {
 /// - [`get_all_data`] — retrieves canonical DB contents
 
 #[command]
-pub fn load_data(app: AppHandle, url: String, sheet_name: String) -> ProcessingResult {
+pub fn upload_excel_file(app: AppHandle, url: String, sheet_name: String) -> ProcessingResult {
 
     let file_app = app.state::<Mutex<AppFolderPath>>();
 

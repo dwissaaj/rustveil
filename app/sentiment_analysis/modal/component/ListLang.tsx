@@ -23,6 +23,7 @@ import {
 import {
   columnTargetSentimentAnalysis,
   selectedLang,
+  targetSentimentCreatedAt,
 } from "../../../lib/sentiment_analysis/state";
 
 import {
@@ -36,7 +37,7 @@ export default function ListLang() {
 
   const selectedModel = modelMap[selectedLanguage] || modelMap.default;
   const columnTarget = useAtomValue(columnTargetSentimentAnalysis);
-
+  const createdAt = useAtomValue(targetSentimentCreatedAt)
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const ModelComponent =
     modelComponents[selectedModel] || modelComponents.default;
@@ -45,6 +46,7 @@ export default function ListLang() {
     <div className="flex flex-col gap-4 max-w-xl">
       <div>
         <Select
+        className="max-w-2xl"
           color="primary"
           label="Target Language"
           labelPlacement="inside"
@@ -58,7 +60,7 @@ export default function ListLang() {
           ))}
         </Select>
       </div>
-      <div className="flex gap-2">
+      <div className="max-w-full flex flex-row gap-2 ">
         <Tooltip
           className="capitalize"
           color="secondary"
@@ -99,6 +101,23 @@ export default function ListLang() {
           >
             {selectedModel}
           </Chip>
+          
+        </Tooltip>
+        <Tooltip
+          className="capitalize"
+          color="secondary"
+          content="Timestamp when select the column"
+        >
+          <Chip
+            className="cursor-pointer"
+            color="secondary"
+            startContent={<ModelAiOutline className="size-6 " />}
+            variant="flat"
+            onClick={onOpen}
+          >
+            {createdAt.slice(0,10)}
+          </Chip>
+          
         </Tooltip>
       </div>
 

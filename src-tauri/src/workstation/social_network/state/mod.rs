@@ -9,8 +9,9 @@ pub struct VerticesSelected {
 
     pub vertex_2: String,
 
-    pub graph_type: String
+    pub graph_type: String,
   
+
 }
 
 #[derive(Serialize)]

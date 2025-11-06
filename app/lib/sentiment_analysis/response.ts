@@ -2,7 +2,8 @@
 export interface ColumnTargetSuccess {
   response_code: number;
   message: string;
-  target: string;
+  column_target: string
+  language_target: string;
 }
 
 export interface ColumnTargetError {

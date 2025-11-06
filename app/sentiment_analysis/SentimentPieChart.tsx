@@ -17,13 +17,14 @@ export function SentimentPieChart({
   chartFilter: PieSentimentStateType;
 }) {
   const { theme } = useTheme();
-  const textColor = theme === "dark" ? "#e5e7eb" : "#1f2937";
+  const textColor = theme === "dark" ? "#e5e7eb" : "#0d0d0d";
   const tooltipBackgroundColor = theme === "dark" ? "#374151" : "#ffffff";
-  const tooltipTextColor = theme === "dark" ? "#e5e7eb" : "#1f2937";
+  const tooltipTextColor = theme === "dark" ? "#e5e7eb" : "#141414";
 
   return (
     <div className={`flex-1 h-[75vh] `}>
       <ResponsivePie
+      arcLabelsTextColor={textColor}
         activeOuterRadiusOffset={8}
         arcLabelsSkipAngle={chartFilter.labelSkip}
         arcLinkLabelsColor={{ from: "color" }}

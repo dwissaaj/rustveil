@@ -16,6 +16,7 @@ import { useState } from "react";
 import { useAtomValue } from "jotai";
 
 import {
+  targetVerticesCreatedAt,
   vertex1ColumnSelected,
   vertex2ColumnSelected,
   vertexGraphTypeSelected,
@@ -36,6 +37,7 @@ export default function SocialCalculateModal({
   const vertex1 = useAtomValue(vertex1ColumnSelected);
   const vertex2 = useAtomValue(vertex2ColumnSelected);
   const graphType = useAtomValue(vertexGraphTypeSelected);
+  const createdAt = useAtomValue(targetVerticesCreatedAt);
   const [isProgess, setisProgess] = useState<{
     isLoading: boolean;
     isShowed: boolean;
@@ -95,6 +97,7 @@ export default function SocialCalculateModal({
   return (
     <>
       <Modal
+      size="xl"
         backdrop="blur"
         closeButton={
           <Button
@@ -141,7 +144,8 @@ export default function SocialCalculateModal({
                 <div className="flex flex-row gap-4">
                   <Code color="primary">{vertex1}</Code>
                   <Code color="secondary">{vertex2}</Code>
-                  <Code color="primary">{graphType}</Code>
+                  <Code color="warning">{graphType}</Code>
+                   <Code color="success">target Selected at {createdAt.slice(0,10)}</Code>
                 </div>
               </div>
             </div>

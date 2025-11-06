@@ -10,7 +10,7 @@ export function useTableOpen() {
 
   const loadTable = async () => {
     try {
-      const response = await invoke<InvokeResponse>("load_data", {
+      const response = await invoke<InvokeResponse>("upload_excel_file", {
         url,
         sheetName: sheet,
       });

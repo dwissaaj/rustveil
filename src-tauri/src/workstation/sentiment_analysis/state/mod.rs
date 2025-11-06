@@ -3,6 +3,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ColumnTargetSentimentAnalysis {
     pub column_target: String,
+    pub language_target: String,
 }
 
 #[derive(Serialize)]
@@ -15,7 +16,8 @@ pub enum ColumnTargetSelectedResult {
 pub struct ColumnTargetSuccess {
     pub response_code: u32,
     pub message: String,
-    pub target: String
+    pub column_target: String,
+    pub language_target: String,
 }
 
 #[derive(Serialize)]
