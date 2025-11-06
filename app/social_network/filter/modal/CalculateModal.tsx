@@ -97,7 +97,6 @@ export default function SocialCalculateModal({
   return (
     <>
       <Modal
-      size="xl"
         backdrop="blur"
         closeButton={
           <Button
@@ -108,6 +107,7 @@ export default function SocialCalculateModal({
           />
         }
         isOpen={isOpen}
+        size="xl"
         onOpenChange={onOpenChange}
       >
         <ModalContent>
@@ -145,7 +145,9 @@ export default function SocialCalculateModal({
                   <Code color="primary">{vertex1}</Code>
                   <Code color="secondary">{vertex2}</Code>
                   <Code color="warning">{graphType}</Code>
-                   <Code color="success">target Selected at {createdAt.slice(0,10)}</Code>
+                  <Code color="success">
+                    target Selected at {createdAt.slice(0, 10)}
+                  </Code>
                 </div>
               </div>
             </div>

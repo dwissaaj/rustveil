@@ -13,6 +13,8 @@ use std::sync::Mutex;
 use tauri::{command, AppHandle, Manager};
 use tch::Device;
 
+
+
 #[command]
 pub fn analyze_and_update_sentiment(app: AppHandle, selected_language: String) -> ProcessTarget {
     let binding = app.state::<Mutex<ColumnTargetSentimentAnalysis>>();
@@ -37,7 +39,14 @@ pub fn analyze_and_update_sentiment(app: AppHandle, selected_language: String) -
     };
     let conn = db.connection;
 
-    // ✅ make sure table has required columns (add if missing)
+
+    let _ = conn.execute(
+        &format!(
+            "CREATE TABLE IF NOT EXISTS rustveil_sentiment (id INTEGER PRIMARY KEY AUTOINCREMENT, \"{}\" TEXT);",
+            target_col
+        ),
+        [],
+    );
     let _ = conn.execute("ALTER TABLE rustveil_sentiment ADD COLUMN polarity TEXT;", []);
     let _ = conn.execute("ALTER TABLE rustveil_sentiment ADD COLUMN score REAL;", []);
 

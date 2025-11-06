@@ -2,11 +2,14 @@ import { invoke } from "@tauri-apps/api/core";
 import { useAtomValue } from "jotai";
 
 import { InvokeResponse } from "@/app/lib/data/response";
-import { columnTargetSentimentAnalysis, selectedLang } from "@/app/lib/sentiment_analysis/state";
+import {
+  columnTargetSentimentAnalysis,
+  selectedLang,
+} from "@/app/lib/sentiment_analysis/state";
 
 export function useGetSentimentDataTarget() {
   const columnTarget = useAtomValue(columnTargetSentimentAnalysis);
-    const languageTarget = useAtomValue(selectedLang);
+  const languageTarget = useAtomValue(selectedLang);
   const getTargetData = async (page: number = 1, pageSize: number = 100) => {
     try {
       const response = await invoke<InvokeResponse>(
@@ -18,7 +21,7 @@ export function useGetSentimentDataTarget() {
           },
           target: {
             column_target: columnTarget,
-            language_target: languageTarget
+            language_target: languageTarget,
           },
         },
       );

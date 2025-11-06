@@ -9,17 +9,20 @@ export function useSentimentAnalysis() {
 
   const calculateSentiment = async () => {
     try {
-      const response = await invoke<SentimentAnalysisResult>("analyze_and_update_sentiment", {
-        selectedLanguage: targetLang,
-      });
+      const response = await invoke<SentimentAnalysisResult>(
+        "analyze_and_update_sentiment",
+        {
+          selectedLanguage: targetLang,
+        },
+      );
 
       if ("Success" in response) {
         return {
           response_code: response.Success.response_code,
           message: response.Success.message,
-            total_data: response.Success.total_data,
-            total_negative_data: response.Success.total_negative_data,
-            total_positive_data: response.Success.total_positive_data,
+          total_data: response.Success.total_data,
+          total_negative_data: response.Success.total_negative_data,
+          total_positive_data: response.Success.total_positive_data,
         };
       } else if ("Error" in response) {
         return {

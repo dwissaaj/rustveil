@@ -1,5 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 
 import { SetVerticesResponse } from "./response";
 
@@ -13,20 +13,21 @@ import {
 export function useSetVertices() {
   const vertex1 = useAtomValue(vertex1ColumnSelected);
   const vertex2 = useAtomValue(vertex2ColumnSelected);
-  const graphType = useAtomValue(vertexGraphTypeSelected)
-  const setVerticesCreatedAt = useSetAtom(targetVerticesCreatedAt)
+  const graphType = useAtomValue(vertexGraphTypeSelected);
+  const setVerticesCreatedAt = useSetAtom(targetVerticesCreatedAt);
 
   const setVertices = async () => {
     try {
-        const now = new Date().toISOString();
+      const now = new Date().toISOString();
       const response = await invoke<SetVerticesResponse>("set_vertices", {
         verticesSelected: {
           vertex_1: vertex1,
           vertex_2: vertex2,
-          graph_type:graphType
+          graph_type: graphType,
         },
       });
-      setVerticesCreatedAt(now)
+
+      setVerticesCreatedAt(now);
       if ("Success" in response) {
         return {
           response_code: response.Success.response_code,

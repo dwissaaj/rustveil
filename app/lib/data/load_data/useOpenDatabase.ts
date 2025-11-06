@@ -1,5 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 
 import {
   filePath,
@@ -29,19 +29,20 @@ export function useOpenDatabase() {
       const response = await invoke<InvokeResponse>("load_sqlite_data", {
         pathfile: pathfile.url,
       });
-      console.log(response);
+
       if ("Success" in response) {
         setVertex1(response.Success.target_vertex_1 || "");
         setVertex2(response.Success.target_vertex_2 || "");
         setGraphType(response.Success.graph_type || "");
         setTargetVerticesCreatedAt(
-          response.Success.target_social_network_updatedat || ""
+          response.Success.target_social_network_updatedat || "",
         );
         setTargetSentimentCreatedAt(
-          response.Success.target_sentiment_analysis_updatedat || ""
+          response.Success.target_sentiment_analysis_updatedat || "",
         );
-        setLanguageTarget(response.Success.target_sentiment_column || "");
+        setLanguageTarget(response.Success.target_language_column || "");
         setSentimentTarget(response.Success.target_sentiment_column || "");
+
         return {
           response_code: response.Success.response_code,
           message: response.Success.message,

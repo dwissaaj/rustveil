@@ -9,7 +9,6 @@ import {
   addToast,
   Select,
   SelectItem,
-  Chip,
   ButtonGroup,
   Tooltip,
 } from "@heroui/react";
@@ -40,7 +39,7 @@ export default function PickColumnModal({
   const column = useAtomValue(columnAvailable);
 
   const [textTargetSentiment, setTextTargetSentiment] = useAtom(
-    columnTargetSentimentAnalysis
+    columnTargetSentimentAnalysis,
   );
   const [languageTarget, setLanguageTarget] = useAtom(selectedLang);
   const createdAt = useAtomValue(targetSentimentCreatedAt);
@@ -141,6 +140,7 @@ export default function PickColumnModal({
                   variant="underlined"
                   onChange={(event) => {
                     const value = event.target.value;
+
                     setLanguageTarget(value);
                   }}
                 >

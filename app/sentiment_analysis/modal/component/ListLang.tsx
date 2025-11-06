@@ -37,7 +37,7 @@ export default function ListLang() {
 
   const selectedModel = modelMap[selectedLanguage] || modelMap.default;
   const columnTarget = useAtomValue(columnTargetSentimentAnalysis);
-  const createdAt = useAtomValue(targetSentimentCreatedAt)
+  const createdAt = useAtomValue(targetSentimentCreatedAt);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const ModelComponent =
     modelComponents[selectedModel] || modelComponents.default;
@@ -46,7 +46,7 @@ export default function ListLang() {
     <div className="flex flex-col gap-4 max-w-xl">
       <div>
         <Select
-        className="max-w-2xl"
+          className="max-w-2xl"
           color="primary"
           label="Target Language"
           labelPlacement="inside"
@@ -101,7 +101,6 @@ export default function ListLang() {
           >
             {selectedModel}
           </Chip>
-          
         </Tooltip>
         <Tooltip
           className="capitalize"
@@ -115,9 +114,8 @@ export default function ListLang() {
             variant="flat"
             onClick={onOpen}
           >
-            {createdAt.slice(0,10)}
+            {createdAt.slice(0, 10)}
           </Chip>
-          
         </Tooltip>
       </div>
 

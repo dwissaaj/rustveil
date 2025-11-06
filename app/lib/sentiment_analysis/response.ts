@@ -2,7 +2,7 @@
 export interface ColumnTargetSuccess {
   response_code: number;
   message: string;
-  column_target: string
+  column_target: string;
   language_target: string;
 }
 

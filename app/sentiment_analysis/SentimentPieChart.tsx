@@ -24,9 +24,9 @@ export function SentimentPieChart({
   return (
     <div className={`flex-1 h-[75vh] `}>
       <ResponsivePie
-      arcLabelsTextColor={textColor}
         activeOuterRadiusOffset={8}
         arcLabelsSkipAngle={chartFilter.labelSkip}
+        arcLabelsTextColor={textColor}
         arcLinkLabelsColor={{ from: "color" }}
         arcLinkLabelsDiagonalLength={chartFilter.labelDiagonalLength}
         arcLinkLabelsOffset={chartFilter.labelsOffset}

@@ -7,7 +7,7 @@ use serde_json::Value;
 use std::sync::Mutex;
 use tauri::{command, AppHandle, Manager};
 
-/// read data from table rustveil_sentiment created one if non
+
 #[command]
 pub fn get_paginated_sentiment_target(
     app: AppHandle,
@@ -103,11 +103,11 @@ pub fn get_paginated_sentiment_target(
         }
     }
 
-    // ✅ Ensure columns exist (safe even if already present)
+
     let _ = connect.execute("ALTER TABLE rustveil_sentiment ADD COLUMN polarity TEXT;", []);
     let _ = connect.execute("ALTER TABLE rustveil_sentiment ADD COLUMN score REAL;", []);
 
-    // ✅ Pagination from rustveil_sentiment
+
     let total_count: usize = connect
         .query_row("SELECT COUNT(*) FROM rustveil_sentiment;", [], |row| row.get(0))
         .unwrap_or(0);

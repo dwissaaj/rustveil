@@ -9,12 +9,14 @@ import {
   addToast,
   Progress,
 } from "@heroui/react";
-import { CloseActionIconOutline } from "@/components/icon/IconAction";
-import ListLang from "./component/ListLang";
-import { useSentimentAnalysis } from "../../lib/sentiment_analysis/useSentimentAnalysis";
-
 import { useState } from "react";
 import { useAtomValue } from "jotai";
+
+import { useSentimentAnalysis } from "../../lib/sentiment_analysis/useSentimentAnalysis";
+
+import ListLang from "./component/ListLang";
+
+import { CloseActionIconOutline } from "@/components/icon/IconAction";
 import {
   columnTargetSentimentAnalysis,
   selectedLang,
@@ -92,7 +94,6 @@ export default function SettingModel({
   return (
     <>
       <Modal
-        size="3xl"
         closeButton={
           <Button
             isIconOnly
@@ -104,6 +105,7 @@ export default function SettingModel({
           />
         }
         isOpen={isOpen}
+        size="3xl"
         onOpenChange={onOpenChange}
       >
         <ModalContent>
@@ -124,10 +126,10 @@ export default function SettingModel({
               Close
             </Button>
             <Button
+              color="primary"
               isDisabled={isDisabled}
               isLoading={analyzeBtn.isLoading}
               onPress={handlePress}
-              color="primary"
             >
               Analyze
             </Button>
