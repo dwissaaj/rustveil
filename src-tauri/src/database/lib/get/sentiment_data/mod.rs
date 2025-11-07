@@ -17,8 +17,9 @@ pub fn get_paginated_sentiment_target(
     let binding = app.state::<Mutex<ColumnTargetSentimentAnalysis>>();
     let mut target_column_state = binding.lock().unwrap();
     target_column_state.column_target = target.column_target.clone();
+    let target_col = target_column_state.column_target.clone();
 
-    if target_column_state.column_target.is_empty() {
+    if target_col.is_empty() {
         return GetSentimentDataResponse::Error(GetSentimentDataError {
             response_code: 400,
             message: "Column Target missing. Set it at SN > Target > Pick A Column".to_string(),
@@ -61,29 +62,35 @@ pub fn get_paginated_sentiment_target(
         }
     };
 
+    // Ensure schema exists (fixed schema version)
     let _ = connect.execute(
-        &format!(
-            "CREATE TABLE IF NOT EXISTS rustveil_sentiment (id INTEGER PRIMARY KEY AUTOINCREMENT, \"{}\" TEXT);",
-            target_column_state.column_target
-        ),
+        "CREATE TABLE IF NOT EXISTS rustveil_sentiment (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            column_name TEXT,
+            text_value TEXT,
+            polarity TEXT,
+            score REAL
+        );",
         [],
     );
 
+    // Populate sentiment table if empty (optional fallback)
     let count: i64 = connect
-        .query_row("SELECT COUNT(*) FROM rustveil_sentiment;", [], |row| row.get(0))
+        .query_row("SELECT COUNT(*) FROM rustveil_sentiment WHERE column_name = ?1;", [target_col.clone()], |row| row.get(0))
         .unwrap_or(0);
 
     if count == 0 {
+        // Load from original 'rustveil' table
         let mut stmt_old = match connect.prepare(&format!(
             "SELECT \"{}\" FROM rustveil;",
-            target_column_state.column_target
+            target_col
         )) {
             Ok(s) => s,
             Err(_) => {
                 return GetSentimentDataResponse::Error(GetSentimentDataError {
                     response_code: 500,
                     message: "Failed to prepare select from rustveil.".to_string(),
-                })
+                });
             }
         };
 
@@ -91,53 +98,50 @@ pub fn get_paginated_sentiment_target(
             .query_map([], |row| row.get::<_, Option<String>>(0))
             .unwrap();
 
-        let insert_sql = format!(
-            "INSERT INTO rustveil_sentiment (\"{}\") VALUES (?1);",
-            target_column_state.column_target
-        );
+        let insert_sql = "INSERT INTO rustveil_sentiment (column_name, text_value) VALUES (?1, ?2);";
         for r in old_rows {
-            if let Ok(val_opt) = r {
-                let val = val_opt.unwrap_or_default();
-                let _ = connect.execute(&insert_sql, [&val]);
+            if let Ok(Some(val)) = r {
+                let _ = connect.execute(insert_sql, rusqlite::params![target_col.clone(), val]);
             }
         }
     }
 
-
-    let _ = connect.execute("ALTER TABLE rustveil_sentiment ADD COLUMN polarity TEXT;", []);
-    let _ = connect.execute("ALTER TABLE rustveil_sentiment ADD COLUMN score REAL;", []);
-
-
+    // --- Pagination ---
     let total_count: usize = connect
-        .query_row("SELECT COUNT(*) FROM rustveil_sentiment;", [], |row| row.get(0))
+        .query_row(
+            "SELECT COUNT(*) FROM rustveil_sentiment WHERE column_name = ?1;",
+            [target_col.clone()],
+            |row| row.get(0),
+        )
         .unwrap_or(0);
 
     let total_pages = (total_count + pagination.page_size - 1) / pagination.page_size;
     let current_page = pagination.page.min(total_pages.max(1));
     let offset = (current_page - 1) * pagination.page_size;
 
-    let query = format!(
-        "SELECT \"{}\", polarity, score FROM rustveil_sentiment LIMIT ? OFFSET ?",
-        target_column_state.column_target
-    );
-
-    let mut stmt = match connect.prepare(&query) {
+    // Query data by column name
+    let mut stmt = match connect.prepare(
+        "SELECT text_value, polarity, score
+         FROM rustveil_sentiment
+         WHERE column_name = ?1
+         LIMIT ?2 OFFSET ?3;",
+    ) {
         Ok(s) => s,
         Err(e) => {
             return GetSentimentDataResponse::Error(GetSentimentDataError {
                 response_code: 403,
                 message: format!("Failed to prepare statement: {}", e),
-            })
+            });
         }
     };
 
-    let mut rows = match stmt.query([pagination.page_size as i64, offset as i64]) {
+    let mut rows = match stmt.query(rusqlite::params![target_col.clone(), pagination.page_size as i64, offset as i64]) {
         Ok(r) => r,
         Err(e) => {
             return GetSentimentDataResponse::Error(GetSentimentDataError {
                 response_code: 404,
                 message: format!("Query execution failed: {}", e),
-            })
+            });
         }
     };
 
@@ -148,9 +152,9 @@ pub fn get_paginated_sentiment_target(
         let score_val: Result<f64, _> = row.get(2);
 
         let mut obj = serde_json::Map::new();
-
+        obj.insert("column_name".to_string(), Value::String(target_col.clone()));
         obj.insert(
-            target_column_state.column_target.clone(),
+            "text_value".to_string(),
             text_val.map(Value::String).unwrap_or(Value::Null),
         );
         obj.insert(
@@ -169,18 +173,20 @@ pub fn get_paginated_sentiment_target(
 
         page_data.push(Value::Object(obj));
     }
+
+    // --- Counts ---
     let query_positive: u32 = connect
         .query_row(
-            "SELECT COUNT(*) FROM rustveil_sentiment WHERE polarity = 'positive';",
-            [],
+            "SELECT COUNT(*) FROM rustveil_sentiment WHERE polarity = 'positive' AND column_name = ?1;",
+            [target_col.clone()],
             |row| row.get(0),
         )
         .unwrap_or(0);
 
     let query_negative: u32 = connect
         .query_row(
-            "SELECT COUNT(*) FROM rustveil_sentiment WHERE polarity = 'negative';",
-            [],
+            "SELECT COUNT(*) FROM rustveil_sentiment WHERE polarity = 'negative' AND column_name = ?1;",
+            [target_col.clone()],
             |row| row.get(0),
         )
         .unwrap_or(0);
@@ -194,7 +200,7 @@ pub fn get_paginated_sentiment_target(
             Some(page_data)
         },
         total_count: Some(total_count),
-        total_negative_data: Some(query_positive),
-        total_positive_data: Some(query_negative),
+        total_negative_data: Some(query_negative),
+        total_positive_data: Some(query_positive),
     })
 }

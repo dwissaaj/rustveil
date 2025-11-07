@@ -99,11 +99,13 @@ export default function ChartViewer() {
       </div>
 
       <div className="w-full h-full ">
-        {senData === null || senData === undefined || senData[0].value === 0 ? (
+        {!senData ||
+        senData.length === 0 ||
+        senData.every((d) => d.value === 0) ? (
           <div className="flex items-center min-h-full w-full">
             <NoSentimentData />
           </div>
-        ) : senData ? (
+        ) : (
           <div className="flex w-full items-center justify-center">
             <div className="min-w-[1200px] h-[75vh]">
               <SentimentPieChart
@@ -117,10 +119,6 @@ export default function ChartViewer() {
                 data={senData}
               />
             </div>
-          </div>
-        ) : (
-          <div className="">
-            <AllZeroComponent />
           </div>
         )}
       </div>
@@ -160,9 +158,9 @@ export default function ChartViewer() {
                       {chartFilter.author}
                     </p>
                   </div>
-                  {senData === null ||
-                  senData === undefined ||
-                  senData[0].value === 0 ? (
+                  {!senData ||
+                  senData.length === 0 ||
+                  senData.every((d) => d.value === 0) ? (
                     <div className="flex items-center min-h-full w-full">
                       <NoSentimentData />
                     </div>

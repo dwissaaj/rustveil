@@ -17,6 +17,8 @@ use tch::Device;
 
 #[command]
 pub fn analyze_and_update_sentiment(app: AppHandle, selected_language: String) -> ProcessTarget {
+
+
     let binding = app.state::<Mutex<ColumnTargetSentimentAnalysis>>();
     let target_state = binding.lock().unwrap();
     let target_col = target_state.column_target.clone();
@@ -28,6 +30,7 @@ pub fn analyze_and_update_sentiment(app: AppHandle, selected_language: String) -
         });
     }
 
+    // connect db
     let db = match DatabaseConnection::connect_db(&app) {
         DbConnectionProcess::Success(s) => s,
         DbConnectionProcess::Error(e) => {
@@ -39,18 +42,20 @@ pub fn analyze_and_update_sentiment(app: AppHandle, selected_language: String) -
     };
     let conn = db.connection;
 
-
+    // --- FIXED SCHEMA (Option 1) ---
     let _ = conn.execute(
-        &format!(
-            "CREATE TABLE IF NOT EXISTS rustveil_sentiment (id INTEGER PRIMARY KEY AUTOINCREMENT, \"{}\" TEXT);",
-            target_col
-        ),
+        "CREATE TABLE IF NOT EXISTS rustveil_sentiment (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            column_name TEXT,
+            text_value TEXT,
+            polarity TEXT,
+            score REAL
+        );",
         [],
     );
-    let _ = conn.execute("ALTER TABLE rustveil_sentiment ADD COLUMN polarity TEXT;", []);
-    let _ = conn.execute("ALTER TABLE rustveil_sentiment ADD COLUMN score REAL;", []);
 
-    let query = format!("SELECT {} FROM rustveil_sentiment", target_col);
+    // get text data from the main table "rustveil"
+    let query = format!("SELECT \"{}\" FROM rustveil", target_col);
     let mut stmt = match conn.prepare(&query) {
         Ok(s) => s,
         Err(e) => {
@@ -61,7 +66,7 @@ pub fn analyze_and_update_sentiment(app: AppHandle, selected_language: String) -
         }
     };
 
-    let rows = match stmt.query_map([], |row| row.get::<_, String>(0)) {
+    let rows = match stmt.query_map([], |row| row.get::<_, Option<String>>(0)) {
         Ok(r) => r,
         Err(e) => {
             return ProcessTarget::Error(ProcessTargetError {
@@ -71,9 +76,13 @@ pub fn analyze_and_update_sentiment(app: AppHandle, selected_language: String) -
         }
     };
 
-    let mut texts: Vec<String> = vec![];
+    let mut texts = vec![];
     for item in rows.flatten() {
-        texts.push(item);
+        if let Some(txt) = item {
+            if !txt.trim().is_empty() {
+                texts.push(txt);
+            }
+        }
     }
 
     if texts.is_empty() {
@@ -83,6 +92,7 @@ pub fn analyze_and_update_sentiment(app: AppHandle, selected_language: String) -
         });
     }
 
+    // determine model path
     let resource_dir = match app.path().resource_dir() {
         Ok(p) => p,
         Err(e) => {
@@ -102,16 +112,10 @@ pub fn analyze_and_update_sentiment(app: AppHandle, selected_language: String) -
             resource_dir.join("models/sentiment_analysis/eng-distillbert-sst"),
             ModelType::DistilBert,
         ),
-        "de" | "es" | "fr" | "jp" | "zh" | "ko" | "vi" | "tl" | "ms" | "ar" => (
+        _ => (
             resource_dir.join("models/sentiment_analysis/distillbert-multi"),
             ModelType::DistilBert,
         ),
-        _ => {
-            return ProcessTarget::Error(ProcessTargetError {
-                response_code: 405,
-                message: format!("Unsupported language: {}", selected_language),
-            });
-        }
     };
 
     let config = SentimentConfig {
@@ -143,58 +147,77 @@ pub fn analyze_and_update_sentiment(app: AppHandle, selected_language: String) -
         }
     };
 
+    // Insert or update each record in rustveil_sentiment
     for text in texts {
-        let inputs = vec![text.as_str()];
-        let output = sentiment_model.predict(&inputs);
-
+        // Run inference
+        let output = sentiment_model.predict(&[text.as_str()]);
         if let Some(pred) = output.first() {
             let polarity_str = match pred.polarity {
                 rust_bert::pipelines::sentiment::SentimentPolarity::Positive => "positive",
                 rust_bert::pipelines::sentiment::SentimentPolarity::Negative => "negative",
             };
 
-            if let Err(e) = conn.execute(
-                &format!(
-                    "UPDATE rustveil_sentiment SET polarity = ?1, score = ?2 WHERE {} = ?3",
-                    target_col
-                ),
-                rusqlite::params![polarity_str, pred.score, text],
-            ) {
-                eprintln!(
-                    "Failed to update sentiment for text: {} | error: {}",
-                    text, e
+            // Check if already exists
+            let exists: i64 = conn
+                .query_row(
+                    "SELECT COUNT(*) FROM rustveil_sentiment WHERE column_name = ?1 AND text_value = ?2",
+                    rusqlite::params![target_col, text],
+                    |row| row.get(0),
+                )
+                .unwrap_or(0);
+
+            if exists == 0 {
+                // insert new
+                let _ = conn.execute(
+                    "INSERT INTO rustveil_sentiment (column_name, text_value, polarity, score)
+                     VALUES (?1, ?2, ?3, ?4)",
+                    rusqlite::params![target_col, text, polarity_str, pred.score],
+                );
+            } else {
+                // update existing
+                let _ = conn.execute(
+                    "UPDATE rustveil_sentiment
+                     SET polarity = ?1, score = ?2
+                     WHERE column_name = ?3 AND text_value = ?4",
+                    rusqlite::params![polarity_str, pred.score, target_col, text],
                 );
             }
         }
     }
+
+    // Summary
     let query_positive: u32 = conn
         .query_row(
-            "SELECT COUNT(*) FROM rustveil_sentiment WHERE polarity = 'positive';",
-            [],
+            "SELECT COUNT(*) FROM rustveil_sentiment WHERE polarity = 'positive' AND column_name = ?1;",
+            [target_col.clone()],
             |row| row.get(0),
         )
         .unwrap_or(0);
 
     let query_negative: u32 = conn
         .query_row(
-            "SELECT COUNT(*) FROM rustveil_sentiment WHERE polarity = 'negative';",
-            [],
+            "SELECT COUNT(*) FROM rustveil_sentiment WHERE polarity = 'negative' AND column_name = ?1;",
+            [target_col.clone()],
             |row| row.get(0),
         )
         .unwrap_or(0);
 
     let query_total: u32 = conn
-        .query_row("SELECT COUNT(*) FROM rustveil_sentiment;", [], |row| row.get(0))
+        .query_row(
+            "SELECT COUNT(*) FROM rustveil_sentiment WHERE column_name = ?1;",
+            [target_col.clone()],
+            |row| row.get(0),
+        )
         .unwrap_or(0);
 
     ProcessTarget::Success(ProcessTargetSuccess {
         response_code: 200,
         message: format!(
-            "Sentiment analysis completed using language: {}",
-            selected_language
+            "Sentiment analysis completed for column '{}' using language: {}",
+            target_col, selected_language
         ),
-        total_negative_data: Some(query_positive),
-        total_positive_data: Some(query_negative),
+        total_negative_data: Some(query_negative),
+        total_positive_data: Some(query_positive),
         total_data: Some(query_total),
     })
 }

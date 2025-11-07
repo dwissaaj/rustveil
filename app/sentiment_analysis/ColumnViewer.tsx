@@ -45,6 +45,7 @@ export default function ColumnViewerTable() {
         total_negative_data: 0,
         total_positive_data: 0,
       });
+      return;
     }
 
     try {
@@ -58,6 +59,7 @@ export default function ColumnViewerTable() {
           total_negative_data: response.total_negative_data ?? 0,
           total_positive_data: response.total_positive_data ?? 0,
         });
+
         if (showToast) {
           addToast({
             title: "Data Fetched",
@@ -66,14 +68,9 @@ export default function ColumnViewerTable() {
             color: "success",
           });
         }
-      } else if (response?.response_code !== 200) {
+      } else {
         setData([]);
         setTotalCount(0);
-        setTotalCountData({
-          total_data: 0,
-          total_negative_data: 0,
-          total_positive_data: 0,
-        });
         if (showToast) {
           addToast({
             title: "Error Fetching",
@@ -118,7 +115,6 @@ export default function ColumnViewerTable() {
           )
         }
         bottomContentPlacement="outside"
-        className=""
         topContent={
           <Button
             isIconOnly
@@ -132,7 +128,7 @@ export default function ColumnViewerTable() {
       >
         <TableHeader>
           <TableColumn>No</TableColumn>
-          <TableColumn>{targetColumn}</TableColumn>
+          <TableColumn>{targetColumn || "Text Value"}</TableColumn>
           <TableColumn>Polarity</TableColumn>
           <TableColumn>Score</TableColumn>
         </TableHeader>
@@ -141,7 +137,8 @@ export default function ColumnViewerTable() {
           {data.map((row, idx) => (
             <TableRow key={idx}>
               <TableCell>{(page - 1) * rowsPerPage + idx + 1}</TableCell>
-              <TableCell>{row[targetColumn] ?? "—"}</TableCell>
+              {/* 🔥 Changed from row[targetColumn] → row.text_value */}
+              <TableCell>{row.text_value ?? "—"}</TableCell>
               <TableCell>{row.polarity ?? "—"}</TableCell>
               <TableCell>
                 {typeof row.score === "number"
