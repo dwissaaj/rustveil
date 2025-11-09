@@ -33,9 +33,10 @@ impl DatabaseConnection {
         let db = match db_state.lock() {
             Ok(data) => data,
             Err(e) => {
+                log::error!("[DB303] State Poison Failed to lock database state");
                 return DbConnectionProcess::Error(DatabaseConnectError {
                     response_code: 500,
-                    message: format!("[DB301] Failed to lock database state {}", e),
+                    message: format!("[DB303] State Poison Failed to lock database state {}", e),
                 })
             }
         };
@@ -62,7 +63,7 @@ impl DatabaseConnection {
             }
             Err(e) => DbConnectionProcess::Error(DatabaseConnectError {
                 response_code: 401,
-                message: format!("Failed to open database: {}", e),
+                message: format!("[DB301] General Error. Failed to open database: {}", e),
             }),
         }
     }
