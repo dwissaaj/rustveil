@@ -12,32 +12,46 @@ use std::path::Path;
 use std::sync::Mutex;
 use tauri::{command, AppHandle, Emitter, Manager};
 use uuid::Uuid;
-/// Loads and validates a SQLite database file, checking for the mandatory 'rustveil' table.
-///
-/// # Arguments
-/// * `app` - The Tauri application handle for accessing application state
-/// * `pathfile` - The file path to the SQLite database to load
-///
-/// # Returns
-/// Returns `DatabaseProcess` enum with either:
-/// - `DatabaseProcess::Success` with success message if validation passes
-/// - `DatabaseProcess::Error` with appropriate error code and message if validation fails
-///
-/// # Validation Steps
-/// 1. Checks if the provided file path is not empty
-/// 2. Attempts to open the SQLite database connection
-/// 3. Verifies the existence of the mandatory 'rustveil' table
-/// 4. Returns success if all validations pass
-///
-/// # Errors
-/// - Returns error code 404 if:
-///   - File path is empty
-///   - Database cannot be opened
-///   - 'rustveil' table does not exist
-/// - Returns error code 404 for internal database errors
-///
 
 #[command]
+/// # Function load_sqlite_data
+/// The function `load_sqlite_data` in Rust updates file path in state, checks for table existence,
+/// retrieves metadata, and updates selected vertices and columns based on the SQLite database.
+/// 
+/// Arguments:
+/// 
+/// * `app`: The `app` parameter in the function `load_sqlite_data` is of type `AppHandle`, which likely
+/// represents a handle or reference to the application context or state. It is used to access and
+/// modify the application's state, such as retrieving or updating data related to the SQLite database
+/// being loaded
+/// * `pathfile`: The function `load_sqlite_data` takes in two parameters: `app` of type `AppHandle` and
+/// `pathfile` of type `String`.
+/// 
+/// Returns:
+/// 
+/// The function `load_sqlite_data` returns a `LoadDatabaseProcess` enum which can have two variants:
+/// 1. `LoadDatabaseProcess::Success` containing a `LoadDatabaseSuccess` struct with various fields
+/// including response code, message, data, total count, and other specific data related to database
+/// loading.
+/// 2. `LoadDatabaseProcess::Error` containing a `LoadDatabaseError` struct with
+/// The function `load_sqlite_data` in Rust updates file path in state, checks for table existence,
+/// retrieves metadata from the database, and updates selected vertices and analysis targets.
+/// 
+/// Arguments:
+/// 
+/// * `app`: The `app` parameter in the function `load_sqlite_data` is of type `AppHandle`, which likely
+/// represents a handle or reference to the application context or state. It is used to access and
+/// modify the application's state, such as retrieving or updating data related to the SQLite database
+/// being loaded
+/// * `pathfile`: The function `load_sqlite_data` takes in two parameters:
+/// 
+/// Returns:
+/// 
+/// The function `load_sqlite_data` returns a `LoadDatabaseProcess` enum which can have two variants:
+/// 1. `LoadDatabaseProcess::Success` containing a `LoadDatabaseSuccess` struct with various fields
+/// including response code, message, data, total count, target vertices, graph type, sentiment column,
+/// language column, and timestamps.
+/// 2. `LoadDatabaseProcess::Error` containing a `
 pub fn load_sqlite_data(app: AppHandle, pathfile: String) -> LoadDatabaseProcess {
     // 1. Update the file path in state
     let binding = app.state::<Mutex<SqliteDataState>>();

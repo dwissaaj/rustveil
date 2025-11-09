@@ -1,9 +1,8 @@
+use crate::SqliteDataState;
+use rusqlite::Connection;
+use serde::Serialize;
 use std::sync::Mutex;
 use tauri::{AppHandle, Manager};
-use serde::Serialize;
-use rusqlite::{Connection};
-use crate::SqliteDataState;
-
 
 /// Represents success or failure of DB connection
 pub enum DbConnectionProcess {
@@ -36,7 +35,7 @@ impl DatabaseConnection {
             Err(e) => {
                 return DbConnectionProcess::Error(DatabaseConnectError {
                     response_code: 500,
-                    message: format!("Error locking DB state: {}", e),
+                    message: format!("[DB301] Failed to lock database state {}", e),
                 })
             }
         };
@@ -46,16 +45,21 @@ impl DatabaseConnection {
         if db_path.is_empty() {
             return DbConnectionProcess::Error(DatabaseConnectError {
                 response_code: 404,
-                message: "Database path unknown".to_string(),
+                message:
+                    "[DB302] Database path unknown. Please load or select a valid database file."
+                        .to_string(),
             });
         }
 
         match Connection::open(&db_path) {
-            Ok(conn) => DbConnectionProcess::Success(DatabaseConnectSuccess {
-                response_code: Some(200),
-                message: Some(format!("Connected to {}", db_path)),
-                connection: conn,
-            }),
+            Ok(conn) => {
+                log::info!("[DB200] Successfully connected to database: {}", db_path);
+                DbConnectionProcess::Success(DatabaseConnectSuccess {
+                    response_code: Some(200),
+                    message: Some(format!("Connected to {}", db_path)),
+                    connection: conn,
+                })
+            }
             Err(e) => DbConnectionProcess::Error(DatabaseConnectError {
                 response_code: 401,
                 message: format!("Failed to open database: {}", e),

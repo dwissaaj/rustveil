@@ -14,8 +14,7 @@ use crate::social_network::calculate::{betweenness_centrality_calculate_direct,
     katz_centrality_calculate,
     closeness_centrality_calculate
     };
-use crate::global::db_connection::DatabaseConnection;
-use crate::global::db_connection::{DbConnectionProcess,};
+use crate::database::db_connection::{DbConnectionProcess,DatabaseConnection};
 
 #[command]
 pub fn set_vertices(app: AppHandle, vertices_selected: VerticesSelected) -> VerticesSelectedResult {
@@ -42,6 +41,8 @@ fn save_vertices_to_database(app: &AppHandle, vertices: &VerticesSelected, curre
     
     match db_result {
         DbConnectionProcess::Success(db_success) => {
+            let response_code = db_success.response_code.unwrap_or(200);
+        log::info!("[DB{}] {}", response_code, db_success.message.unwrap_or_default());
             let conn = db_success.connection;
             
             let vertex_json = serde_json::json!({

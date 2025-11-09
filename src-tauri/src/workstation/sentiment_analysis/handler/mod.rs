@@ -1,4 +1,4 @@
-use crate::global::db_connection::{DatabaseConnection, DbConnectionProcess};
+use crate::database::db_connection::{DatabaseConnection, DbConnectionProcess};
 use crate::sentiment_analysis::state::{ProcessTarget, ProcessTargetError, ProcessTargetSuccess};
 use crate::workstation::sentiment_analysis::state::{
     ColumnTargetError, ColumnTargetSelectedResult, ColumnTargetSentimentAnalysis,
