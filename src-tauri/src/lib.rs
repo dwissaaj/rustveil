@@ -19,7 +19,6 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_fs::init())
         .plugin(
-            // ✅ Setup tauri_plugin_log to write inside a safe app data directory
             tauri_plugin_log::Builder::new()
                 .target(tauri_plugin_log::Target::new(
                     tauri_plugin_log::TargetKind::Webview,
@@ -27,13 +26,11 @@ pub fn run() {
                 .target(tauri_plugin_log::Target::new(
                     tauri_plugin_log::TargetKind::Stdout,
                 ))
-                // 👇 Use LogDir (this goes inside the OS-specific writable folder)
                 .target(tauri_plugin_log::Target::new(
                     tauri_plugin_log::TargetKind::LogDir {
-                        file_name: Some("rustveil".to_string()),
+                        file_name: Some("Rustveil".to_string()),
                     },
                 ))
-                // Optional: set log level
                 .level(log::LevelFilter::Info)
                 .build(),
         )
@@ -56,11 +53,7 @@ pub fn run() {
         // ---- On startup ----
         .setup(|app| {
             app.fs_scope();
-
-            // Create global folder inside user directory
-            let folder_path = app_path::create_folder_main_app(app);
-            log::info!("✅ App folder initialized at: {}", folder_path);
-
+            app_path::create_folder_main_app(app);
             Ok(())
         })
         // ---- All backend commands ----
