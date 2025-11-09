@@ -36,19 +36,19 @@ impl DatabaseConnection {
                 log::error!("[DB303] State Poison Failed to lock database state");
                 return DbConnectionProcess::Error(DatabaseConnectError {
                     response_code: 500,
-                    message: format!("[DB303] State Poison Failed to lock database state {}", e),
-                })
+                    message: format!("State Poison Failed to lock database state {}", e),
+                });
             }
         };
 
         let db_path = db.file_url.clone();
 
         if db_path.is_empty() {
+            log::error!("[DB302] Database path unknown {}", db_path);
             return DbConnectionProcess::Error(DatabaseConnectError {
                 response_code: 404,
-                message:
-                    "[DB302] Database path unknown. Please load or select a valid database file."
-                        .to_string(),
+                message: "Database path unknown. Please load or select a valid database file."
+                    .to_string(),
             });
         }
 
@@ -61,10 +61,13 @@ impl DatabaseConnection {
                     connection: conn,
                 })
             }
-            Err(e) => DbConnectionProcess::Error(DatabaseConnectError {
-                response_code: 401,
-                message: format!("[DB301] General Error. Failed to open database: {}", e),
-            }),
+            Err(e) => {
+                log::error!("[DB301] Failed to open database: {}", e);
+                DbConnectionProcess::Error(DatabaseConnectError {
+                    response_code: 401,
+                    message: format!("General Error. Failed to open database: {}", e),
+                })
+            }
         }
     }
 }
