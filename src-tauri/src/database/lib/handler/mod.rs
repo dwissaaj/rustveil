@@ -365,7 +365,7 @@ pub fn data_to_sqlite(
             message: format!("Error creating table: {}", e),
         });
     } else {
-        log::info!("[DB310] Created table `{}` successfully", table_name);
+        log::info!("[DB200] Created table `{}` successfully", table_name);
     }
 
 
@@ -442,7 +442,7 @@ pub fn open_or_create_sqlite(app: &AppHandle, base_path: &str) -> Result<Connect
     match Connection::open(&final_path) {
         Ok(conn) => Ok(conn),
         Err(e) => {
-            log::error!("[DB311] When create a sqlite file it error {}",e);
+            log::error!("[DB310] When create a sqlite file it error {}",e);
             Err(format!("Error at connection: {}", e))
         },
     }

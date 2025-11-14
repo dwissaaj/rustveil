@@ -48,7 +48,7 @@ pub fn analyze_and_update_sentiment(app: AppHandle, selected_language: String) -
     let mut stmt = match conn.prepare(&query) {
         Ok(s) => s,
         Err(e) => {
-            log::error!("[SN305] Failed to create a statement query to database {}",e);
+            log::error!("[SA305] Failed to create a statement query to database {}",e);
             return ProcessTarget::Error(ProcessTargetError {
                 response_code: 402,
                 message: format!("Failed to prepare query: {}", e),
@@ -59,7 +59,7 @@ pub fn analyze_and_update_sentiment(app: AppHandle, selected_language: String) -
     let rows = match stmt.query_map([], |row| row.get::<_, Option<String>>(0)) {
         Ok(r) => r,
         Err(e) => {
-            log::error!("[SN305] Failed to query rows {}",e);
+            log::error!("[SA305] Failed to query rows {}",e);
             return ProcessTarget::Error(ProcessTargetError {
                 response_code: 403,
                 message: format!("Failed to query rows: {}", e),
@@ -77,7 +77,7 @@ pub fn analyze_and_update_sentiment(app: AppHandle, selected_language: String) -
     }
 
     if texts.is_empty() {
-        log::info!("[SN306] Text or data is empty");
+        log::info!("[SA306] Text or data is empty");
         return ProcessTarget::Error(ProcessTargetError {
             response_code: 204,
             message: "No data found in target column".to_string(),
@@ -88,7 +88,7 @@ pub fn analyze_and_update_sentiment(app: AppHandle, selected_language: String) -
     let resource_dir = match app.path().resource_dir() {
         Ok(p) => p,
         Err(e) => {
-            log::error!("[SN307] Resource dir error: {}",e);
+            log::error!("[SA307] Resource dir error: {}",e);
             return ProcessTarget::Error(ProcessTargetError {
                 response_code: 404,
                 message: format!("Resource dir error: {}", e),
@@ -133,7 +133,7 @@ pub fn analyze_and_update_sentiment(app: AppHandle, selected_language: String) -
     let sentiment_model = match SentimentModel::new(config) {
         Ok(model) => model,
         Err(e) => {
-            log::error!("[SN308] Failed to load model: {}",e);
+            log::error!("[SA308] Failed to load model: {}",e);
             return ProcessTarget::Error(ProcessTargetError {
                 response_code: 406,
                 message: format!("Failed to load model: {}", e),

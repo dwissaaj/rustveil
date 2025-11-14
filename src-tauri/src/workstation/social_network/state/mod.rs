@@ -44,7 +44,7 @@ pub struct VerticesSetError {
     pub message: String,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Debug)]
 pub enum CalculateProcess {
     Success(CalculateProcessComplete),
     Error(CalculateProcessError),
@@ -64,7 +64,7 @@ pub struct CalculateProcessComplete {
     pub closeness_centrality: Option<Vec<f64>>,
     
 }
-#[derive(Serialize)]
+#[derive(Serialize, Debug)]
 pub struct CalculateProcessError {
     pub response_code: u32,
     pub message: String,

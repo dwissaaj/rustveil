@@ -14,7 +14,7 @@ pub fn get_target_column(app: &AppHandle) -> Result<String, ProcessTargetError> 
     let target_col = state.column_target.clone();
 
     if target_col.is_empty() {
-        log::error!("[SN302] No target column");
+        log::error!("[SA302] No target column");
         return Err(ProcessTargetError {
             response_code: 400,
             message: "Column Target missing. Set it at SN > Target > Pick A Column".to_string(),
@@ -35,6 +35,7 @@ pub fn set_sentiment_analysis_target_column(
     target_state.column_target = target.column_target.clone();
     target_state.language_target = target.language_target.clone();
     if target_state.column_target.is_empty() || target_state.language_target.is_empty() {
+        log::error!("[SA302] No target column");
         return ColumnTargetSelectedResult::Error(ColumnTargetError {
             response_code: 401,
             message: "No column target. Set at Edit > Pick Column Target".to_string(),
@@ -73,10 +74,13 @@ fn save_sentiment_to_database(
                     column_target: target.column_target.to_string(),
                     language_target: target.column_target.to_string(),
                 }),
-                Err(e) => ColumnTargetSelectedResult::Error(ColumnTargetError {
+                Err(e) => {
+                    log::error!("[SA309] Failed to save sentiment target to sqlite: {}", e);
+                    ColumnTargetSelectedResult::Error(ColumnTargetError {
                     response_code: 500,
-                    message: format!("Failed to save sentiment target: {}", e),
-                }),
+                    message: format!("Failed to save sentiment target to sqlite: {}", e),
+                })
+                }
             }
         }
         DbConnectionProcess::Error(e) => ColumnTargetSelectedResult::Error(ColumnTargetError {

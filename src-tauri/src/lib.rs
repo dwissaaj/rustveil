@@ -66,7 +66,7 @@ pub fn run() {
             sentiment_analysis::calculate::calculate_sentiment_analysis_english,
             sentiment_analysis::calculate::analyze_and_update_sentiment,
             social_network::handler::set_vertices,
-            social_network::handler::calculate_centrality,
+            social_network::calculate::calculate_centrality,
             database::lib::handler::load_sqlite_data,
             database::lib::get::all_data::get_all_data,
             database::lib::get::all_data::get_paginated_data,
