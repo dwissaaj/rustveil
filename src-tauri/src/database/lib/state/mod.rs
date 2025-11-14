@@ -115,3 +115,4 @@ pub struct LoadDatabaseError {
     /// Description of the error for logging or UI display.
     pub message: String,
 }
+

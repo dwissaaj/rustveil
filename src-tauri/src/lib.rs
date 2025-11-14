@@ -67,10 +67,10 @@ pub fn run() {
             sentiment_analysis::handler::analyze_and_update_sentiment,
             social_network::handler::set_vertices,
             social_network::handler::calculate_centrality,
-            social_network::handler::load_centrality_table,
             database::lib::handler::load_sqlite_data,
             database::lib::get::all_data::get_all_data,
             database::lib::get::all_data::get_paginated_data,
+            database::lib::get::social_network::load_centrality_table,
             database::lib::get::all_data::get_all_vertices,
             database::lib::get::sentiment_data::get_paginated_sentiment_target,
         ])

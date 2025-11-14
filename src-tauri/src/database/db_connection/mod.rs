@@ -51,7 +51,14 @@ impl DatabaseConnection {
                     .to_string(),
             });
         }
-
+        if !std::path::Path::new(&db_path).exists() {
+            log::error!("[DB304] Database path is non exist");
+            return DbConnectionProcess::Error(DatabaseConnectError {
+                response_code: 404,
+                message: "Database path unknown. Please load or select a valid database file."
+                    .to_string(),
+            });
+        }
         match Connection::open(&db_path) {
             Ok(conn) => {
                 log::info!("[DB200] Successfully connected to database: {}", db_path);
