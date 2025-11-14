@@ -63,7 +63,7 @@ export default function ColumnViewerTable() {
 
         if (showToast) {
           addToast({
-            title: "Data Fetched",
+            title: "Data Fetchesd",
             description: `${response?.message}`,
             variant: "bordered",
             color: "success",

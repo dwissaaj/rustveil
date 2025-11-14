@@ -41,8 +41,8 @@ export default function DataLoader({
       setIsLoading(true);
       if (result?.response_code === 200) {
         addToast({
-          title: "Table Opened",
-          description: `${result?.message}`,
+          title: "All Set! Data imported",
+          description: "Your data is loaded. Go to View > Refresh to see it.",
           color: "success",
         });
       }

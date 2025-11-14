@@ -79,20 +79,20 @@ export default function NetworkTableViewer() {
       const response = await getCentrality();
       if (response?.response_code === 200) {
         addToast({
-          title: "Success",
+          title: "All Set!!!",
           description: `${response.message}`,
           color: "success",
         });
       } else {
         addToast({
-          title: "Error at Fetch 3",
+          title: "Oops, Something Went Wrong",
           description: `${response?.message}`,
           color: "danger",
         });
       }
     } catch (err) {
       addToast({
-        title: "Error at Fetch 2",
+        title: "Oops, Something Went Wrong",
         description: `${err}`,
         color: "danger",
       });
