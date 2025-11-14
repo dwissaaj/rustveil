@@ -1,8 +1,7 @@
-import { filePath } from "@/app/lib/data/state";
 import { open } from "@tauri-apps/plugin-dialog";
 import { useAtom } from "jotai";
 
-
+import { filePath } from "@/app/lib/data/state";
 
 export function useLoadDatabase() {
   const [fileState, setFileState] = useAtom(filePath);

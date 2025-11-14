@@ -1,8 +1,8 @@
 import { open } from "@tauri-apps/plugin-dialog";
 import { invoke } from "@tauri-apps/api/core";
 import { useAtom, useSetAtom } from "jotai";
-import { filePath, sheetAvailable, sheetSelected } from "@/app/lib/data/state";
 
+import { filePath, sheetAvailable, sheetSelected } from "@/app/lib/data/state";
 
 export function useFileOpener() {
   const setSheets = useSetAtom(sheetAvailable);

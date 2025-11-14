@@ -21,6 +21,7 @@ function transformEdgesToReagraph(edges: { source: string; target: string }[]) {
 
     // Add edge
     const edgeId = `${e.source}-${e.target}`;
+
     edgesList.push({
       id: edgeId,
       source: e.source,

@@ -45,6 +45,7 @@ export default function ColumnViewerTable() {
         total_negative_data: 0,
         total_positive_data: 0,
       });
+
       return;
     }
 
