@@ -76,6 +76,7 @@ pub fn upload_excel_file(app: AppHandle, url: String, sheet_name: String) -> Pro
     let file_path = file_app.lock().unwrap();
 
     if file_path.file_url.is_empty(){
+        log::error!("[FS303] No target file");
         return ProcessingResult::Error(ErrorResult {
             response_code: 401,
             message: "No Data or file loaded. Go to Data > File > Load or Upload ".to_string(),
@@ -86,9 +87,10 @@ pub fn upload_excel_file(app: AppHandle, url: String, sheet_name: String) -> Pro
         let mut workbook: calamine::Xlsx<std::io::BufReader<std::fs::File>> = match open_workbook(&url) {
         Ok(wb) => wb,
         Err(e) => {
+            log::error!("[FS304] Cannot open file is it corrupt?");
             return ProcessingResult::Error(ErrorResult {
                 response_code: 401,
-                message: format!("Cannot open file: {}", e),
+                message: format!("Cannot open file, is it corrupt? Error message: {}", e),
             })
         }
     };
@@ -106,6 +108,7 @@ pub fn upload_excel_file(app: AppHandle, url: String, sheet_name: String) -> Pro
             range
         }
         Err(e) => {
+            log::error!("[FS305] Sheet not found at the excel");
             return ProcessingResult::Error(ErrorResult {
                 response_code: 401,
                 message: format!("Sheet not found {}", e),
@@ -115,6 +118,7 @@ pub fn upload_excel_file(app: AppHandle, url: String, sheet_name: String) -> Pro
     let rows: Vec<Vec<Data>> = range.rows().map(|r| r.to_vec()).collect();
 
     if rows.is_empty() {
+        log::error!("[FS306] Rows is empty");
         let _ = app.emit(
             "load-data-progress",
             ProcessData {
@@ -168,10 +172,11 @@ pub fn upload_excel_file(app: AppHandle, url: String, sheet_name: String) -> Pro
     let full_db_path = format!("{}/database.sqlite", db_path); 
     let connect = match open_or_create_sqlite(&app, &full_db_path) {
         Ok(conn) => conn,
-        Err(_) => {
+        Err(e) => {
+            log::error!("[FS307] Failed to create a sqlite to the folder {}",e);
             return ProcessingResult::Error(ErrorResult {
                 response_code: 401,
-                message: "Load Data Sqlite Error Connection".to_string(),
+                message: "Failed to create a sqlite database".to_string(),
             })
         }
     };
@@ -221,6 +226,11 @@ pub fn upload_excel_file(app: AppHandle, url: String, sheet_name: String) -> Pro
 /// Will panic if the file cannot be opened.
 #[command]
 pub fn get_sheet(url: &str) -> Vec<String> {
-    let workbook: Xlsx<_> = open_workbook(url).expect("Cannot open file");
-    workbook.sheet_names()
+    match open_workbook::<Xlsx<_>, _>(url) {
+        Ok(workbook) => workbook.sheet_names(),
+        Err(e) => {
+            log::error!("[FS308] Failed to open workbook '{}': {}", url, e);
+            vec![]
+        }
+    }
 }
