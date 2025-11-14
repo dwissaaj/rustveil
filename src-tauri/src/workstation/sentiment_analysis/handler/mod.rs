@@ -38,7 +38,7 @@ pub fn set_sentiment_analysis_target_column(
         log::error!("[SA302] No target column");
         return ColumnTargetSelectedResult::Error(ColumnTargetError {
             response_code: 401,
-            message: "No column target. Set at Edit > Pick Column Target".to_string(),
+            message: "Column Target missing. Set it at SN > Target > Pick A Column".to_string(),
         });
     }
 

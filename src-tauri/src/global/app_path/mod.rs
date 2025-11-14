@@ -1,10 +1,10 @@
-use log::{error};
-use tauri::{ Manager};
+use log::error;
 use std::sync::Mutex;
+use tauri::Manager;
 
 #[derive(Default)]
 pub struct AppFolderPath {
-  pub file_url: String,
+    pub file_url: String,
 }
 
 /// Create the main application folder in the user's home directory.
@@ -32,7 +32,7 @@ pub struct AppFolderPath {
 /// # Related
 /// - See also: `AppFolderPath` for folder state management.
 ///
-/// 
+///
 pub fn create_folder_main_app(app: &tauri::App) -> String {
     let public_dir = match app.handle().path().home_dir() {
         Ok(path) => path,
@@ -53,6 +53,9 @@ pub fn create_folder_main_app(app: &tauri::App) -> String {
     let state = app.state::<Mutex<AppFolderPath>>();
     let mut folder_state = state.lock().unwrap();
     folder_state.file_url = full_path.display().to_string();
-    log::info!("[FS200] Success created a folder at {}", full_path.display());
+    log::info!(
+        "[FS200] Success created a folder at {}",
+        full_path.display()
+    );
     format!("Created at: {}", full_path.display())
 }

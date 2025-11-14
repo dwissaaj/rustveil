@@ -81,7 +81,6 @@ pub struct GetSentimentDataError {
     pub message: String,
 }
 
-
 #[derive(Serialize)]
 pub enum LoadDatabaseProcess {
     /// Successful database process result.
@@ -115,4 +114,3 @@ pub struct LoadDatabaseError {
     /// Description of the error for logging or UI display.
     pub message: String,
 }
-

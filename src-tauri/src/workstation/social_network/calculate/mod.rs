@@ -43,7 +43,7 @@ pub fn calculate_centrality(app: AppHandle, graph_type: String) -> CalculateProc
     let mut stmt = match connect.prepare(&query) {
         Ok(stmt) => stmt,
         Err(e) => {
-            log::error!("[SNA307] Failed to connect a database {}",e);
+            log::error!("[SNA307] Failed to connect a database {}", e);
             return CalculateProcess::Error(CalculateProcessError {
                 response_code: 403,
                 message: format!(
@@ -76,7 +76,7 @@ pub fn calculate_centrality(app: AppHandle, graph_type: String) -> CalculateProc
             }
         }
         Err(e) => {
-            log::error!("[SNA307] Query failed to read rows: {}",e);
+            log::error!("[SNA307] Query failed to read rows: {}", e);
             return CalculateProcess::Error(CalculateProcessError {
                 response_code: 403,
                 message: format!("Query failed: {}", e),
@@ -84,18 +84,13 @@ pub fn calculate_centrality(app: AppHandle, graph_type: String) -> CalculateProc
         }
     }
 
-
     if results.is_empty() {
-        log::warn!(
-            "[SNA308] No results is found {:?}",
-            results
-        );
+        log::warn!("[SNA308] No results is found {:?}", results);
         return CalculateProcess::Error(CalculateProcessError {
             response_code: 404,
             message: "No data found for centrality calculation".to_string(),
         });
     }
-
 
     let vertices_one: Vec<String> = results.iter().map(|(v1, _)| v1.clone()).collect();
     let vertices_two: Vec<String> = results.iter().map(|(_, v2)| v2.clone()).collect();
@@ -115,10 +110,7 @@ pub fn calculate_centrality(app: AppHandle, graph_type: String) -> CalculateProc
         .collect();
 
     if unique_vertices.is_empty() {
-        log::warn!(
-            "[SNA308] No unique vertices found {:?}",
-            unique_vertices
-        );
+        log::warn!("[SNA308] No unique vertices found {:?}", unique_vertices);
         return CalculateProcess::Error(CalculateProcessError {
             response_code: 401,
             message: "Vertices is Empty".to_string(),
@@ -151,10 +143,10 @@ pub fn calculate_centrality(app: AppHandle, graph_type: String) -> CalculateProc
 
     // Check if edges are empty (optional - you might want to handle this differently)
     if numeric_edges.is_empty() {
-            log::warn!(
-        "[SNA311] No edges found after mapping. numeric edges = {:?}",
-        numeric_edges
-    );
+        log::warn!(
+            "[SNA311] No edges found after mapping. numeric edges = {:?}",
+            numeric_edges
+        );
         return CalculateProcess::Error(CalculateProcessError {
             response_code: 401,
             message: "No edges found after mapping".to_string(),
@@ -171,7 +163,7 @@ pub fn calculate_centrality(app: AppHandle, graph_type: String) -> CalculateProc
     let betweenness_centrality: Vec<f64> = match betweeness_centrality_result {
         Ok(vec_opt) => vec_opt.into_iter().map(|v| v.unwrap_or(0.0)).collect(),
         Err(e) => {
-            log::warn!("[SNA310] Error at calculate {:?}",e);
+            log::warn!("[SNA310] Error at calculate {:?}", e);
             return CalculateProcess::Error(CalculateProcessError {
                 response_code: 403,
                 message: format!("Error calculating centrality"),
@@ -183,7 +175,7 @@ pub fn calculate_centrality(app: AppHandle, graph_type: String) -> CalculateProc
         match degree_centrality_calculate(numeric_edges.clone(), graph_type.clone()) {
             Ok(degree_centrality) => degree_centrality,
             Err(e) => {
-            log::warn!("[SNA310] Error at calculate {:?}",e);
+                log::warn!("[SNA310] Error at calculate {:?}", e);
                 return CalculateProcess::Error(CalculateProcessError {
                     response_code: 403,
                     message: format!("Error calculating degree centrality"),
@@ -194,7 +186,7 @@ pub fn calculate_centrality(app: AppHandle, graph_type: String) -> CalculateProc
         Ok(Some(eigenvector_centrality)) => eigenvector_centrality,
         Ok(None) => vec![0.0; id_to_username.len()], // Handle None case
         Err(e) => {
-            log::warn!("[SNA310] Error at calculate {:?}",e);
+            log::warn!("[SNA310] Error at calculate {:?}", e);
             return CalculateProcess::Error(CalculateProcessError {
                 response_code: 403,
                 message: format!("Error calculating eigenvector centrality"),
@@ -205,7 +197,7 @@ pub fn calculate_centrality(app: AppHandle, graph_type: String) -> CalculateProc
         Ok(Some(katz_centrality)) => katz_centrality,
         Ok(None) => vec![0.0; id_to_username.len()], // Handle None case
         Err(e) => {
-            log::warn!("[SNA310] Error at calculate {:?}",e);
+            log::warn!("[SNA310] Error at calculate {:?}", e);
             return CalculateProcess::Error(CalculateProcessError {
                 response_code: 403,
                 message: format!("Error calculating katz centrality"),
@@ -218,7 +210,7 @@ pub fn calculate_centrality(app: AppHandle, graph_type: String) -> CalculateProc
             .map(|v| v.unwrap_or(0.0))
             .collect::<Vec<f64>>(),
         Err(e) => {
-            log::warn!("[SNA310] Error at calculate {:?}",e);
+            log::warn!("[SNA310] Error at calculate {:?}", e);
             return CalculateProcess::Error(CalculateProcessError {
                 response_code: 403,
                 message: format!("Error calculating closeness centrality"),
@@ -239,7 +231,7 @@ pub fn calculate_centrality(app: AppHandle, graph_type: String) -> CalculateProc
     ) {
         Ok(_) => {}
         Err(e) => {
-            log::error!("[SNA307] Failed to query a database {}",e);
+            log::error!("[SNA307] Failed to query a database {}", e);
             return CalculateProcess::Error(CalculateProcessError {
                 response_code: 403,
                 message: format!("Failed to create table: {}", e),
@@ -249,7 +241,7 @@ pub fn calculate_centrality(app: AppHandle, graph_type: String) -> CalculateProc
     match connect.execute("DELETE FROM rustveil_centrality", []) {
         Ok(_) => {}
         Err(e) => {
-            log::error!("[SNA307] Failed to query a database {}",e);
+            log::error!("[SNA307] Failed to query a database {}", e);
             return CalculateProcess::Error(CalculateProcessError {
                 response_code: 403,
                 message: format!("Failed to clear table: {}", e),
@@ -278,7 +270,7 @@ pub fn calculate_centrality(app: AppHandle, graph_type: String) -> CalculateProc
         ) {
             Ok(_) => {}
             Err(e) => {
-                log::error!("[SNA307] Failed to query a database {}",e);
+                log::error!("[SNA307] Failed to query a database {}", e);
                 return CalculateProcess::Error(CalculateProcessError {
                     response_code: 403,
                     message: format!("Failed to insert data for node {}: {}", node_id, e),
@@ -313,10 +305,7 @@ pub fn map_edges_to_ids(
 
     for (a, b) in edges {
         let vertex_1 = user_map.get(&a).ok_or_else(|| {
-                        log::warn!(
-        "[SNA311] No Username is found = {:?}",
-        a
-    );
+            log::warn!("[SNA311] No Username is found = {:?}", a);
             CalculateProcessError {
                 response_code: 404,
                 message: format!("Error at Mapping Username {} not found", a),
@@ -324,10 +313,7 @@ pub fn map_edges_to_ids(
         })?;
 
         let vertex_2 = user_map.get(&b).ok_or_else(|| {
-           log::warn!(
-        "[SNA311] No Username is found = {:?}",
-        b
-    );
+            log::warn!("[SNA311] No Username is found = {:?}", b);
             CalculateProcessError {
                 response_code: 404,
                 message: format!("Error at Mapping Username {} not found", b),
@@ -339,7 +325,6 @@ pub fn map_edges_to_ids(
 
     Ok(result)
 }
-
 
 pub fn betweenness_centrality_calculate_direct(
     numeric_edges: Vec<(u32, u32)>,
@@ -367,7 +352,10 @@ pub fn betweenness_centrality_calculate_undirect(
     // 2. Calculate centrality
     let output = betweenness_centrality(&graph, false, false, 200);
     if output.iter().all(|x| x.is_none()) {
-        log::error!("[SNA312] error at calculate betweness centrality = {:?}",output);
+        log::error!(
+            "[SNA312] error at calculate betweness centrality = {:?}",
+            output
+        );
         return Err(CalculateProcessError {
             response_code: 403,
             message: "Failed to calculate betweness centrality undirect".to_string(),
@@ -384,7 +372,10 @@ pub fn closeness_centrality_calculate(
     let output = closeness_centrality(&graph, true);
 
     if output.is_empty() {
-        log::error!("[SNA312] error at calculation, closeness data is empty  = {:?}",output);
+        log::error!(
+            "[SNA312] error at calculation, closeness data is empty  = {:?}",
+            output
+        );
         return Err(CalculateProcessError {
             response_code: 404,
             message: "Closeness centrality calculation failed".to_string(),
@@ -412,7 +403,10 @@ pub fn degree_centrality_calculate(
 
     let output = degree_centrality(&graph, direction);
     if output.is_empty() {
-        log::error!("[SNA312] error at calculate degree centrality = {:?}",output);
+        log::error!(
+            "[SNA312] error at calculate degree centrality = {:?}",
+            output
+        );
         return Err(CalculateProcessError {
             response_code: 404,
             message: "Closeness centrality calculation failed".to_string(),
@@ -427,16 +421,20 @@ pub fn eigenvector_centrality_calculate(
     let graph = petgraph::graph::UnGraph::<(), ()>::from_edges(&edges);
 
     let output = eigenvector_centrality(&graph, |_| Ok::<f64, ()>(1.), None, None);
-        
+
     match output {
         Ok(Some(vec)) => Ok(Some(vec)),
         Ok(None) => Ok(None),
         Err(e) => {
-            log::error!("[SNA312] error at calculate eigenvector = {:?} {:?}",output,e);
+            log::error!(
+                "[SNA312] error at calculate eigenvector = {:?} {:?}",
+                output,
+                e
+            );
             Err(CalculateProcessError {
-            response_code: 403,
-            message: "Eigenvector centrality calculation failed".to_string(),
-        })
+                response_code: 403,
+                message: "Eigenvector centrality calculation failed".to_string(),
+            })
         }
     }
 }
@@ -452,11 +450,11 @@ pub fn katz_centrality_calculate(
         Ok(Some(vec)) => Ok(Some(vec)),
         Ok(None) => Ok(None),
         Err(e) => {
-            log::error!("[SNA312] error at calculate katz = {:?} {:?}",output,e);
+            log::error!("[SNA312] error at calculate katz = {:?} {:?}", output, e);
             Err(CalculateProcessError {
-            response_code: 403,
-            message: "Katz centrality calculation failed".to_string(),
-        })
+                response_code: 403,
+                message: "Katz centrality calculation failed".to_string(),
+            })
         }
     }
 }

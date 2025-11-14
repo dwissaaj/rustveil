@@ -1,6 +1,6 @@
-/// Represents the result of processing data from Excel into SQLite.
-use serde_json::{ Value};
 use serde::Serialize;
+/// Represents the result of processing data from Excel into SQLite.
+use serde_json::Value;
 #[derive(Serialize)]
 pub enum ProcessingResult {
     /// Processing completed successfully with resulting data.
@@ -28,7 +28,6 @@ pub struct ErrorResult {
     /// Description of the error.
     pub message: String,
 }
-
 
 #[derive(Clone, Serialize)]
 #[serde(rename_all = "camelCase")]

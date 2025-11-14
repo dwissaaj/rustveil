@@ -17,18 +17,18 @@ use uuid::Uuid;
 /// # Function load_sqlite_data
 /// The function `load_sqlite_data` in Rust updates file path in state, checks for table existence,
 /// retrieves metadata, and updates selected vertices and columns based on the SQLite database.
-/// 
+///
 /// Arguments:
-/// 
+///
 /// * `app`: The `app` parameter in the function `load_sqlite_data` is of type `AppHandle`, which likely
 /// represents a handle or reference to the application context or state. It is used to access and
 /// modify the application's state, such as retrieving or updating data related to the SQLite database
 /// being loaded
 /// * `pathfile`: The function `load_sqlite_data` takes in two parameters: `app` of type `AppHandle` and
 /// `pathfile` of type `String`.
-/// 
+///
 /// Returns:
-/// 
+///
 /// The function `load_sqlite_data` returns a `LoadDatabaseProcess` enum which can have two variants:
 /// 1. `LoadDatabaseProcess::Success` containing a `LoadDatabaseSuccess` struct with various fields
 /// including response code, message, data, total count, and other specific data related to database
@@ -36,17 +36,17 @@ use uuid::Uuid;
 /// 2. `LoadDatabaseProcess::Error` containing a `LoadDatabaseError` struct with
 /// The function `load_sqlite_data` in Rust updates file path in state, checks for table existence,
 /// retrieves metadata from the database, and updates selected vertices and analysis targets.
-/// 
+///
 /// Arguments:
-/// 
+///
 /// * `app`: The `app` parameter in the function `load_sqlite_data` is of type `AppHandle`, which likely
 /// represents a handle or reference to the application context or state. It is used to access and
 /// modify the application's state, such as retrieving or updating data related to the SQLite database
 /// being loaded
 /// * `pathfile`: The function `load_sqlite_data` takes in two parameters:
-/// 
+///
 /// Returns:
-/// 
+///
 /// The function `load_sqlite_data` returns a `LoadDatabaseProcess` enum which can have two variants:
 /// 1. `LoadDatabaseProcess::Success` containing a `LoadDatabaseSuccess` struct with various fields
 /// including response code, message, data, total count, target vertices, graph type, sentiment column,
@@ -230,7 +230,7 @@ pub fn load_sqlite_data(app: AppHandle, pathfile: String) -> LoadDatabaseProcess
 /// # Returns
 /// - `DatabaseProcess::Success` on success
 /// - `DatabaseProcess::Error` on failure
-/// 
+///
 pub fn data_to_sqlite(
     data_json: Vec<Value>,
     headers: Vec<String>,
@@ -278,7 +278,7 @@ pub fn data_to_sqlite(
 
     let sql = table.to_string(SqliteQueryBuilder);
     if let Err(e) = connect.execute(sql.as_str(), []) {
-        log::error!("[DB308] Error creating table {}",e);
+        log::error!("[DB308] Error creating table {}", e);
         return DatabaseProcess::Error(DatabaseError {
             response_code: 401,
             message: format!("Error creating table: {}", e),
@@ -344,7 +344,11 @@ pub fn data_to_sqlite(
                 .unwrap();
             }
             Err(e) => {
-                log::error!("[DB309] Error at inserting batch of data to the table {} {}",i,e);
+                log::error!(
+                    "[DB309] Error at inserting batch of data to the table {} {}",
+                    i,
+                    e
+                );
                 return DatabaseProcess::Error(DatabaseError {
                     response_code: 401,
                     message: format!("Error inserting batch {}: {}", i, e),
@@ -359,7 +363,7 @@ pub fn data_to_sqlite(
         };
     let sql = table.to_string(SqliteQueryBuilder);
     if let Err(e) = connect.execute(sql.as_str(), []) {
-        log::error!("[DB308] Error creating table {}",e);
+        log::error!("[DB308] Error creating table {}", e);
         return DatabaseProcess::Error(DatabaseError {
             response_code: 401,
             message: format!("Error creating table: {}", e),
@@ -367,7 +371,6 @@ pub fn data_to_sqlite(
     } else {
         log::info!("[DB200] Created table `{}` successfully", table_name);
     }
-
 
     if let Err(e) = connect.execute("CREATE TABLE IF NOT EXISTS rustveil_metadata (target_vertices TEXT, target_sentiment TEXT)", []) {
     log::error!("[DB308] Error creating table metadata {}",e);
@@ -418,7 +421,6 @@ pub fn data_to_sqlite(
 pub fn open_or_create_sqlite(app: &AppHandle, base_path: &str) -> Result<Connection, String> {
     let mut final_path = base_path.to_string();
 
-
     if Path::new(&final_path).exists() {
         let mut counter = 1;
         loop {
@@ -442,8 +444,8 @@ pub fn open_or_create_sqlite(app: &AppHandle, base_path: &str) -> Result<Connect
     match Connection::open(&final_path) {
         Ok(conn) => Ok(conn),
         Err(e) => {
-            log::error!("[DB310] When create a sqlite file it error {}",e);
+            log::error!("[DB310] When create a sqlite file it error {}", e);
             Err(format!("Error at connection: {}", e))
-        },
+        }
     }
 }

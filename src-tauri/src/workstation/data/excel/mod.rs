@@ -1,15 +1,12 @@
-
-use crate::database::lib::handler::{open_or_create_sqlite, data_to_sqlite};
+use crate::app_path::AppFolderPath;
+use crate::database::lib::handler::{data_to_sqlite, open_or_create_sqlite};
 use crate::database::lib::state::DatabaseProcess;
+use crate::workstation::data::state::{DataTable, ErrorResult, ProcessData, ProcessingResult};
 use calamine::{open_workbook, Data, Reader, Xlsx};
 use chrono::NaiveDate;
 use serde_json::{json, Value};
-use tauri::{command, Manager, AppHandle, Emitter};
-use crate::app_path::{AppFolderPath};
 use std::sync::Mutex;
-use crate::workstation::data::state::{ProcessingResult,ErrorResult,DataTable, ProcessData};
-
-
+use tauri::{command, AppHandle, Emitter, Manager};
 
 /// Converts an Excel serial date number into a `YYYY-MM-DD` formatted string.
 ///
@@ -42,7 +39,7 @@ fn excel_serial_to_date(serial: f64) -> String {
 ///   auto-generated fields like `uuid`), not just the in-memory data that was
 ///   parsed from Excel.
 ///
-/// 
+///
 /// - added defaults/UUIDs.
 /// - Prevents bugs where in-memory data and DB data drift apart.
 /// - Makes the frontend treat SQLite as the single source of truth.
@@ -69,13 +66,12 @@ fn excel_serial_to_date(serial: f64) -> String {
 
 #[command]
 pub fn upload_excel_file(app: AppHandle, url: String, sheet_name: String) -> ProcessingResult {
-
     let file_app = app.state::<Mutex<AppFolderPath>>();
 
     // Lock the mutex to get mutable access:
     let file_path = file_app.lock().unwrap();
 
-    if file_path.file_url.is_empty(){
+    if file_path.file_url.is_empty() {
         log::error!("[FS303] No target file");
         return ProcessingResult::Error(ErrorResult {
             response_code: 401,
@@ -84,18 +80,18 @@ pub fn upload_excel_file(app: AppHandle, url: String, sheet_name: String) -> Pro
     }
 
     // Replace expect with proper error handling
-        let mut workbook: calamine::Xlsx<std::io::BufReader<std::fs::File>> = match open_workbook(&url) {
+    let mut workbook: calamine::Xlsx<std::io::BufReader<std::fs::File>> = match open_workbook(&url)
+    {
         Ok(wb) => wb,
         Err(e) => {
             log::error!("[FS304] Cannot open file is it corrupt?");
             return ProcessingResult::Error(ErrorResult {
                 response_code: 401,
                 message: format!("Cannot open file, is it corrupt? Error message: {}", e),
-            })
+            });
         }
     };
-    
-   
+
     let range = match workbook.worksheet_range(&sheet_name) {
         Ok(range) => {
             let _ = app.emit(
@@ -112,7 +108,7 @@ pub fn upload_excel_file(app: AppHandle, url: String, sheet_name: String) -> Pro
             return ProcessingResult::Error(ErrorResult {
                 response_code: 401,
                 message: format!("Sheet not found {}", e),
-            })
+            });
         }
     };
     let rows: Vec<Vec<Data>> = range.rows().map(|r| r.to_vec()).collect();
@@ -169,15 +165,15 @@ pub fn upload_excel_file(app: AppHandle, url: String, sheet_name: String) -> Pro
 
     // SQLite file path inside the app's folder.
     let db_path = file_path.file_url.as_str().to_owned();
-    let full_db_path = format!("{}/database.sqlite", db_path); 
+    let full_db_path = format!("{}/database.sqlite", db_path);
     let connect = match open_or_create_sqlite(&app, &full_db_path) {
         Ok(conn) => conn,
         Err(e) => {
-            log::error!("[FS307] Failed to create a sqlite to the folder {}",e);
+            log::error!("[FS307] Failed to create a sqlite to the folder {}", e);
             return ProcessingResult::Error(ErrorResult {
                 response_code: 401,
                 message: "Failed to create a sqlite database".to_string(),
-            })
+            });
         }
     };
 
@@ -191,27 +187,27 @@ pub fn upload_excel_file(app: AppHandle, url: String, sheet_name: String) -> Pro
 
     let sqlite_result = data_to_sqlite(data_json.clone(), headers.clone(), &connect, &app);
     match sqlite_result {
-    DatabaseProcess::Success(_) => {
-        let _ = app.emit(
-            "load-data-progress",
-            ProcessData {
-                progress: 100,
-                message: "Process Done".to_string(),
-            },
-        );
+        DatabaseProcess::Success(_) => {
+            let _ = app.emit(
+                "load-data-progress",
+                ProcessData {
+                    progress: 100,
+                    message: "Process Done".to_string(),
+                },
+            );
 
-      
-        ProcessingResult::Success(DataTable {
-            response_code: 200,
-            message: "Data success imported to database. Refresh Data  > View > Refresh.".to_string(),
-            data: vec![], 
-        })
+            ProcessingResult::Success(DataTable {
+                response_code: 200,
+                message: "Data success imported to database. Refresh Data  > View > Refresh."
+                    .to_string(),
+                data: vec![],
+            })
+        }
+        DatabaseProcess::Error(err) => ProcessingResult::Error(ErrorResult {
+            response_code: err.response_code,
+            message: err.message,
+        }),
     }
-    DatabaseProcess::Error(err) => ProcessingResult::Error(ErrorResult {
-        response_code: err.response_code,
-        message: err.message,
-    }),
-}
 }
 
 /// Retrieves the list of sheet names from an Excel file.

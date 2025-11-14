@@ -27,7 +27,6 @@ pub struct ColumnTargetError {
     pub message: String,
 }
 
-
 #[derive(Serialize)]
 pub enum ProcessTarget {
     Success(ProcessTargetSuccess),
@@ -40,7 +39,7 @@ pub struct ProcessTargetSuccess {
     pub message: String,
     pub total_negative_data: Option<u32>,
     pub total_positive_data: Option<u32>,
-    pub total_data : Option<u32>
+    pub total_data: Option<u32>,
 }
 
 #[derive(Serialize)]
