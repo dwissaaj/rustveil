@@ -278,6 +278,7 @@ pub fn data_to_sqlite(
 
     let sql = table.to_string(SqliteQueryBuilder);
     if let Err(e) = connect.execute(sql.as_str(), []) {
+        log::error!("[DB308] Error creating table {}",e);
         return DatabaseProcess::Error(DatabaseError {
             response_code: 401,
             message: format!("Error creating table: {}", e),
@@ -343,6 +344,7 @@ pub fn data_to_sqlite(
                 .unwrap();
             }
             Err(e) => {
+                log::error!("[DB309] Error at inserting batch of data to the table {} {}",i,e);
                 return DatabaseProcess::Error(DatabaseError {
                     response_code: 401,
                     message: format!("Error inserting batch {}: {}", i, e),
@@ -357,17 +359,18 @@ pub fn data_to_sqlite(
         };
     let sql = table.to_string(SqliteQueryBuilder);
     if let Err(e) = connect.execute(sql.as_str(), []) {
+        log::error!("[DB308] Error creating table {}",e);
         return DatabaseProcess::Error(DatabaseError {
             response_code: 401,
             message: format!("Error creating table: {}", e),
         });
     } else {
-        log::info!("Created table `{}` successfully", table_name);
+        log::info!("[DB310] Created table `{}` successfully", table_name);
     }
 
-    // ADD THIS LINE TO CREATE THE METADATA TABLE
+
     if let Err(e) = connect.execute("CREATE TABLE IF NOT EXISTS rustveil_metadata (target_vertices TEXT, target_sentiment TEXT)", []) {
-    log::error!("Failed to create metadata table: {}", e);
+    log::error!("[DB308] Error creating table metadata {}",e);
 }
     DatabaseProcess::Success(DatabaseComplete {
         response_code: 200,
@@ -415,7 +418,7 @@ pub fn data_to_sqlite(
 pub fn open_or_create_sqlite(app: &AppHandle, base_path: &str) -> Result<Connection, String> {
     let mut final_path = base_path.to_string();
 
-    // if file exists, find next available filename
+
     if Path::new(&final_path).exists() {
         let mut counter = 1;
         loop {
@@ -438,6 +441,9 @@ pub fn open_or_create_sqlite(app: &AppHandle, base_path: &str) -> Result<Connect
     }
     match Connection::open(&final_path) {
         Ok(conn) => Ok(conn),
-        Err(e) => Err(format!("Error at connection: {}", e)),
+        Err(e) => {
+            log::error!("[DB311] When create a sqlite file it error {}",e);
+            Err(format!("Error at connection: {}", e))
+        },
     }
 }
