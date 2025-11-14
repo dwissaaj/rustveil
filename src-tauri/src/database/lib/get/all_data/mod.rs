@@ -1,9 +1,9 @@
 use crate::database::db_connection::{DatabaseConnection, DbConnectionProcess};
 use crate::database::lib::state::{DatabaseComplete, DatabaseError, DatabaseProcess};
-use serde_json::Value;
-use tauri::{command, AppHandle};
 use crate::social_network::handler::get_vertices_target;
 use serde::Deserialize;
+use serde_json::Value;
+use tauri::{command, AppHandle};
 
 #[derive(Deserialize)]
 pub struct PaginationParams {
@@ -233,8 +233,6 @@ pub fn get_paginated_data(app: AppHandle, pagination: PaginationParams) -> Datab
 
 #[command]
 pub fn get_all_vertices(app: AppHandle) -> DatabaseProcess {
-
-
     let connect = match DatabaseConnection::connect_db(&app) {
         DbConnectionProcess::Success(s) => s.connection,
         DbConnectionProcess::Error(e) => {
@@ -254,8 +252,11 @@ pub fn get_all_vertices(app: AppHandle) -> DatabaseProcess {
             });
         }
     };
-    
-    let sql = format!("SELECT {}, {} FROM rustveil", vertices.vertex_1, vertices.vertex_2);
+
+    let sql = format!(
+        "SELECT {}, {} FROM rustveil",
+        vertices.vertex_1, vertices.vertex_2
+    );
 
     let mut stmt = match connect.prepare(&sql) {
         Ok(s) => s,

@@ -13,22 +13,35 @@ use std::sync::Mutex;
 use tauri::{command, AppHandle, Manager};
 use tch::Device;
 
+pub fn get_target_column(app: &AppHandle) -> Result<String, ProcessTargetError> {
+    let binding = app.state::<Mutex<ColumnTargetSentimentAnalysis>>();
+    let state = binding.lock().unwrap();
+
+    let target_col = state.column_target.clone();
+
+    if target_col.is_empty() {
+        log::error!("[SN302] No target column");
+        return Err(ProcessTargetError {
+            response_code: 400,
+            message: "Column Target missing. Set it at SN > Target > Pick A Column".to_string(),
+        });
+    }
+
+    Ok(target_col)
+}
+
 
 
 #[command]
 pub fn analyze_and_update_sentiment(app: AppHandle, selected_language: String) -> ProcessTarget {
 
 
-    let binding = app.state::<Mutex<ColumnTargetSentimentAnalysis>>();
-    let target_state = binding.lock().unwrap();
-    let target_col = target_state.column_target.clone();
-
-    if target_col.is_empty() {
-        return ProcessTarget::Error(ProcessTargetError {
-            response_code: 401,
-            message: "No column target. Set at Edit > Pick Column Target".to_string(),
-        });
+    let target_col = match get_target_column(&app) {
+    Ok(col) => col,
+    Err(e) => {
+        return ProcessTarget::Error(e);
     }
+};
 
     // connect db
     let db = match DatabaseConnection::connect_db(&app) {

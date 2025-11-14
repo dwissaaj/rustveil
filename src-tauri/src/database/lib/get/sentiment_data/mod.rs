@@ -1,30 +1,27 @@
+use crate::database::db_connection::DatabaseConnection;
+use crate::database::db_connection::DbConnectionProcess;
 use crate::database::lib::get::all_data::PaginationParams;
-use crate::database::lib::state::{GetSentimentDataResponse, GetSentimentDataSuccess, GetSentimentDataError};
-use crate::workstation::sentiment_analysis::state::ColumnTargetSentimentAnalysis;
-use crate::SqliteDataState;
-use rusqlite::Connection;
+use crate::database::lib::state::{
+    GetSentimentDataError, GetSentimentDataResponse, GetSentimentDataSuccess,
+};
+use crate::sentiment_analysis::handler::get_target_column;
 use serde_json::Value;
-use std::sync::Mutex;
-use tauri::{command, AppHandle, Manager};
-
+use tauri::{command, AppHandle};
 
 #[command]
 pub fn get_paginated_sentiment_target(
     app: AppHandle,
     pagination: PaginationParams,
-    target: ColumnTargetSentimentAnalysis,
 ) -> GetSentimentDataResponse {
-    let binding = app.state::<Mutex<ColumnTargetSentimentAnalysis>>();
-    let mut target_column_state = binding.lock().unwrap();
-    target_column_state.column_target = target.column_target.clone();
-    let target_col = target_column_state.column_target.clone();
-
-    if target_col.is_empty() {
-        return GetSentimentDataResponse::Error(GetSentimentDataError {
-            response_code: 400,
-            message: "Column Target missing. Set it at SN > Target > Pick A Column".to_string(),
-        });
-    }
+    let target_col = match get_target_column(&app) {
+        Ok(col) => col,
+        Err(e) => {
+            return GetSentimentDataResponse::Error(GetSentimentDataError {
+                response_code: e.response_code,
+                message: e.message,
+            });
+        }
+    };
 
     if pagination.page == 0 || pagination.page_size == 0 {
         return GetSentimentDataResponse::Error(GetSentimentDataError {
@@ -40,29 +37,16 @@ pub fn get_paginated_sentiment_target(
         });
     }
 
-    // db path
-    let db_state = app.state::<Mutex<SqliteDataState>>();
-    let db = db_state.lock().unwrap();
-    let db_path = db.file_url.clone();
-
-    if db_path.is_empty() || !std::path::Path::new(&db_path).exists() {
-        return GetSentimentDataResponse::Error(GetSentimentDataError {
-            response_code: 404,
-            message: "SQLite database not found. Import Data > File > Load or Upload".to_string(),
-        });
-    }
-
-    let connect = match Connection::open(&db_path) {
-        Ok(conn) => conn,
-        Err(e) => {
+    let connect = match DatabaseConnection::connect_db(&app) {
+        DbConnectionProcess::Success(s) => s.connection,
+        DbConnectionProcess::Error(e) => {
             return GetSentimentDataResponse::Error(GetSentimentDataError {
-                response_code: 401,
-                message: format!("Error opening SQLite connection: {}", e),
+                response_code: e.response_code,
+                message: e.message,
             });
         }
     };
 
-    // Ensure schema exists (fixed schema version)
     let _ = connect.execute(
         "CREATE TABLE IF NOT EXISTS rustveil_sentiment (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -76,29 +60,32 @@ pub fn get_paginated_sentiment_target(
 
     // Populate sentiment table if empty (optional fallback)
     let count: i64 = connect
-        .query_row("SELECT COUNT(*) FROM rustveil_sentiment WHERE column_name = ?1;", [target_col.clone()], |row| row.get(0))
+        .query_row(
+            "SELECT COUNT(*) FROM rustveil_sentiment WHERE column_name = ?1;",
+            [target_col.clone()],
+            |row| row.get(0),
+        )
         .unwrap_or(0);
 
     if count == 0 {
         // Load from original 'rustveil' table
-        let mut stmt_old = match connect.prepare(&format!(
-            "SELECT \"{}\" FROM rustveil;",
-            target_col
-        )) {
-            Ok(s) => s,
-            Err(_) => {
-                return GetSentimentDataResponse::Error(GetSentimentDataError {
-                    response_code: 500,
-                    message: "Failed to prepare select from rustveil.".to_string(),
-                });
-            }
-        };
+        let mut stmt_old =
+            match connect.prepare(&format!("SELECT \"{}\" FROM rustveil;", target_col)) {
+                Ok(s) => s,
+                Err(_) => {
+                    return GetSentimentDataResponse::Error(GetSentimentDataError {
+                        response_code: 500,
+                        message: "Failed to prepare select from rustveil.".to_string(),
+                    });
+                }
+            };
 
         let old_rows = stmt_old
             .query_map([], |row| row.get::<_, Option<String>>(0))
             .unwrap();
 
-        let insert_sql = "INSERT INTO rustveil_sentiment (column_name, text_value) VALUES (?1, ?2);";
+        let insert_sql =
+            "INSERT INTO rustveil_sentiment (column_name, text_value) VALUES (?1, ?2);";
         for r in old_rows {
             if let Ok(Some(val)) = r {
                 let _ = connect.execute(insert_sql, rusqlite::params![target_col.clone(), val]);
@@ -135,7 +122,11 @@ pub fn get_paginated_sentiment_target(
         }
     };
 
-    let mut rows = match stmt.query(rusqlite::params![target_col.clone(), pagination.page_size as i64, offset as i64]) {
+    let mut rows = match stmt.query(rusqlite::params![
+        target_col.clone(),
+        pagination.page_size as i64,
+        offset as i64
+    ]) {
         Ok(r) => r,
         Err(e) => {
             return GetSentimentDataResponse::Error(GetSentimentDataError {

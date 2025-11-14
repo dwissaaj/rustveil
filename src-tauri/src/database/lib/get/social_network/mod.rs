@@ -1,25 +1,26 @@
-use crate::social_network::state::{CalculateProcess,CalculateProcessError,CalculateProcessComplete};
 use crate::database::db_connection::{DatabaseConnection, DbConnectionProcess};
-use tauri::{AppHandle, command};
+use crate::social_network::state::{
+    CalculateProcess, CalculateProcessComplete, CalculateProcessError,
+};
 use std::collections::HashMap;
+use tauri::{command, AppHandle};
 
 #[command]
-pub fn load_centrality_table(app: AppHandle,) -> CalculateProcess {
-let connect = match DatabaseConnection::connect_db(&app) {
-    DbConnectionProcess::Success(s) => s.connection,
-    DbConnectionProcess::Error(e) => {
-        return CalculateProcess::Error(CalculateProcessError {
-            response_code: e.response_code,
-            message: e.message,
-        })
-    }
-};
-    
-    // Check if rustveil table exists
+pub fn load_centrality_table(app: AppHandle) -> CalculateProcess {
+    let connect = match DatabaseConnection::connect_db(&app) {
+        DbConnectionProcess::Success(s) => s.connection,
+        DbConnectionProcess::Error(e) => {
+            return CalculateProcess::Error(CalculateProcessError {
+                response_code: e.response_code,
+                message: e.message,
+            })
+        }
+    };
+
     let table_exists: bool = match connect.query_row(
-    "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='rustveil_centrality'",
-    [],
-    |row| row.get::<_, i64>(0) // Specify i64 for COUNT(*)
+        "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='rustveil_centrality'",
+        [],
+        |row| row.get::<_, i64>(0), // Specify i64 for COUNT(*)
     ) {
         Ok(count) => count > 0,
         Err(e) => {
@@ -29,11 +30,13 @@ let connect = match DatabaseConnection::connect_db(&app) {
             });
         }
     };
-    
+
     if !table_exists {
+        log::error!("[SNA305] No table rustveil_centrality try to calculate a new one");
         return CalculateProcess::Error(CalculateProcessError {
             response_code: 404,
-            message: "Table 'rustveil_centrality' does not exist try calculate a new one".to_string(),
+            message: "Table 'rustveil_centrality' does not exist try calculate a new one"
+                .to_string(),
         });
     };
     let mut stmt = match connect.prepare("SELECT * FROM rustveil_centrality") {
@@ -70,7 +73,6 @@ let connect = match DatabaseConnection::connect_db(&app) {
         let katz: f64 = row.get(5).unwrap_or(0.0);
         let closeness: f64 = row.get(6).unwrap_or(0.0);
 
-       
         node_map.insert(node_id, username.clone());
         betweenness_centrality.push(betweenness);
         degree_centrality.push(degree);
