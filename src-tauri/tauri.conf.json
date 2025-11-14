@@ -2,7 +2,7 @@
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "Rustveil",
   "version": "0.1.0",
-  "identifier": "com.hakuro.space",
+  "identifier": "com.rustveil.space",
   "build": {
     "frontendDist": "../out",
     "devUrl": "http://localhost:3000",

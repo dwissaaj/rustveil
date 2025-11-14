@@ -20,16 +20,16 @@ export function useRefreshServer(
 
         if (!lastToastRef.current) {
           addToast({
-            title: "Success",
-            description: result.Success.message || "Data fetched successfully",
+            title: "Data Retrieved",
+            description: result.Success.message || "Data fetched successfully.",
             color: "success",
           });
           lastToastRef.current = true; // mark as shown
         }
       } else if ("Error" in result) {
         addToast({
-          title: "Error",
-          description: result.Error.message || "Failed to fetch data",
+          title: "Fetch Failed",
+          description: result.Error.message || "We couldn't fetch the data.",
           color: "danger",
         });
       }

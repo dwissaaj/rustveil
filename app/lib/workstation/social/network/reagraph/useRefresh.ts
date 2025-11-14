@@ -1,4 +1,5 @@
 import { addToast } from "@heroui/react";
+
 import { GetReagraph } from "./useGetReagraph";
 
 export function useRefreshGraph() {
@@ -6,6 +7,7 @@ export function useRefreshGraph() {
   const handleRefreshGraph = async () => {
     try {
       const result = await fetchEdges();
+
       if (result?.response_code === 200) {
         addToast({
           title: "Success",

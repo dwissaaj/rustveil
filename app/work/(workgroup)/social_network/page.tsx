@@ -13,9 +13,9 @@ export default function SocialNetwork() {
       </div>
       <div className="mt-4">
         <Tabs
-          size="lg"
           aria-label="Social Tab"
           color="primary"
+          size="lg"
           variant="underlined"
         >
           <Tab key="network" title="Network">

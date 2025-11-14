@@ -1,8 +1,5 @@
 "use client";
-import { writeFile, BaseDirectory } from "@tauri-apps/plugin-fs";
-import { CalculateCentralityType } from "@/app/lib/workstation/social/calculate/state";
-import { FilterIcon, InfoIcon } from "@/components/icon/IconFilter";
-import { FullScreenIcon } from "@/components/icon/IconView";
+
 import {
   Button,
   Modal,
@@ -14,16 +11,22 @@ import {
   addToast,
 } from "@heroui/react";
 import { useAtom, useAtomValue } from "jotai";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef } from "react";
+import { useTheme } from "next-themes";
+
+import { FilterPanelBarChart } from "../../../../../components/workstation/sna/centrality/bar/FilterControlBarChart";
+import { CentralityBarComponent } from "../../../../../components/workstation/sna/centrality/bar/CentralityBarComponent";
+import { useExportToImage } from "../../../../lib/workstation/social/useExportToImage";
+
 import { BarFilterState, showFilterAtom, topShowDataBar } from "./state";
+
+import { CalculateCentralityType } from "@/app/lib/workstation/social/calculate/state";
+import { FilterIcon, InfoIcon } from "@/components/icon/IconFilter";
+import { FullScreenIcon } from "@/components/icon/IconView";
 import {
   selectedCentrality,
   selectedChart,
 } from "@/app/lib/workstation/social/centrality/state";
-import { FilterPanelBarChart } from "../../../../../components/workstation/sna/centrality/bar/FilterControlBarChart";
-import { CentralityBarComponent } from "../../../../../components/workstation/sna/centrality/bar/CentralityBarComponent";
-import { useExportToImage } from "../../../../lib/workstation/social/useExportToImage";
-import { useTheme } from "next-themes";
 import NoDataChartComponent from "@/components/workstation/sna/centrality/NoDataChartComponent";
 import AllZeroComponent from "@/components/workstation/sna/centrality/AllZeroComponent";
 
@@ -88,6 +91,7 @@ export function CentralityBarChart({
 
     // slice topN
     let topCount = topN ?? 10;
+
     if (topCount > sorted.length) topCount = sorted.length;
 
     return sorted.slice(0, topCount);
@@ -99,19 +103,19 @@ export function CentralityBarChart({
     <div className="w-full flex flex-col gap-10 border rounded-xl p-4">
       <div className="font-medium flex flex-row justify-start gap-4 items-center">
         <Button
-          variant="flat"
           isIconOnly
-          startContent={<FullScreenIcon className="w-6" />}
           color="primary"
+          startContent={<FullScreenIcon className="w-6" />}
+          variant="flat"
           onPress={onOpen}
-        ></Button>
+        />
         <Tooltip content="Customize Chart in Full Screen Mode">
           <Button
-            variant="flat"
             isIconOnly
-            startContent={<InfoIcon className="w-6" />}
             color="primary"
-          ></Button>
+            startContent={<InfoIcon className="w-6" />}
+            variant="flat"
+          />
         </Tooltip>
       </div>
 
@@ -122,7 +126,6 @@ export function CentralityBarChart({
           <div className="flex-1 w-full ">
             <div className="min-w-[1200px] h-[75vh]">
               <CentralityBarComponent
-                data={data}
                 chartFilter={{
                   ...chartFilter,
                   topMargin: 40,
@@ -130,30 +133,31 @@ export function CentralityBarChart({
                   bottomMargin: 120,
                   leftMargin: 150,
                 }}
+                data={data}
               />
             </div>
           </div>
         ) : (
           <div className="w-full h-full">
-           <AllZeroComponent />
+            <AllZeroComponent />
           </div>
         )}
       </div>
 
       <Modal
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
         className="w-4/5 max-w-[1800px]"
+        isOpen={isOpen}
         scrollBehavior="outside"
+        onOpenChange={onOpenChange}
       >
         <ModalContent>
           <ModalHeader className="flex flex-row justify-start gap-4 items-center">
             {chart.toUpperCase()} - {centrality.toUpperCase()}
             <Button
-              variant="light"
-              color="default"
               isIconOnly
+              color="default"
               startContent={<FilterIcon className="w-4" />}
+              variant="light"
               onPress={() => setshowFilter(!showFilter)}
             />
           </ModalHeader>
@@ -178,7 +182,6 @@ export function CentralityBarChart({
                   </div>
 
                   <CentralityBarComponent
-                    data={data}
                     chartFilter={{
                       ...chartFilter,
                       topMargin: 40,
@@ -186,15 +189,13 @@ export function CentralityBarChart({
                       rightMargin: 40,
                       bottomMargin: 100,
                     }}
+                    data={data}
                   />
                 </div>
               </div>
 
               {showFilter && (
-                <div
-                  className="w-1/4 "
-                  style={{ maxHeight: "75vh" }}
-                >
+                <div className="w-1/4 " style={{ maxHeight: "75vh" }}>
                   <FilterPanelBarChart
                     exportImage={handletoImage}
                     maxNodes={Object.keys(graphData?.node_map ?? {}).length}

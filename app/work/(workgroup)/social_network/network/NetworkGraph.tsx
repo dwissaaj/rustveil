@@ -12,6 +12,13 @@ import {
   Select,
   SelectItem,
 } from "@heroui/react";
+
+import NetworkCanvasReagraph, {
+  NetworkCanvasHandle,
+  LAYOUT_OPTIONS,
+  CENTRALITY_OPTIONS,
+} from "../../../../../components/workstation/sna/network/reagraph/NetworkCanvasReagraph";
+
 import {
   FitViewOutline,
   FullScreenIcon,
@@ -19,11 +26,6 @@ import {
   ZoomInOutline,
   ZoomOutOutline,
 } from "@/components/icon/IconView";
-import NetworkCanvasReagraph, {
-  NetworkCanvasHandle,
-  LAYOUT_OPTIONS,
-  CENTRALITY_OPTIONS,
-} from "../../../../../components/workstation/sna/network/reagraph/NetworkCanvasReagraph";
 import { useRefreshGraph } from "@/app/lib/workstation/social/network/reagraph/useRefresh";
 import { CentralityKey } from "@/app/lib/workstation/social/centrality/state";
 
@@ -32,45 +34,46 @@ export default function NetworkGraph() {
   const canvasRef = useRef<NetworkCanvasHandle>(null);
   const [layout, setLayout] = useState("forceDirected2d");
   const [centrality, setCentrality] = useState<CentralityKey>(
-    "betweenness_centrality"
+    "betweenness_centrality",
   );
   const handleRefreshGraph = useRefreshGraph();
+
   return (
     <div className="bg-content1 shadow-md border-1 dark:border-0 rounded-lg">
       <div className="p-2 font-medium flex flex-row justify-start gap-4 items-center">
         <Button
-          variant="flat"
           isIconOnly
-          startContent={<RefreshIcon className="w-6" />}
           color="primary"
+          startContent={<RefreshIcon className="w-6" />}
+          variant="flat"
           onPress={handleRefreshGraph}
         />
         <Button
-          variant="flat"
           isIconOnly
-          startContent={<FullScreenIcon className="w-6" />}
           color="primary"
+          startContent={<FullScreenIcon className="w-6" />}
+          variant="flat"
           onPress={onOpen}
         />
         <Button
-          variant="flat"
           isIconOnly
-          startContent={<FitViewOutline className="w-6" />}
           color="primary"
+          startContent={<FitViewOutline className="w-6" />}
+          variant="flat"
           onPress={() => canvasRef.current?.fitView()}
         />
         <Button
-          variant="flat"
           isIconOnly
-          startContent={<ZoomInOutline className="w-6" />}
           color="primary"
+          startContent={<ZoomInOutline className="w-6" />}
+          variant="flat"
           onPress={() => canvasRef.current?.zoomIn()}
         />
         <Button
-          variant="flat"
           isIconOnly
-          startContent={<ZoomOutOutline className="w-6" />}
           color="primary"
+          startContent={<ZoomOutOutline className="w-6" />}
+          variant="flat"
           onPress={() => canvasRef.current?.zoomOut()}
         />
 
@@ -103,7 +106,7 @@ export default function NetworkGraph() {
         <NetworkCanvasReagraph ref={canvasRef} layout={layout as any} />
       </div>
 
-      <Modal size="5xl" isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Modal isOpen={isOpen} size="5xl" onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (
             <>

@@ -1,8 +1,5 @@
 "use client";
 
-import { CalculateCentralityType } from "@/app/lib/workstation/social/calculate/state";
-import { FilterIcon, InfoIcon } from "@/components/icon/IconFilter";
-import { FullScreenIcon } from "@/components/icon/IconView";
 import {
   Button,
   Modal,
@@ -14,16 +11,22 @@ import {
   addToast,
 } from "@heroui/react";
 import { useAtom, useAtomValue } from "jotai";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef } from "react";
+import { useTheme } from "next-themes";
+
+import { FilterPanelPieChart } from "../../../../../components/workstation/sna/centrality/pie/FilterPanelPieChart";
+import { CentralityPieComponent } from "../../../../../components/workstation/sna/centrality/pie/CentralityPieComponent";
+import { useExportToImage } from "../../../../lib/workstation/social/useExportToImage";
+
 import { PieFilterState, showFilterAtom, topShowDataPie } from "./state";
+
+import { CalculateCentralityType } from "@/app/lib/workstation/social/calculate/state";
+import { FilterIcon, InfoIcon } from "@/components/icon/IconFilter";
+import { FullScreenIcon } from "@/components/icon/IconView";
 import {
   selectedCentrality,
   selectedChart,
 } from "@/app/lib/workstation/social/centrality/state";
-import { FilterPanelPieChart } from "../../../../../components/workstation/sna/centrality/pie/FilterPanelPieChart";
-import { CentralityPieComponent } from "../../../../../components/workstation/sna/centrality/pie/CentralityPieComponent";
-import { useExportToImage } from "../../../../lib/workstation/social/useExportToImage";
-import { useTheme } from "next-themes";
 import NoDataChartComponent from "@/components/workstation/sna/centrality/NoDataChartComponent";
 import AllZeroComponent from "@/components/workstation/sna/centrality/AllZeroComponent";
 
@@ -87,6 +90,7 @@ export function CentralityPieChart({
       .sort((a, b) => b.value - a.value);
 
     const safeTopN = Math.min(topN ?? mapped.length, mapped.length);
+
     return mapped.slice(0, safeTopN);
   }, [values, nodes, topN]);
 
@@ -96,19 +100,19 @@ export function CentralityPieChart({
     <div className="w-full flex flex-col gap-10 border rounded-xl p-4">
       <div className="font-medium flex flex-row justify-start gap-4 items-center">
         <Button
-          variant="flat"
           isIconOnly
-          startContent={<FullScreenIcon className="w-6" />}
           color="primary"
+          startContent={<FullScreenIcon className="w-6" />}
+          variant="flat"
           onPress={onOpen}
-        ></Button>
+        />
         <Tooltip content="Customize Chart in Full Screen Mode">
           <Button
-            variant="flat"
             isIconOnly
-            startContent={<InfoIcon className="w-6" />}
             color="primary"
-          ></Button>
+            startContent={<InfoIcon className="w-6" />}
+            variant="flat"
+          />
         </Tooltip>
       </div>
 
@@ -119,7 +123,6 @@ export function CentralityPieChart({
           <div className="flex-1 w-full ">
             <div className="min-w-[1200px] h-[75vh]">
               <CentralityPieComponent
-                data={data}
                 chartFilter={{
                   ...chartFilter,
                   topMargin: 50,
@@ -127,6 +130,7 @@ export function CentralityPieChart({
                   bottomMargin: 50,
                   leftMargin: 50,
                 }}
+                data={data}
               />
             </div>
           </div>
@@ -138,19 +142,19 @@ export function CentralityPieChart({
       </div>
 
       <Modal
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
         className="w-4/5 max-w-[1800px]"
+        isOpen={isOpen}
         scrollBehavior="outside"
+        onOpenChange={onOpenChange}
       >
         <ModalContent>
           <ModalHeader className="flex flex-row justify-start gap-4 items-center">
             {chart.toUpperCase()} - {centrality.toUpperCase()}
             <Button
-              variant="light"
-              color="default"
               isIconOnly
+              color="default"
               startContent={<FilterIcon className="w-4" />}
+              variant="light"
               onPress={() => setshowFilter(!showFilter)}
             />
           </ModalHeader>
@@ -174,8 +178,8 @@ export function CentralityPieChart({
                     </p>
                   </div>
                   <CentralityPieComponent
-                    data={data}
                     chartFilter={chartFilter}
+                    data={data}
                   />
                 </div>
               </div>

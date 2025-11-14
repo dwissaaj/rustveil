@@ -1,7 +1,7 @@
-import { dataTable } from "@/app/lib/data/state";
 import { atom, useAtomValue } from "jotai";
 import { useMemo } from "react";
 
+import { dataTable } from "@/app/lib/data/state";
 
 // use for getting specific column data from dataTable but rememberd data table is paginated
 

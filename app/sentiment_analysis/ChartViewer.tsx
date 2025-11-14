@@ -23,7 +23,6 @@ import NoSentimentData from "../../components/sentiment_analysis/NoSentimentData
 
 import { SentimentPieChart } from "./SentimentPieChart";
 
-import AllZeroComponent from "@/components/sna/centrality/AllZeroComponent";
 import { FilterIcon, InfoIcon } from "@/components/icon/IconFilter";
 import { FullScreenIcon } from "@/components/icon/IconView";
 export default function ChartViewer() {

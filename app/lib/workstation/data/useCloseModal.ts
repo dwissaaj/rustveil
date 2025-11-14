@@ -1,6 +1,6 @@
 import { useAtom, useSetAtom } from "jotai";
-import { filePath, sheetAvailable } from "../../data/state";
 
+import { filePath, sheetAvailable } from "../../data/state";
 
 export const useCloseModal = (
   onOpenChange: (open: boolean) => void,
@@ -12,8 +12,8 @@ export const useCloseModal = (
   const closeModal = async () => {
     if (fileState.isSelected === false && fileState.url === "") {
       addToast({
-        title: "Warning",
-        description: "No file selected. Please select a file first.",
+        title: "Oops! File Missing",
+        description: "Looks like you haven't selected a file yet.",
         variant: "flat",
         color: "warning",
       });

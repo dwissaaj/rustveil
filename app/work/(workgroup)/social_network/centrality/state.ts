@@ -44,9 +44,9 @@ export interface PieFilterStateType {
   rightMargin: number;
   startAngle: number;
   endAngle: number;
-  labelSkip:  number;
-  labelDiagonalLength:  number;
-  labelStraightLength: number
+  labelSkip: number;
+  labelDiagonalLength: number;
+  labelStraightLength: number;
 }
 
 export const PieFilterState = atom<PieFilterStateType>({
@@ -65,9 +65,9 @@ export const PieFilterState = atom<PieFilterStateType>({
   author: "Your Name",
   startAngle: 0,
   endAngle: 360,
-    labelSkip:  0,
-  labelDiagonalLength:  16,
-  labelStraightLength: 24
+  labelSkip: 0,
+  labelDiagonalLength: 16,
+  labelStraightLength: 24,
 });
 
 export interface NivoPieType {
