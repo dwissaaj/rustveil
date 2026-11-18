@@ -11,9 +11,9 @@ import {
   Button,
 } from "@heroui/react";
 
-import NoData from "@/components/data/NoData";
 import { RefreshIcon } from "@/components/icon/IconView";
 import { useRefresh } from "@/app/lib/data/handler/client/useRefresh";
+import NoData from "@/components/data/NoData";
 
 interface DataTableProps {
   data: Record<string, any>[];

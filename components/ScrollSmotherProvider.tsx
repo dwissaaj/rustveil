@@ -24,6 +24,7 @@ export default function ScrollSmootherProvider({
     () => {
       if (!containerRef.current) {
         console.warn("ScrollSmootherProvider: Container ref is not assigned.");
+
         return;
       }
 
@@ -40,12 +41,14 @@ export default function ScrollSmootherProvider({
         console.error(
           "ScrollSmoother: Could not find #smooth-wrapper or #smooth-content elements within the provider. Make sure they are rendered.",
         );
+
         return;
       }
 
       // Check if ScrollSmoother has already been initialized.
       // ScrollSmoother.get() might return undefined if not yet created.
       const existingSmoother = ScrollSmoother.get();
+
       if (existingSmoother) {
         existingSmoother.kill(); // Kill the old instance
         console.log("Existing ScrollSmoother killed.");

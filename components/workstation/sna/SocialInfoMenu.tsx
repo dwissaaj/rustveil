@@ -35,7 +35,6 @@
  */
 
 "use client";
-import VerticesModal from "@/app/work/(workgroup)/social_network/filter/modal/EdgesModal";
 import {
   Dropdown,
   DropdownTrigger,
@@ -44,10 +43,12 @@ import {
   DropdownItem,
   Button,
 } from "@heroui/react";
+
 import { ReportIcon } from "@/components/icon/IconFilter";
 
 export default function SocialInfoMenu() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
   return (
     <>
       <Dropdown>
@@ -56,10 +57,10 @@ export default function SocialInfoMenu() {
         </DropdownTrigger>
         <DropdownMenu aria-label="Info about social network analysis">
           <DropdownItem
-            onPress={onOpen}
+            key="info"
             description="Information about social network data"
             startContent={<ReportIcon />}
-            key="info"
+            onPress={onOpen}
           >
             Info
           </DropdownItem>

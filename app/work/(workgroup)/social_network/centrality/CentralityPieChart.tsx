@@ -14,8 +14,6 @@ import { useAtom, useAtomValue } from "jotai";
 import { useMemo, useRef } from "react";
 import { useTheme } from "next-themes";
 
-import { FilterPanelPieChart } from "../../../../../components/workstation/sna/centrality/pie/FilterPanelPieChart";
-import { CentralityPieComponent } from "../../../../../components/workstation/sna/centrality/pie/CentralityPieComponent";
 import { useExportToImage } from "../../../../lib/workstation/social/useExportToImage";
 
 import { PieFilterState, showFilterAtom, topShowDataPie } from "./state";
@@ -27,8 +25,10 @@ import {
   selectedCentrality,
   selectedChart,
 } from "@/app/lib/workstation/social/centrality/state";
-import NoDataChartComponent from "@/components/workstation/sna/centrality/NoDataChartComponent";
-import AllZeroComponent from "@/components/workstation/sna/centrality/AllZeroComponent";
+import NoDataChartComponent from "@/components/sna/centrality/NoDataChartComponent";
+import { CentralityPieComponent } from "@/components/sna/centrality/pie/CentralityPieComponent";
+import AllZeroComponent from "@/components/sna/centrality/AllZeroComponent";
+import { FilterPanelPieChart } from "@/components/sna/centrality/pie/FilterPanelPieChart";
 
 export function CentralityPieChart({
   graphData,

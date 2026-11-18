@@ -1,7 +1,7 @@
 import * as React from "react";
+import Image from "next/image";
 
 import { IconSvgProps } from "@/types";
-import Image from "next/image";
 
 export const Logo: React.FC<IconSvgProps> = ({
   size = 36,
@@ -10,11 +10,11 @@ export const Logo: React.FC<IconSvgProps> = ({
   ...props
 }) => (
   <Image
-    className="bg-white"
-    src="/rvlogo.png"
-    height={size}
-    width={size}
     alt="logo rustveil"
+    className="bg-white"
+    height={size}
+    src="/rvlogo.png"
+    width={size}
   />
 );
 

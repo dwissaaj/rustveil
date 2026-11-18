@@ -1,7 +1,7 @@
 import { ColorSchemeId } from "@nivo/colors";
-
 import { ResponsiveBar } from "@nivo/bar";
 import { useTheme } from "next-themes";
+
 import {
   BarFilterStateType,
   NivoBarType,
@@ -20,25 +20,10 @@ export function CentralityBarComponent({
   const gridColor = theme === "dark" ? "#374151" : "#e5e7eb";
   const tooltipBackgroundColor = theme === "dark" ? "#374151" : "#ffffff";
   const tooltipTextColor = theme === "dark" ? "#e5e7eb" : "#1f2937";
+
   return (
     <div className={`flex-1 h-[75vh]`}>
       <ResponsiveBar
-        labelPosition={chartFilter.labelPosition}
-        labelOffset={chartFilter.labelOffset}
-        layout={chartFilter.layout}
-        data={data}
-        keys={["centrality"]}
-        indexBy="node"
-        margin={{
-          top: chartFilter.topMargin,
-          right: chartFilter.rightMargin,
-          bottom: chartFilter.bottomMargin,
-          left: chartFilter.leftMargin,
-        }}
-        padding={0.3}
-        valueScale={{ type: "linear" }}
-        indexScale={{ type: "band", round: true }}
-        colors={{ scheme: chartFilter.colorSchema as ColorSchemeId }}
         axisBottom={{
           tickRotation: chartFilter.axisBottomRotation,
           tickSize: chartFilter.axisBottomSize,
@@ -55,7 +40,22 @@ export function CentralityBarComponent({
           legendPosition: "middle",
           legendOffset: chartFilter.axisLeftLegendOffset,
         }}
+        colors={{ scheme: chartFilter.colorSchema as ColorSchemeId }}
+        data={data}
         enableGridY={true}
+        indexBy="node"
+        indexScale={{ type: "band", round: true }}
+        keys={["centrality"]}
+        labelOffset={chartFilter.labelOffset}
+        labelPosition={chartFilter.labelPosition}
+        layout={chartFilter.layout}
+        margin={{
+          top: chartFilter.topMargin,
+          right: chartFilter.rightMargin,
+          bottom: chartFilter.bottomMargin,
+          left: chartFilter.leftMargin,
+        }}
+        padding={0.3}
         theme={{
           labels: {
             text: {
@@ -102,6 +102,7 @@ export function CentralityBarComponent({
             },
           },
         }}
+        valueScale={{ type: "linear" }}
       />
     </div>
   );

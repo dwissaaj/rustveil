@@ -2,9 +2,11 @@
 
 import { useAtomValue } from "jotai";
 import { ResponsiveNetwork } from "@nivo/network";
-import { NetworkGraphData } from "@/app/lib/workstation/social/network/state";
 import { useTheme } from "next-themes";
+
 import NetworkEmptyViewer from "./NetworkEmptyViewer";
+
+import { NetworkGraphData } from "@/app/lib/workstation/social/network/state";
 import { centralityData } from "@/app/lib/workstation/social/calculate/state";
 
 export default function NetworkGraphViewer() {
@@ -79,14 +81,14 @@ export default function NetworkGraphViewer() {
   return (
     <div style={{ height: "75vh", width: "100%" }}>
       <ResponsiveNetwork
-        data={data}
-        margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
-        linkDistance={(l) => l.distance}
-        nodeSize={(n) => n.size}
         activeNodeSize={(n) => 1.5 * n.size}
-        nodeColor={(n) => n.color}
-        linkThickness={() => 2}
+        data={data}
         linkBlendMode="normal"
+        linkDistance={(l) => l.distance}
+        linkThickness={() => 2}
+        margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
+        nodeColor={(n) => n.color}
+        nodeSize={(n) => n.size}
         nodeTooltip={NodeTooltip}
         theme={{
           labels: {

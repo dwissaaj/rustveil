@@ -7,6 +7,7 @@ import {
   Dropdown,
   DropdownMenu,
 } from "@heroui/react";
+
 import {
   DropDownNavIcon,
   ExtractionNavIcon,
@@ -23,10 +24,10 @@ export default function TextUnderstandingList() {
             <Button
               disableRipple
               className="p-2 font-semibold"
+              endContent={<DropDownNavIcon className="w-2" />}
               radius="sm"
               size="md"
               variant="light"
-              endContent={<DropDownNavIcon className="w-2" />}
             >
               Text Understanding
             </Button>
@@ -39,25 +40,25 @@ export default function TextUnderstandingList() {
           }}
         >
           <DropdownItem
-            href="/sentiment_analysis"
             key="Sentiment Analysis"
             description="Detect polarity and emotional tone"
+            href="/sentiment_analysis"
             startContent={<SentimentNavIcon className="stroke-red-500" />}
           >
             Sentiment Analysis
           </DropdownItem>
           <DropdownItem
-            href="/keyword_extraction"
             key="Keywords Extraction"
             description="Highlight the most important words and phrases"
+            href="/keyword_extraction"
             startContent={<ExtractionNavIcon className="stroke-blue-500" />}
           >
             Keywords Extraction
           </DropdownItem>
           <DropdownItem
-            href="/zeroshot_classification"
             key="Zero-Shot Classification"
             description="Classify text into custom labels"
+            href="/zeroshot_classification"
             startContent={<ZeroshotNavIcon className="stroke-green-500" />}
           >
             Zero-Shot Classification

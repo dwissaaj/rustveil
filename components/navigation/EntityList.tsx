@@ -7,6 +7,7 @@ import {
   Dropdown,
   DropdownMenu,
 } from "@heroui/react";
+
 import {
   DropDownNavIcon,
   NerNavIcon,
@@ -23,42 +24,42 @@ export default function EntityList() {
             <Button
               disableRipple
               className="p-2 font-semibold"
+              endContent={<DropDownNavIcon className="w-2" />}
               radius="sm"
               size="md"
               variant="light"
-              endContent={<DropDownNavIcon className="w-2" />}
             >
               Entity & Structure
             </Button>
           </DropdownTrigger>
         </NavbarItem>
         <DropdownMenu
-          disabledKeys={["Relation Extraction"]}
           aria-label="Entity & Structure Task"
+          disabledKeys={["Relation Extraction"]}
           itemClasses={{
             base: "gap-4",
           }}
         >
           <DropdownItem
-            startContent={<NerNavIcon className="stroke-cyan-500" />}
-            href="/ner"
             key="Named Entity Recognition"
             description="Identify entity label inside data"
+            href="/ner"
+            startContent={<NerNavIcon className="stroke-cyan-500" />}
           >
             Named Entity Recognition (NER)
           </DropdownItem>
           <DropdownItem
-            startContent={<PosNavIcon className="stroke-purple-500" />}
-            href="/pos_tagging"
             key="Part of Speech tagging"
             description="Extracts Part of Speech tags"
+            href="/pos_tagging"
+            startContent={<PosNavIcon className="stroke-purple-500" />}
           >
             Part of Speech tagging
           </DropdownItem>
           <DropdownItem
-            startContent={<RelationNavIcon className="stroke-rose-500" />}
             key="Relation Extraction"
             description="Relation between words in sentence"
+            startContent={<RelationNavIcon className="stroke-rose-500" />}
           >
             Relation Extraction
           </DropdownItem>

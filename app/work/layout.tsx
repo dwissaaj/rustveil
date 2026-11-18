@@ -1,4 +1,4 @@
-import TabWorkstation from "@/components/TabWorkstation";
+// import TabWorkstation from "@/components/TabWorkstation";
 import ScrollSmotherProvider from "@/components/ScrollSmotherProvider";
 
 export default function WorkLayout({
@@ -8,7 +8,7 @@ export default function WorkLayout({
 }) {
   return (
     <ScrollSmotherProvider>
-      <TabWorkstation />
+      {/* <TabWorkstation /> */}
       <div>{children}</div>
     </ScrollSmotherProvider>
   );

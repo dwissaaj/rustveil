@@ -9,17 +9,17 @@ export const DropDownNavIcon: React.FC<IconSvgProps> = ({
   return (
     <svg
       {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={1.5}
-      stroke="currentColor"
       className="size-6"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
     >
       <path
+        d="m19.5 8.25-7.5 7.5-7.5-7.5"
         strokeLinecap="round"
         strokeLinejoin="round"
-        d="m19.5 8.25-7.5 7.5-7.5-7.5"
       />
     </svg>
   );
@@ -33,20 +33,20 @@ export const DataNavIcon: React.FC<IconSvgProps> = ({
 }) => {
   return (
     <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
+      className={className}
       fill="none"
+      height={height ?? size}
       stroke="currentColor"
       strokeWidth={1.5}
+      viewBox="0 0 24 24"
       width={width ?? size}
-      height={height ?? size}
-      className={className}
+      xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
       <path
+        d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125"
         strokeLinecap="round"
         strokeLinejoin="round"
-        d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125"
       />
     </svg>
   );
@@ -61,20 +61,20 @@ export const SentimentNavIcon: React.FC<IconSvgProps> = ({
 }) => {
   return (
     <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
+      className={className}
       fill="none"
+      height={height ?? size}
       stroke="currentColor"
       strokeWidth={1.5}
+      viewBox="0 0 24 24"
       width={width ?? size}
-      height={height ?? size}
-      className={className}
+      xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
       <path
+        d="M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0 1 18 16.5h-2.25m-7.5 0h7.5m-7.5 0-1 3m8.5-3 1 3m0 0 .5 1.5m-.5-1.5h-9.5m0 0-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6"
         strokeLinecap="round"
         strokeLinejoin="round"
-        d="M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0 1 18 16.5h-2.25m-7.5 0h7.5m-7.5 0-1 3m8.5-3 1 3m0 0 .5 1.5m-.5-1.5h-9.5m0 0-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6"
       />
     </svg>
   );
@@ -88,20 +88,20 @@ export const ExtractionNavIcon: React.FC<IconSvgProps> = ({
 }) => {
   return (
     <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
+      className={className}
       fill="none"
+      height={height ?? size}
       stroke="currentColor"
       strokeWidth={1.5}
+      viewBox="0 0 24 24"
       width={width ?? size}
-      height={height ?? size}
-      className={className}
+      xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
       <path
+        d="M9.75 3.104v5.714a2.25 2.25 0 0 1-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 0 1 4.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0 1 12 15a9.065 9.065 0 0 0-6.23-.693L5 14.5m14.8.8 1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0 1 12 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5"
         strokeLinecap="round"
         strokeLinejoin="round"
-        d="M9.75 3.104v5.714a2.25 2.25 0 0 1-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 0 1 4.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0 1 12 15a9.065 9.065 0 0 0-6.23-.693L5 14.5m14.8.8 1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0 1 12 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5"
       />
     </svg>
   );
@@ -115,20 +115,20 @@ export const ZeroshotNavIcon: React.FC<IconSvgProps> = ({
 }) => {
   return (
     <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
+      className={className}
       fill="none"
+      height={height ?? size}
       stroke="currentColor"
       strokeWidth={1.5}
+      viewBox="0 0 24 24"
       width={width ?? size}
-      height={height ?? size}
-      className={className}
+      xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
       <path
+        d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25M9 16.5v.75m3-3v3M15 12v5.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"
         strokeLinecap="round"
         strokeLinejoin="round"
-        d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25M9 16.5v.75m3-3v3M15 12v5.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"
       />
     </svg>
   );
@@ -142,14 +142,14 @@ export const SocialNavIcon: React.FC<IconSvgProps> = ({
 }) => {
   return (
     <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
+      className={className}
       fill="none"
+      height={height ?? size}
       stroke="currentColor"
       strokeWidth={1}
+      viewBox="0 0 24 24"
       width={width ?? size}
-      height={height ?? size}
-      className={className}
+      xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
       <path
@@ -183,14 +183,14 @@ export const NerNavIcon: React.FC<IconSvgProps> = ({
 }) => {
   return (
     <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
+      className={className}
       fill="none"
+      height={height ?? size}
       stroke="currentColor"
       strokeWidth={1}
+      viewBox="0 0 24 24"
       width={width ?? size}
-      height={height ?? size}
-      className={className}
+      xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
       <path
@@ -215,14 +215,14 @@ export const PosNavIcon: React.FC<IconSvgProps> = ({
 }) => {
   return (
     <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
+      className={className}
       fill="none"
+      height={height ?? size}
       stroke="currentColor"
       strokeWidth={1}
+      viewBox="0 0 24 24"
       width={width ?? size}
-      height={height ?? size}
-      className={className}
+      xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
       <path
@@ -242,14 +242,14 @@ export const RelationNavIcon: React.FC<IconSvgProps> = ({
 }) => {
   return (
     <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
+      className={className}
       fill="none"
+      height={height ?? size}
       stroke="currentColor"
       strokeWidth={1}
+      viewBox="0 0 24 24"
       width={width ?? size}
-      height={height ?? size}
-      className={className}
+      xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
       <path
@@ -269,21 +269,21 @@ export const AsrNavIcon: React.FC<IconSvgProps> = ({
 }) => {
   return (
     <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
+      className={className}
       fill="none"
+      height={height ?? size}
       stroke="currentColor"
       strokeWidth={1}
+      viewBox="0 0 24 24"
       width={width ?? size}
-      height={height ?? size}
-      className={className}
+      xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
       <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
+        clipRule="evenodd"
         d="M12 2C9.37669 2 7.25006 4.12663 7.25006 6.74997V11.25C7.25006 13.8734 9.37669 16 12 16C14.6234 16 16.75 13.8734 16.75 11.25V6.74997C16.75 4.12663 14.6234 2 12 2ZM8.75006 6.74997C8.75006 4.95506 10.2051 3.5 12 3.5C13.7949 3.5 15.25 4.95506 15.25 6.74997V11.25C15.25 13.0449 13.7949 14.5 12 14.5C10.2051 14.5 8.75006 13.0449 8.75006 11.25V6.74997Z"
         fill="#323544"
+        fillRule="evenodd"
       />
       <path
         d="M5.75 11.25C5.75 10.8358 5.41421 10.5 5 10.5C4.58579 10.5 4.25 10.8358 4.25 11.25C4.25 15.2772 7.3217 18.587 11.25 18.9642V20.5H10C9.58579 20.5 9.25 20.8358 9.25 21.25C9.25 21.6642 9.58579 22 10 22H14C14.4142 22 14.75 21.6642 14.75 21.25C14.75 20.8358 14.4142 20.5 14 20.5H12.75V18.9642C16.6783 18.587 19.75 15.2772 19.75 11.25C19.75 10.8358 19.4142 10.5 19 10.5C18.5858 10.5 18.25 10.8358 18.25 11.25C18.25 14.7018 15.4518 17.5 12 17.5C8.54822 17.5 5.75 14.7018 5.75 11.25Z"
@@ -302,21 +302,21 @@ export const AudioClassificationNavIcon: React.FC<IconSvgProps> = ({
 }) => {
   return (
     <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
+      className={className}
       fill="none"
+      height={height ?? size}
       stroke="currentColor"
       strokeWidth={1}
+      viewBox="0 0 24 24"
       width={width ?? size}
-      height={height ?? size}
-      className={className}
+      xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
       <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
+        clipRule="evenodd"
         d="M15.4611 2.29987C14.385 1.67855 13.0089 2.04726 12.3876 3.12342L9.57665 7.99212C8.95533 9.06828 9.32404 10.4444 10.4002 11.0657L11.2662 11.5657C12.3424 12.187 13.7185 11.8183 14.3398 10.7421L16.0821 7.72441C17.0628 8.73997 17.6649 10.1211 17.6649 11.6431C17.6649 14.7569 15.1425 17.2815 12.0296 17.2852L12.0234 17.2852L12.0168 17.2852C10.5164 17.2831 9.28435 16.5033 8.42469 15.2638H10.6621C11.0763 15.2638 11.4121 14.9281 11.4121 14.5138C11.4121 14.0996 11.0763 13.7638 10.6621 13.7638H3.66211C3.2479 13.7638 2.91211 14.0996 2.91211 14.5138C2.91211 14.9281 3.2479 15.2638 3.66211 15.2638H6.67725C7.6079 17.0426 9.17178 18.4622 11.2734 18.737V20.5001H8.02344C7.60922 20.5001 7.27344 20.8359 7.27344 21.2501C7.27344 21.6643 7.60922 22.0001 8.02344 22.0001H11.9873C11.9993 22.0007 12.0113 22.001 12.0234 22.001C12.0355 22.001 12.0476 22.0007 12.0596 22.0001H16.0234C16.4377 22.0001 16.7734 21.6643 16.7734 21.2501C16.7734 20.8359 16.4377 20.5001 16.0234 20.5001H12.7734V18.7462C16.3651 18.3711 19.1649 15.334 19.1649 11.6431C19.1649 9.56216 18.2743 7.68897 16.8557 6.38448L17.1507 5.87342C17.7721 4.79726 17.4033 3.42119 16.3272 2.79987L15.4611 2.29987ZM13.6866 3.87342C13.8937 3.5147 14.3524 3.3918 14.7111 3.5989L15.5772 4.0989C15.9359 4.30601 16.0588 4.7647 15.8517 5.12342L13.0407 9.99212C12.8336 10.3508 12.3749 10.4737 12.0162 10.2666L11.1502 9.76664C10.7915 9.55953 10.6686 9.10084 10.8757 8.74212L13.6866 3.87342Z"
         fill="#323544"
+        fillRule="evenodd"
       />
     </svg>
   );

@@ -17,7 +17,7 @@ import NetworkCanvasReagraph, {
   NetworkCanvasHandle,
   LAYOUT_OPTIONS,
   CENTRALITY_OPTIONS,
-} from "../../../../../components/workstation/sna/network/reagraph/NetworkCanvasReagraph";
+} from "../../../../../components/sna/network/reagraph/NetworkCanvasReagraph";
 
 import {
   FitViewOutline,

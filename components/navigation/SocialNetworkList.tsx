@@ -7,6 +7,7 @@ import {
   Dropdown,
   DropdownMenu,
 } from "@heroui/react";
+
 import { DropDownNavIcon, SocialNavIcon } from "../icon/IconNavigation";
 
 export default function SocialNetworkList() {
@@ -18,10 +19,10 @@ export default function SocialNetworkList() {
             <Button
               disableRipple
               className="p-2 font-semibold"
+              endContent={<DropDownNavIcon className="w-2" />}
               radius="sm"
               size="md"
               variant="light"
-              endContent={<DropDownNavIcon className="w-2" />}
             >
               Social Network
             </Button>
@@ -34,10 +35,10 @@ export default function SocialNetworkList() {
           }}
         >
           <DropdownItem
-            href="/social_network"
             key="Social Network Analysis"
-            startContent={<SocialNavIcon className="stroke-green-500" />}
             description="Map and analyze relationships between actors in a network"
+            href="/social_network"
+            startContent={<SocialNavIcon className="stroke-green-500" />}
           >
             Social Network Analysis
           </DropdownItem>

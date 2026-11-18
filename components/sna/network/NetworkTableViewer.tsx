@@ -1,4 +1,3 @@
-import { RefreshIcon } from "@/components/icon/IconView";
 import {
   Table,
   TableHeader,
@@ -14,7 +13,10 @@ import {
 import { useAtomValue } from "jotai";
 import { useEffect, useState } from "react";
 import { useAsyncList } from "@react-stately/data";
+
 import NoVerticesSelected from "./NoCentralityTable";
+
+import { RefreshIcon } from "@/components/icon/IconView";
 import { useGetCentrality } from "@/app/lib/workstation/social/calculate/useGetCentrality";
 import { centralityData } from "@/app/lib/workstation/social/calculate/state";
 
@@ -30,6 +32,7 @@ export default function NetworkTableViewer() {
   const rows = g
     ? Object.entries(g.node_map ?? {}).map(([id, label]) => {
         const idx = parseInt(id, 10);
+
         return {
           id: idx,
           label,
@@ -54,6 +57,7 @@ export default function NetworkTableViewer() {
           let second = b[sortDescriptor.column as keyof typeof b];
 
           let cmp = 0;
+
           if (first < second) cmp = -1;
           if (first > second) cmp = 1;
           if (sortDescriptor.direction === "descending") cmp *= -1;
@@ -77,6 +81,7 @@ export default function NetworkTableViewer() {
     setIsLoading(true);
     try {
       const response = await getCentrality();
+
       if (response?.response_code === 200) {
         addToast({
           title: "All Set!!!",
@@ -104,12 +109,10 @@ export default function NetworkTableViewer() {
   return (
     <div className="flex flex-col gap-2">
       <Table
-        aria-label="Centrality table"
-        sortDescriptor={list.sortDescriptor}
-        onSortChange={list.sort}
         isHeaderSticky
-        isVirtualized
         isStriped
+        isVirtualized
+        aria-label="Centrality table"
         bottomContent={
           rows.length > 0 && (
             <div className="text-sm text-default-500">
@@ -119,16 +122,18 @@ export default function NetworkTableViewer() {
           )
         }
         bottomContentPlacement="inside"
+        sortDescriptor={list.sortDescriptor}
         topContent={
           <Button
-            onPress={loadData}
             isIconOnly
             className=""
             color="primary"
             startContent={<RefreshIcon className="w-6" />}
             variant="light"
+            onPress={loadData}
           />
         }
+        onSortChange={list.sort}
       >
         <TableHeader>
           <TableColumn className="bg-primary text-white">Number</TableColumn>
@@ -171,10 +176,10 @@ export default function NetworkTableViewer() {
         </TableHeader>
 
         <TableBody
+          emptyContent={<NoVerticesSelected />}
           isLoading={isLoading}
           items={pagedRows}
-          loadingContent={<CircularProgress size="lg" color="secondary" />}
-          emptyContent={<NoVerticesSelected />}
+          loadingContent={<CircularProgress color="secondary" size="lg" />}
         >
           {(row) => (
             <TableRow key={row.id}>
@@ -193,11 +198,11 @@ export default function NetworkTableViewer() {
       {totalPages > 1 && (
         <div className="flex justify-center">
           <Pagination
-            total={totalPages}
-            page={currentPage}
-            onChange={setCurrentPage}
-            color="secondary"
             showControls
+            color="secondary"
+            page={currentPage}
+            total={totalPages}
+            onChange={setCurrentPage}
           />
         </div>
       )}

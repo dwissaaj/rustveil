@@ -10,7 +10,7 @@ import {
   dataTable,
   loadingTable,
   totalCountTable,
-} from "@/app/lib/workstation/data/state";
+} from "@/app/lib/data/state";
 export default function Page() {
   const [data, setData] = useAtom(dataTable);
   const [loading, setLoading] = useAtom(loadingTable);

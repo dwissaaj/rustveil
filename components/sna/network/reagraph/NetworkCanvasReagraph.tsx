@@ -18,9 +18,11 @@ import {
   LayoutTypes,
 } from "reagraph";
 import { useTheme } from "next-themes";
-import NoNetworkReagraph from "./NoNetworkReagraph";
-import { centralityData } from "@/app/lib/workstation/social/calculate/state";
 import { Button } from "@heroui/button";
+
+import NoNetworkReagraph from "./NoNetworkReagraph";
+
+import { centralityData } from "@/app/lib/workstation/social/calculate/state";
 import { CloseActionIcon } from "@/components/icon/IconAction";
 import { ReagraphData } from "@/app/lib/workstation/social/network/reagraph/state";
 
@@ -66,7 +68,7 @@ type Props = {
 
 function NetworkCanvasReagraph(
   props: Props,
-  ref: React.Ref<NetworkCanvasHandle>
+  ref: React.Ref<NetworkCanvasHandle>,
 ) {
   const graphData = useAtomValue(ReagraphData);
   const centralityAtom = useAtomValue(centralityData);
@@ -77,11 +79,12 @@ function NetworkCanvasReagraph(
   const graphRef = useRef<GraphCanvasRef | null>(null);
 
   const [layout, setLayout] = useState<LayoutTypes>(
-    props.layout ?? "forceDirected2d"
+    props.layout ?? "forceDirected2d",
   );
   const [selectedMetric, setSelectedMetric] = useState<CentralityKey>(
-    props.centrality ?? "betweenness_centrality"
+    props.centrality ?? "betweenness_centrality",
   );
+
   useEffect(() => {
     if (props.centrality && props.centrality !== selectedMetric) {
       setSelectedMetric(props.centrality);
@@ -146,12 +149,14 @@ function NetworkCanvasReagraph(
       const centrality =
         idx >= 0 && idx < metricArr.length ? metricArr[idx] : 0;
       const norm = max === min ? 0.5 : (centrality - min) / (max - min);
+
       return { ...n, label: n.label ?? n.id, size: 20 + norm * 80 };
     });
   }, [graphData, centralityAtom, hasGraph, selectedMetric]);
 
   const uniqueEdges = useMemo(() => {
     const seen = new Set<string>();
+
     return graphData.edges.map((edge, index) => {
       // Create a fallback ID if it's missing or duplicated
       let edgeId = edge.id || `${edge.source}-${edge.target}-${index}`;
@@ -175,12 +180,7 @@ function NetworkCanvasReagraph(
       {hasGraph ? (
         <GraphCanvas
           key={selectedMetric}
-          nodes={sizedNodes}
-          edges={uniqueEdges}
-          theme={customTheme}
           ref={graphRef}
-          labelType="all"
-          layoutType={layout}
           contextMenu={({ data, onClose }) => {
             const nodeMap = centralityAtom?.graphData?.node_map ?? {};
             const betweenness =
@@ -192,7 +192,7 @@ function NetworkCanvasReagraph(
               centralityAtom?.graphData?.eigenvector_centrality ?? [];
             const katz = centralityAtom?.graphData?.katz_centrality ?? [];
             const entry = Object.entries(nodeMap).find(
-              ([_, id]) => id === data.id
+              ([_, id]) => id === data.id,
             );
             const idx = entry ? Number(entry[0]) : -1;
 
@@ -221,10 +221,10 @@ function NetworkCanvasReagraph(
                 </div>
                 <div>
                   <Button
-                    onPress={onClose}
                     color="danger"
-                    variant="flat"
                     startContent={<CloseActionIcon className="w-4" />}
+                    variant="flat"
+                    onPress={onClose}
                   >
                     Close
                   </Button>
@@ -232,6 +232,11 @@ function NetworkCanvasReagraph(
               </div>
             );
           }}
+          edges={uniqueEdges}
+          labelType="all"
+          layoutType={layout}
+          nodes={sizedNodes}
+          theme={customTheme}
         />
       ) : (
         <NoNetworkReagraph />

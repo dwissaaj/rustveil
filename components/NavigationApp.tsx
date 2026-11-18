@@ -7,22 +7,21 @@ import {
   Link,
   NavbarMenuToggle,
 } from "@heroui/react";
-
-
 import NextLink from "next/link";
-import { siteConfig } from "@/config/site";
-import { ThemeSwitch } from "@/components/theme-switch";
-import { GithubIcon, Logo } from "@/components/icons";
+
 import TextUnderstandingList from "./navigation/TextUnderstandingList";
 import DataList from "./navigation/DataList";
 import SocialNetworkList from "./navigation/SocialNetworkList";
 import EntityList from "./navigation/EntityList";
 import SpeechAudioList from "./navigation/SpeechAudio";
 
-export const NavigationApp = () => {
+import { GithubIcon } from "@/components/icons";
+import { ThemeSwitch } from "@/components/theme-switch";
+import { siteConfig } from "@/config/site";
 
+export const NavigationApp = () => {
   return (
-    <Navbar className="mt-4" maxWidth="2xl" shouldHideOnScroll>
+    <Navbar shouldHideOnScroll className="mt-4" maxWidth="2xl">
       <NavbarBrand as="li" className="">
         <NextLink className="flex justify-start items-center gap-1" href="/">
           {/* <Logo /> */}

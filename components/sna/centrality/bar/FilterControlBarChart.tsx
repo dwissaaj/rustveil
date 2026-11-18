@@ -10,6 +10,7 @@ import {
   AccordionItem,
   Button,
 } from "@heroui/react";
+
 import { DownloadActionIconSolid } from "@/components/icon/IconAction";
 import {
   BarFilterState,
@@ -97,10 +98,10 @@ export function FilterPanelBarChart({ maxNodes, exportImage }: FilterType) {
         <AccordionItem key="2" aria-label="Accordion 1" title="Title">
           <div className="flex flex-col gap-2">
             <Input
-              size="sm"
               className=""
               label="Chart Title"
               placeholder="Title"
+              size="sm"
               value={filter.title}
               onChange={(e) => setFilter({ ...filter, title: e.target.value })}
             />
@@ -114,10 +115,10 @@ export function FilterPanelBarChart({ maxNodes, exportImage }: FilterType) {
               }
             />
             <Input
-              size="sm"
               className=""
               label="Author"
               placeholder="Your Name"
+              size="sm"
               value={filter.author}
               onChange={(e) => setFilter({ ...filter, author: e.target.value })}
             />
@@ -126,8 +127,8 @@ export function FilterPanelBarChart({ maxNodes, exportImage }: FilterType) {
         <AccordionItem key="3" aria-label="Label Setting" title="Label">
           <div className="flex flex-col gap-2">
             <Select
-              size="sm"
               label="Label Position"
+              size="sm"
               value={filter.labelPosition}
               onChange={(e) =>
                 setFilter({
@@ -141,10 +142,10 @@ export function FilterPanelBarChart({ maxNodes, exportImage }: FilterType) {
               ))}
             </Select>
             <Slider
-              size="sm"
               label="Label Offset"
-              minValue={-16}
               maxValue={16}
+              minValue={-16}
+              size="sm"
               value={filter.labelOffset}
               onChange={(val) =>
                 setFilter({ ...filter, labelOffset: Number(val) })
@@ -155,40 +156,40 @@ export function FilterPanelBarChart({ maxNodes, exportImage }: FilterType) {
         <AccordionItem key="4" aria-label="Margin Setting" title="Margin">
           <div className="flex flex-col gap-2">
             <Input
-              size="sm"
               className=""
               label="Top Margin"
               placeholder="Top"
+              size="sm"
               value={filter.topMargin.toString()}
               onChange={(e) =>
                 setFilter({ ...filter, topMargin: Number(e.target.value) })
               }
             />
             <Input
-              size="sm"
               className=""
               label="Bottom Margin"
               placeholder="Bottom"
+              size="sm"
               value={filter.bottomMargin.toString()}
               onChange={(e) =>
                 setFilter({ ...filter, topMargin: Number(e.target.value) })
               }
             />
             <Input
-              size="sm"
               className=""
               label="Left Margin"
               placeholder="Left"
+              size="sm"
               value={filter.leftMargin.toString()}
               onChange={(e) =>
                 setFilter({ ...filter, leftMargin: Number(e.target.value) })
               }
             />
             <Input
-              size="sm"
               className=""
               label="right Margin"
               placeholder="Right"
+              size="sm"
               value={filter.rightMargin.toString()}
               onChange={(e) =>
                 setFilter({ ...filter, rightMargin: Number(e.target.value) })
@@ -204,50 +205,50 @@ export function FilterPanelBarChart({ maxNodes, exportImage }: FilterType) {
           <div className="flex flex-col gap-2">
             <div className="flex flex-col gap-2">
               <Input
-                size="sm"
                 className=""
                 label="Title Bottom"
                 placeholder="Chart Title"
+                size="sm"
                 value={filter.axisBottomLegend}
                 onChange={(e) =>
                   setFilter({ ...filter, axisBottomLegend: e.target.value })
                 }
               />
               <Slider
-                size="sm"
                 label="Tick Size"
-                minValue={0}
                 maxValue={20}
+                minValue={0}
+                size="sm"
                 value={filter.axisBottomSize}
                 onChange={(val) =>
                   setFilter({ ...filter, axisBottomSize: Number(val) })
                 }
               />
               <Slider
-                size="sm"
                 label="Padding"
-                minValue={0}
                 maxValue={20}
+                minValue={0}
+                size="sm"
                 value={filter.axisBottomPadding}
                 onChange={(val) =>
                   setFilter({ ...filter, axisBottomPadding: Number(val) })
                 }
               />
               <Slider
-                size="sm"
                 label="Tick Rotation"
-                minValue={-90}
                 maxValue={90}
+                minValue={-90}
+                size="sm"
                 value={filter.axisBottomRotation}
                 onChange={(val) =>
                   setFilter({ ...filter, axisBottomRotation: Number(val) })
                 }
               />
               <Slider
-                size="sm"
                 label="Tick Offset"
-                minValue={-60}
                 maxValue={60}
+                minValue={-60}
+                size="sm"
                 value={filter.axisBottomLegendOffset}
                 onChange={(val) =>
                   setFilter({
@@ -267,50 +268,50 @@ export function FilterPanelBarChart({ maxNodes, exportImage }: FilterType) {
           <div className="flex flex-col gap-2">
             <div className="flex flex-col gap-2">
               <Input
-                size="sm"
                 className=""
                 label="Left Legend"
                 placeholder="Data Title"
+                size="sm"
                 value={filter.axisLeftLegend}
                 onChange={(e) =>
                   setFilter({ ...filter, axisLeftLegend: e.target.value })
                 }
               />
               <Slider
-                size="sm"
                 label="Tick Size"
-                minValue={0}
                 maxValue={20}
+                minValue={0}
+                size="sm"
                 value={filter.axisLeftSize}
                 onChange={(val) =>
                   setFilter({ ...filter, axisLeftSize: Number(val) })
                 }
               />
               <Slider
-                size="sm"
                 label="Padding"
-                minValue={0}
                 maxValue={20}
+                minValue={0}
+                size="sm"
                 value={filter.axisLeftPadding}
                 onChange={(val) =>
                   setFilter({ ...filter, axisLeftPadding: Number(val) })
                 }
               />
               <Slider
-                size="sm"
                 label="Tick Rotation"
-                minValue={-90}
                 maxValue={90}
+                minValue={-90}
+                size="sm"
                 value={filter.axisLeftRotation}
                 onChange={(val) =>
                   setFilter({ ...filter, axisLeftRotation: Number(val) })
                 }
               />
               <Slider
-                size="sm"
                 label="Tick Offset"
-                minValue={-200}
                 maxValue={50}
+                minValue={-200}
+                size="sm"
                 value={filter.axisLeftLegendOffset}
                 onChange={(val) =>
                   setFilter({
@@ -324,11 +325,11 @@ export function FilterPanelBarChart({ maxNodes, exportImage }: FilterType) {
         </AccordionItem>
         <AccordionItem key="7" aria-label="Export" title="Export">
           <Button
-            startContent={<DownloadActionIconSolid className="w-6" />}
             className="w-full"
-            onPress={exportImage}
-            variant="solid"
             color="primary"
+            startContent={<DownloadActionIconSolid className="w-6" />}
+            variant="solid"
+            onPress={exportImage}
           >
             Download Image
           </Button>

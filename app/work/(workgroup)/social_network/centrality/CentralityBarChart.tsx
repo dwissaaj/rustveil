@@ -14,8 +14,6 @@ import { useAtom, useAtomValue } from "jotai";
 import { useMemo, useRef } from "react";
 import { useTheme } from "next-themes";
 
-import { FilterPanelBarChart } from "../../../../../components/workstation/sna/centrality/bar/FilterControlBarChart";
-import { CentralityBarComponent } from "../../../../../components/workstation/sna/centrality/bar/CentralityBarComponent";
 import { useExportToImage } from "../../../../lib/workstation/social/useExportToImage";
 
 import { BarFilterState, showFilterAtom, topShowDataBar } from "./state";
@@ -27,8 +25,10 @@ import {
   selectedCentrality,
   selectedChart,
 } from "@/app/lib/workstation/social/centrality/state";
-import NoDataChartComponent from "@/components/workstation/sna/centrality/NoDataChartComponent";
-import AllZeroComponent from "@/components/workstation/sna/centrality/AllZeroComponent";
+import NoDataChartComponent from "@/components/sna/centrality/NoDataChartComponent";
+import { CentralityBarComponent } from "@/components/sna/centrality/bar/CentralityBarComponent";
+import AllZeroComponent from "@/components/sna/centrality/AllZeroComponent";
+import { FilterPanelBarChart } from "@/components/sna/centrality/bar/FilterControlBarChart";
 
 export function CentralityBarChart({
   graphData,

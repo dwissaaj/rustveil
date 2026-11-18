@@ -15,15 +15,15 @@ import {
 import { useState } from "react";
 import { useAtomValue } from "jotai";
 
-import {
-  vertex1ColumnSelected,
-  vertex2ColumnSelected,
-  vertexGraphTypeSelected,
-} from "@/app/lib/workstation/data/state";
 import { InfoIcon } from "@/components/icon/IconFilter";
 import { CloseActionIcon } from "@/components/icon/IconAction";
 import { useCalculateCentrality } from "@/app/lib/workstation/social/calculate/useCalculateCentrality";
 import { CalculateIcon } from "@/components/icon/IconGraph";
+import {
+  vertex1ColumnSelected,
+  vertex2ColumnSelected,
+  vertexGraphTypeSelected,
+} from "@/app/lib/data/state";
 
 type CalculateModal = {
   isOpen: boolean;

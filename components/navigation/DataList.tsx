@@ -7,6 +7,7 @@ import {
   Dropdown,
   DropdownMenu,
 } from "@heroui/react";
+
 import { DataNavIcon, DropDownNavIcon } from "../icon/IconNavigation";
 
 export default function DataList() {
@@ -18,10 +19,10 @@ export default function DataList() {
             <Button
               disableRipple
               className="p-2 font-semibold"
+              endContent={<DropDownNavIcon className="w-2" />}
               radius="sm"
               size="md"
               variant="light"
-              endContent={<DropDownNavIcon className="w-2" />}
             >
               Data
             </Button>
@@ -34,10 +35,10 @@ export default function DataList() {
           }}
         >
           <DropdownItem
-            startContent={<DataNavIcon className="stroke-yellow-500" />}
-            href="/data"
             key="Data"
             description="Upload and handle dataset"
+            href="/data"
+            startContent={<DataNavIcon className="stroke-yellow-500" />}
           >
             Data
           </DropdownItem>

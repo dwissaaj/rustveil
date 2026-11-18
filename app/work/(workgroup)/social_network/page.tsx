@@ -3,7 +3,7 @@ import { Tabs, Tab } from "@heroui/react";
 import NetworkHome from "./network/NetworkHome";
 import ChartHome from "./centrality/ChartHome";
 
-import SocialFilterListWrapper from "@/components/workstation/sna/SocialFilterListWrapper";
+import SocialFilterListWrapper from "@/components/sna/SocialFilterListWrapper";
 
 export default function SocialNetwork() {
   return (

@@ -4,7 +4,7 @@ import DataFileDropdown from "@/app/work/(workgroup)/data/dropdown/DataFileDropd
 import { ViewDropdown } from "@/app/work/(workgroup)/data/dropdown/ViewDropdown";
 
 interface FilterListWrapperProps {
-  onDataFetched?: (data: any[], totalCount?: number) => void; 
+  onDataFetched?: (data: any[], totalCount?: number) => void;
 }
 
 export default function FilterListWrapper({

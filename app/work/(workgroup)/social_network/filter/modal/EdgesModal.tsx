@@ -11,12 +11,12 @@ import {
   addToast,
 } from "@heroui/react";
 
+import { useSetVertices } from "@/app/lib/workstation/social/vertices/useSetVertices";
 import {
   vertex1ColumnSelected,
   vertex2ColumnSelected,
-} from "@/app/lib/workstation/data/state";
-import { useSetVertices } from "@/app/lib/workstation/social/vertices/useSetVertices";
-import VerticesSelect from "@/components/workstation/sna/centrality/VerticesSelectComponent";
+} from "@/app/lib/data/state";
+import VerticesSelectComponent from "@/components/sna/centrality/VerticesSelectComponent";
 
 type VerticesModalProps = {
   isOpen: boolean;
@@ -68,7 +68,7 @@ export default function EdgesModal({
                 Pick For Vertices
               </ModalHeader>
               <ModalBody>
-                <VerticesSelect />
+                <VerticesSelectComponent />
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>

@@ -8,10 +8,10 @@ import {
   Button,
 } from "@heroui/react";
 
-import { ColumnFilterSolid } from "@/components/icon/IconFilter";
-import { EditTabIcon } from "@/components/icon/IconAction";
 import PickColumnModal from "../../app/sentiment_analysis/modal/PickColumnModal";
 import { SettingViewOutline } from "../icon/IconView";
+
+import { ColumnFilterSolid } from "@/components/icon/IconFilter";
 import SettingModel from "@/app/sentiment_analysis/modal/SettingModelModal";
 
 export default function TargetSentimentFilter() {
@@ -28,21 +28,22 @@ export default function TargetSentimentFilter() {
     onClose: onSettingCloseModal,
     onOpenChange: onSettingOpenChange,
   } = useDisclosure();
+
   return (
     <>
       <Dropdown>
         <DropdownTrigger>
           <Button
-            startContent={<SettingViewOutline className="w-2" />}
-            size="sm"
             className="text-black dark:text-white"
             color="primary"
+            size="sm"
+            startContent={<SettingViewOutline className="w-2" />}
             variant="light"
           >
             Setting
           </Button>
         </DropdownTrigger>
-        <DropdownMenu color="primary" variant="flat" aria-label="File actions">
+        <DropdownMenu aria-label="File actions" color="primary" variant="flat">
           <DropdownItem
             key="column-pick"
             description="Choose your text data"
@@ -62,13 +63,13 @@ export default function TargetSentimentFilter() {
         </DropdownMenu>
       </Dropdown>
       <PickColumnModal
-        onClose={onTargetCloseModal}
         isOpen={isTargetPick}
+        onClose={onTargetCloseModal}
         onOpenChange={onTargetPickChange}
       />
       <SettingModel
-        onClose={onSettingCloseModal}
         isOpen={isSettingOpen}
+        onClose={onSettingCloseModal}
         onOpenChange={onSettingOpenChange}
       />
     </>

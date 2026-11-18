@@ -1,13 +1,5 @@
 "use client";
 import {
-  columnAvailable,
-  vertex1ColumnSelected,
-  vertex2ColumnSelected,
-  vertexGraphTypeSelected,
-} from "@/app/lib/data/state";
-
-import { TooltipIcon, VerticesIcon } from "@/components/icon/IconFilter";
-import {
   Select,
   SelectItem,
   Radio,
@@ -16,6 +8,14 @@ import {
   Button,
 } from "@heroui/react";
 import { useAtom } from "jotai";
+
+import {
+  columnAvailable,
+  vertex1ColumnSelected,
+  vertex2ColumnSelected,
+  vertexGraphTypeSelected,
+} from "@/app/lib/data/state";
+import { TooltipIcon, VerticesIcon } from "@/components/icon/IconFilter";
 
 export default function VerticesSelectComponent() {
   const [column] = useAtom(columnAvailable);
@@ -30,9 +30,9 @@ export default function VerticesSelectComponent() {
           <Tooltip color="primary" content="Minimal 2 data for edges">
             <Button
               className="text-black dark:text-white"
-              variant="light"
               color="primary"
               endContent={<TooltipIcon className="w-6" />}
+              variant="light"
             >
               Available Nodes
             </Button>
@@ -41,15 +41,16 @@ export default function VerticesSelectComponent() {
         <div className="flex flex-col gap-4">
           <Select
             className="max-w-lg"
-            label="Select 1st Vertices"
-            placeholder="Choose a column"
-            variant="underlined"
             color="primary"
+            label="Select 1st Vertices"
             labelPlacement="outside"
+            placeholder="Choose a column"
             startContent={<VerticesIcon />}
             value={vertex1} // controlled
+            variant="underlined"
             onChange={(event) => {
               const value = event.target.value;
+
               setVertex1(value);
             }}
           >
@@ -59,15 +60,16 @@ export default function VerticesSelectComponent() {
           </Select>
           <Select
             className="max-w-lg"
-            label="Select 2nd Vertices"
-            placeholder="Choose a column"
-            variant="underlined"
             color="primary"
+            label="Select 2nd Vertices"
             labelPlacement="outside"
+            placeholder="Choose a column"
             startContent={<VerticesIcon />}
             value={vertex2} // controlled
+            variant="underlined"
             onChange={(event) => {
               const value = event.target.value;
+
               setVertex2(value);
             }}
           >
@@ -81,9 +83,9 @@ export default function VerticesSelectComponent() {
         <div>
           <Tooltip color="primary" content="Read blogs to understand both type">
             <Button
-              variant="light"
               color="default"
               endContent={<TooltipIcon />}
+              variant="light"
             >
               Available Nodes
             </Button>
@@ -91,10 +93,10 @@ export default function VerticesSelectComponent() {
         </div>
         <div className="ml-2">
           <RadioGroup
+            orientation="horizontal"
+            size="md"
             value={graphType}
             onValueChange={(value: string) => setGraphType(value)}
-            size="md"
-            orientation="horizontal"
           >
             <Radio value="direct">Direct</Radio>
             <Radio value="undirect">Undirect</Radio>

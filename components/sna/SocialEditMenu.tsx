@@ -35,7 +35,6 @@
  */
 
 "use client";
-import VerticesModal from "@/app/social_network/filter/modal/EdgesModal";
 import {
   Dropdown,
   DropdownTrigger,
@@ -44,29 +43,32 @@ import {
   DropdownItem,
   Button,
 } from "@heroui/react";
+
+import VerticesModal from "@/app/social_network/filter/modal/EdgesModal";
 import { VerticesIcon } from "@/components/icon/IconFilter";
 import { EditTabIcon } from "@/components/icon/IconAction";
 
 export default function SocialEditMenu() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
   return (
     <>
       <Dropdown>
         <DropdownTrigger>
           <Button
-            startContent={<EditTabIcon className="w-4" />}
-            size="sm"
             className="text-black dark:text-white"
             color="primary"
+            size="sm"
+            startContent={<EditTabIcon className="w-4" />}
             variant="light"
           >
             Edit
           </Button>
         </DropdownTrigger>
         <DropdownMenu
+          aria-label="locate vertices"
           color="primary"
           variant="flat"
-          aria-label="locate vertices"
         >
           <DropdownItem
             key="vertices"
