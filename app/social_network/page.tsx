@@ -7,7 +7,7 @@ import ChartHome from "./centrality/ChartHome";
 
 import SocialFilterListWrapper from "@/components/sna/SocialFilterListWrapper";
 
-export default function page() {
+export default function S() {
   return (
     <div className="">
       <div>
